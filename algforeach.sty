@@ -1,0 +1,11 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{algforeach}[2014/12/21]
+
+\RequirePackage{etoolbox}
+
+\newcommand{\ForEach}[2]{%
+  \State \textbf{for each} #1 \textbf{do}
+  \Statex \hspace{\algorithmicindent}#2
+}
+
+\newcommand{\EndForEach}{}
