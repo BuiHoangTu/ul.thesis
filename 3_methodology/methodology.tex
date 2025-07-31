@@ -16,6 +16,7 @@
 %: ----------------------- contents from here ------------------------
 
 This chapter presents the methodology used to explore the capacity of Deep Reconstructive Normal Behaviour Models in wind turbine condition monitoring. The proposed pipeline is designed to detect abnormal conditions based on telemetry data from real-world operational turbines. The methodology includes data preprocessing, model design, training setup, evaluation strategy, and deployment considerations.
+To ensure experimental reproducibility, all procedures involving stochastic components—such as data splitting, model initialization, and training—were executed using a fixed random seed. Unless otherwise stated, the seed value was set to \texttt{17} throughout this study.
 
 
 % === Data Acquisition and Preprocessing ===
@@ -24,7 +25,7 @@ This chapter presents the methodology used to explore the capacity of Deep Recon
 
 The proprietary dataset used in this research was provided by EnergyPro, an industrial partner aiming to bridge academic research and industrial applications. 
 
-The dataset used in this study initially comprised 33 variables collected from operational wind turbines, encompassing a mix of physical sensor readings, control parameters, and static metadata. 
+The dataset initially comprised 33 variables collected from operational wind turbines, encompassing a mix of physical sensor readings, control parameters, and static metadata. These features were recorded at a nominal resolution of 10-minute intervals, though irregularities and missing timestamps were occasionally present.
 These features included both time-varying telemetry data, such as rotational speed and power output, as well as categorical and static attributes, including turbine site, model, and geographic coordinates.
 
 To focus the modeling efforts on the most informative signals, a feature selection process was carried out in consultation with a domain expert. Based on the input, and further guided by theoretical and empirical considerations, six features were selected for inclusion in the final model: average power output (\texttt{avgpower}), average rotor speed (\texttt{avgrotorspeed}), average wind speed (\texttt{avgwindspeed}), air density (\texttt{density}), ambient temperature (\texttt{ambienttemperature}), and average wind direction (\texttt{avgwinddirection}).
@@ -44,20 +45,41 @@ The remaining 27 features were excluded from further analysis for several reason
 Focusing on a smaller, well-justified subset of features not only reduces the dimensionality of the input space but also mitigates the risk of overfitting and improves the interpretability of the learned models. This selection forms the basis for all subsequent preprocessing and modeling steps in this study.
 
 
-% \section{Preprocessing}
-% \begin{itemize}
-%     \item \textit{Temporal Alignment:} Missing values interpolated using Pandas (\texttt{method='time'}), then averaged hourly.
-%     \item \textit{Windowing:} Segmented into 128-hour sliding windows. Windows with $\geq$2 abnormal hours labeled as fully abnormal; others as normal.
-%     \item \textit{Normalization:} Min-max scaled to EnergyPro's operational ranges: 
-%     \begin{equation}
-%         X_{\text{norm}} = \frac{X - X_{\min}}{X_{\max} - X_{\min}}
-%     \end{equation}
-%     \item \textit{Splits:}
-%     \begin{itemize}
-%         \item Unsupervised: Normal data randomly split 70\%/15\%/15\% (train/val/test).
-%         \item Semi-supervised: Abnormal data split into \texttt{abn\_train}, \texttt{abn\_val}, and \texttt{abn\_test} for classifier head training.
-%     \end{itemize}
-% \end{itemize}
+\section{Preprocessing}
+\label{sec:preprocessing}
+
+%%TODO: Add an graph explaining the preprocessing steps
+
+The raw telemetry data provided by EnergyPro consisted of timestamped multivariate measurements recorded at 10-minute intervals. However, due to occasional missing entries and timing irregularities, a time-based interpolation strategy was applied to recover a consistent temporal structure. Specifically, missing values were filled using time-aware linear interpolation, which estimates values at missing timestamps by weighting neighboring values according to their temporal distance. After interpolation, the data was resampled to an hourly resolution by averaging all available 10-minute values within each hour. This process produced a uniformly spaced time series suitable for downstream modeling.
+
+
+After temporal resampling and feature normalization, the data was segmented into overlapping windows of 128 consecutive hourly observations. Each window was then assigned a binary label (normal or abnormal) based on the point-level anomaly annotations provided by EnergyPro. To account for occasional labeling noise or transient misclassifications, a tolerance threshold was adopted: a window was labeled as abnormal if it contained fewer than 127 time steps labeled as normal. This decision was informed by empirical statistics—across all labeled windows, the floor of the mean number of normal-labeled steps per window was 127. In addition to its statistical grounding, this threshold also serves a practical purpose to reduce sensitivity to edge effects. At the onset or resolution of an abnormal event, the telemetry may still resemble normal operational patterns, despite the change in ground-truth labels. Allowing for one or two anomalous time steps to be discounted within a window ensures that the labeling remains robust to these boundary-phase ambiguities, which may not yet exhibit distinguishable signal characteristics.
+
+Following this procedure, the resulting dataset exhibited a normal-to-abnormal class ratio of approximately 2.02:1.
+
+To standardize feature magnitudes, a Min-Max scaling procedure was applied independently to each of the six selected features. Scaling bounds were determined using only the normal class samples, ensuring that abnormal behaviour was not incorporated into the normalization statistics. The operational ranges for the selected features, as observed in the dataset, are shown in Table~\ref{tab:feature-ranges}.
+
+\begin{table}[H]
+\centering
+\caption{Operational ranges for selected features.}
+\label{tab:feature-ranges}
+\begin{tabular}{ll}
+\toprule
+\textbf{Feature} & \textbf{Operational Range} \\
+\midrule
+Average Power Output & 0 - 2050 kW \\
+Average Rotor Speed & 0 - 18 RPM \\
+Average Wind Speed & 3 - 15 m/s \\
+Air Density & 1.0 - 1.3 kg/m\textsuperscript{3} \\
+Ambient Temperature & -5 - 30°C \\
+Average Wind Direction & 0 - 360° \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Finally, to prepare for supervised and semi-supervised learning tasks, the labeled dataset was stratified by class and split into training, validation, and test sets. For each class (normal and abnormal), data was randomly divided into 70\% training, 15\% validation, and 15\% testing subsets. In the unsupervised setting, abnormal samples were excluded from training entirely and retained only for validation and testing in equal proportions.
+
+
 
 % % === Model Design ===
 % \section{Model Design}
