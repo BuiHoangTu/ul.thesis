@@ -57,7 +57,10 @@ After temporal resampling and feature normalization, the data was segmented into
 
 Following this procedure, the resulting dataset exhibited a normal-to-abnormal class ratio of approximately 2.02:1.
 
-To standardize feature magnitudes, a Min-Max scaling procedure was applied independently to each of the six selected features. Scaling bounds were determined using only the normal class samples, ensuring that abnormal behaviour was not incorporated into the normalization statistics. The operational ranges for the selected features, as observed in the dataset, are shown in Table~\ref{tab:feature-ranges}.
+To standardize feature magnitudes, a Min-Max scaling procedure was applied independently to each of the six selected features. 
+Scaling bounds were determined using only the typical operating conditions of the wind turbines, ensuring that abnormal behaviour was not incorporated into the normalization statistics.
+Min-Max normalization was chosen over standardization (z-score) due to its ability to preserve the original distribution and exact relationships between feature values—particularly important for anomaly detection tasks, where the relative spacing of signals may carry diagnostic significance. Moreover, such normalization has been shown to facilitate faster model convergence, reduce the risk of becoming trapped in local minima, and maintain interpretability across transformed features~\citep{fan_analytical_2018}.
+The operational ranges for the selected features, as observed in the dataset, are shown in Table~\ref{tab:feature-ranges}.
 
 \begin{table}[H]
 \centering
