@@ -7,11 +7,18 @@
 \label{chap:methodology}
 
 % change according to folder and file names
-\ifpdf
-    \graphicspath{{2_related_works/figures/PNG/}{2_related_works/figures/PDF/}{3_geprng/figures/}}
-\else
-    \graphicspath{{2_related_works/figures/EPS/}{2_related_works/figures/}}
-\fi
+% \ifpdf
+%     \graphicspath{{2_related_works/figures/PNG/}{2_related_works/figures/PDF/}{3_geprng/figures/}}
+% \else
+%     \graphicspath{{2_related_works/figures/EPS/}{2_related_works/figures/}}
+% \fi
+
+\graphicspath{
+    {3_methodology/figures/PNG/}
+    {3_methodology/figures/PDF/}
+    {3_methodology/figures/EPS/}
+    {3_methodology/figures/}
+}
 
 %: ----------------------- contents from here ------------------------
 
@@ -85,8 +92,55 @@ Finally, to prepare for supervised and semi-supervised learning tasks, the label
 
 
 % % === Model Design ===
-% \section{Model Design}
-% \label{sec:model}
+\section{Model Architectures}
+\label{sec:models}
+
+This section describes the family of neural architectures developed and evaluated for turbine health monitoring. All models share a common encoder backbone but differ in their downstream heads and training strategies.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{model-generic-struct.pdf}
+    \caption{Master diagram of architectural components. Each block corresponds to a named variant described in Table~\ref{tab:model-variants}.}
+    \label{fig:model-components}
+\end{figure}
+
+As illustrated in Figure~\ref{fig:model-components}, the general architecture is composed of three primary components: an encoder (2), a decoder (4), and a classification head (6). The encoder maps the input sequence (1) into a compact latent representation (3), which is then used either for reconstructing the input via the decoder or for predicting anomaly labels via the classifier head. In addition, a reconstruction error (7) is computed between the original input (1) and its reconstruction (5), which can also be used for downstream classification. The calculation and usage of the reconstruction error varies across model variants and is discussed in Sections~\ref{sec:training} and \ref{sec:eval}.
+
+
+\begin{table}[H]
+\centering
+\caption{Overview of model variants and their architectural composition.}
+\label{tab:model-variants}
+% \renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}ll@{}}
+    \toprule
+    
+    \textbf{Model Name} & 
+    \textbf{Simplified Architecture} \\
+
+    \midrule
+
+    {Vanilla Autoencoder} & 
+    \raisebox{-0.7cm}{\includegraphics[height=1.5cm]{model-vanilla-struct.pdf}} \\
+
+    {Multi-Head Classification} & 
+    \raisebox{-1cm}{\includegraphics[height=2.5cm]{model-m_head-struct.pdf}} \\
+    
+    \vspace{0.5cm}
+
+    {Classification Only} & 
+    \raisebox{-1cm}{\includegraphics[height=2.5cm]{model-classify-struct.pdf}} \\
+
+
+    {Bottleneck} & 
+    \raisebox{-2cm}{\includegraphics[height=3.35cm]{model-bottleneck-struct.pdf}} \\
+
+    \bottomrule
+\end{tabular}
+\end{table}
+
+
+
 
 % Three autoencoder architectures were compared:
 % \begin{itemize}
@@ -112,8 +166,8 @@ Finally, to prepare for supervised and semi-supervised learning tasks, the label
 % \end{itemize}
 
 % % === Training Protocol ===
-% \section{Training Protocol}
-% \label{sec:training}
+\section{Training Protocol}
+\label{sec:training}
 
 % \begin{itemize}
 %     \item \textit{Unsupervised Phase:} Models trained on normal data only.
@@ -127,8 +181,8 @@ Finally, to prepare for supervised and semi-supervised learning tasks, the label
 % \end{itemize}
 
 % % === Evaluation Framework ===
-% \section{Evaluation Framework}
-% \label{sec:eval}
+\section{Evaluation Framework}
+\label{sec:eval}
 
 % \textbf{Metrics:}
 % \begin{itemize}
@@ -146,8 +200,8 @@ Finally, to prepare for supervised and semi-supervised learning tasks, the label
 % \end{itemize}
 
 % % === Reproducibility ===
-% \section{Reproducibility}
-% \label{sec:repro}
+\section{Reproducibility}
+\label{sec:repro}
 
 % \begin{itemize}
 %     \item \textit{Code:} PyTorch \texttt{vX.Y.Z} (see Appendix~\ref{app:code}).
