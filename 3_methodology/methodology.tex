@@ -232,47 +232,35 @@ $$
 \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{normal}} + \frac{1}{1 + \mathcal{L}_{\text{abnormal}}}
 $$
 
- 
 This encourages the model to reinforce a separation in reconstruction behavior between normal and abnormal inputs, effectively pushing the autoencoder to "unlearn" anomalies.
 
 
-% \begin{itemize}
-%     \item \textit{Unsupervised Phase:} Models trained on normal data only.
-%     \item \textit{Semi-supervised Phase:} Classifier head fine-tuned with labeled abnormal data.
-%     \item \textit{Hyperparameter:} Fixed across models:
-%     \begin{itemize}
-%         \item Latent dimension: 64
-%         \item Batch size: 32
-%         \item Optimizer: Adam ($\eta=10^{-3}$)
-%     \end{itemize}
-% \end{itemize}
-
 % % === Evaluation Framework ===
-\section{Evaluation Framework}
+%% TODO: possibly add AE reconstruction ability to evaluation
+\section{Evaluation}
 \label{sec:eval}
+Model evaluation follows a two-step pipeline: obtaining an \emph{anomaly score} for each input sequence, and applying a decision \emph{threshold} to classify it as normal or abnormal. For classification-based models, the prediction is taken directly from the output. For reconstruction-based models, additional scoring and thresholding steps are applied.
 
-% \textbf{Metrics:}
-% \begin{itemize}
-%     \item Primary: AUC-ROC (threshold-agnostic).
-%     \item Secondary: Accuracy, precision, recall, F1 (using Youden's threshold):
-%     \begin{equation}
-%         \text{Threshold}^* = \text{argmax}_{\tau} (\text{Recall}(\tau) + \text{Precision}(\tau) - 1)
-%     \end{equation}
-% \end{itemize}
+The anomaly score $s(x)$ is computed in one of two ways:
 
-% \textbf{Validation:}
-% \begin{itemize}
-%     \item Normal test data $\rightarrow$ reconstruction error distribution.
-%     \item Abnormal test data $\rightarrow$ detection performance.
-% \end{itemize}
+\begin{enumerate}
+\item \textbf{Loss-based scoring:}
+The reconstruction loss itself is used as the anomaly score: $s(x) = \mathcal{L}_{\text{recon}}(x, \hat{x})$,where $\hat{x}$ is the reconstructed input. The final binary decision is based on a threshold $\tau$. In loss-based scoring, this threshold is selected via validation to maximize the Area Under the Curve (AUC):
+
+$$
+\hat{\tau} = \arg\max_{\tau} \ \mathrm{AUC}(\tau).
+$$
+
+\item \textbf{Classifier-on-loss scoring:}  
+A shallow MLP is trained on top of features such as reconstruction error patterns, while the main model is frozen. The MLP outputs a class probability \( p(y=1|x) \), serving as the anomaly score. This supervised post-processing enables more adaptive behavior, including dynamic thresholding.
+
+\end{enumerate}
+
+Once a threshold is established, standard classification metrics—accuracy, precision, recall, F1-score, and AUC—are computed to assess model performance. These metrics allow comparison across models with different output modalities and are further analyzed in Section~\ref{sec:results}.
+
 
 % % === Reproducibility ===
-\section{Reproducibility}
-\label{sec:repro}
+\section{Experimental Environment}
+\label{sec:exp-env}
 
-% \begin{itemize}
-%     \item \textit{Code:} PyTorch \texttt{vX.Y.Z} (see Appendix~\ref{app:code}).
-%     \item \textit{Hardware:} NVIDIA V100 GPU (16GB VRAM).
-%     \item \textit{Randomness Control:} Seed fixed to \texttt{42}.
-% \end{itemize}
-
+All models were implemented using \texttt{PyTorch} (v\texttt{2.5.1}) and trained on a machine equipped with an \texttt{NVIDIA Quadro T2000} GPU and an \texttt{Intel i9-9880H} CPU. Training and evaluation were conducted under \texttt{Python} (v\texttt{3.12}) on a \texttt{Linux} system. Core dependencies included \texttt{NumPy} (v\texttt{2.2.4}) and \texttt{scikit-learn} (v\texttt{1.10.1}).
