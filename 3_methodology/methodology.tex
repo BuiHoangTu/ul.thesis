@@ -54,11 +54,17 @@ Focusing on a smaller, well-justified subset of features not only reduces the di
 
 \section{Preprocessing}
 \label{sec:preprocessing}
+To ensure the raw telemetry data from EnergyPro was suitable for modeling and anomaly detection, a structured preprocessing pipeline was implemented. This pipeline addressed missing data, temporal inconsistencies, and varying feature scales through interpolation, resampling, normalization, and segmentation. The goal was to produce a clean, uniformly spaced time series with standardized feature values and robust labeling, optimized for downstream machine learning applications. The preprocessing steps are summarized in Figure~\ref{fig:preprocessing-pipeline}.
 
-%%TODO: Add an graph explaining the preprocessing steps
 
-The raw telemetry data provided by EnergyPro consisted of timestamped multivariate measurements recorded at 10-minute intervals. However, due to occasional missing entries and timing irregularities, a time-based interpolation strategy was applied to recover a consistent temporal structure. Specifically, missing values were filled using time-aware linear interpolation, which estimates values at missing timestamps by weighting neighboring values according to their temporal distance. After interpolation, the data was resampled to an hourly resolution by averaging all available 10-minute values within each hour. This process produced a uniformly spaced time series suitable for downstream modeling.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{preprocess-pipeline.pdf}
+    \caption{Preprocessing pipeline.}
+    \label{fig:preprocessing-pipeline}
+\end{figure}
 
+The raw data consisted of timestamped multivariate measurements recorded at 10-minute intervals. However, due to occasional missing entries and timing irregularities, a time-based interpolation strategy was applied to recover a consistent temporal structure. Specifically, missing values were filled using time-aware linear interpolation, which estimates values at missing timestamps by weighting neighboring values according to their temporal distance. After interpolation, the data was resampled to an hourly resolution by averaging all available 10-minute values within each hour.
 
 After temporal resampling and feature normalization, the data was segmented into overlapping windows of 128 consecutive hourly observations. Each window was then assigned a binary label (normal or abnormal) based on the point-level anomaly annotations provided by EnergyPro. To account for occasional labeling noise or transient misclassifications, a tolerance threshold was adopted: a window was labeled as abnormal if it contained fewer than 127 time steps labeled as normal. This decision was informed by empirical statistics—across all labeled windows, the floor of the mean number of normal-labeled steps per window was 127. In addition to its statistical grounding, this threshold also serves a practical purpose to reduce sensitivity to edge effects. At the onset or resolution of an abnormal event, the telemetry may still resemble normal operational patterns, despite the change in ground-truth labels. Allowing for one or two anomalous time steps to be discounted within a window ensures that the labeling remains robust to these boundary-phase ambiguities, which may not yet exhibit distinguishable signal characteristics.
 
@@ -67,6 +73,7 @@ Following this procedure, the resulting dataset exhibited a normal-to-abnormal c
 To standardize feature magnitudes, a Min-Max scaling procedure was applied independently to each of the six selected features. 
 Scaling bounds were determined using only the typical operating conditions of the wind turbines, ensuring that abnormal behaviour was not incorporated into the normalization statistics.
 Min-Max normalization was chosen over standardization (z-score) due to its ability to preserve the original distribution and exact relationships between feature values—particularly important for anomaly detection tasks, where the relative spacing of signals may carry diagnostic significance. Moreover, such normalization has been shown to facilitate faster model convergence, reduce the risk of becoming trapped in local minima, and maintain interpretability across transformed features~\citep{fan_analytical_2018}.
+For the circular feature wind direction, a sine-cosine transformation was applied prior to scaling to preserve its inherent angular continuity.
 The operational ranges for the selected features, as observed in the dataset, are shown in Table~\ref{tab:feature-ranges}.
 
 \begin{table}[H]
@@ -217,7 +224,6 @@ Second, a learned classifier approach is tested. In this setting, the encoder an
 
 
 \subsection{Training Strategies}
-%% TODO: reconsider the name
 Each model variant in this study adopts a different training configuration based on its objective, particularly in how it utilizes normal and abnormal samples. These configurations reflect a progression from fully unsupervised to increasingly supervised learning regimes.
 
 The \emph{Vanilla Autoencoder} is trained purely on normal data. This aligns with the classic unsupervised anomaly detection assumption: the model should reconstruct normal sequences well, while producing high reconstruction errors on unseen anomalies during inference.
