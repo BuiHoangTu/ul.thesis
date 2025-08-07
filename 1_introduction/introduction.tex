@@ -3,6 +3,7 @@
 
 %: ----------------------- introduction file header -----------------------
 \chapter{Introduction}
+\label{chap:introduction}
 
 % the code below specifies where the figures are stored
 \ifpdf
@@ -11,7 +12,91 @@
     \graphicspath{{1_introduction/figures/EPS/}{1_introduction/figures/}}
 \fi
 
-This is how you cite~\citep{Moore99}.
+
+\section{Motivation}
+\label{sec:motivation}
+
+Following global commitments to Net Zero, renewable energy sources are playing an increasingly vital role in the modern energy mix. Among these, wind energy stands out as a key contributor due to its scalability, cost-effectiveness, and minimal carbon footprint. According to the Wind Report 2025~\citep{henrique_global_nodate}, global wind power capacity saw the addition of 117 GW in 2024, bringing the total to 1,136 GW—a year-over-year increase of 11\%. The report further projects an average annual growth rate of 8.8\% through 2030.
+
+While wind power itself is essentially free, the primary expenditures lie in installation and ongoing maintenance~\citep{charabi_wind_2020}. Thanks to technological advancements, installation costs are steadily declining; however, maintenance costs remain a growing concern. More and more researches such as the one by~\cite{yang_operations_2021} has focused on optimizing maintenance scheduling to mitigate these costs. According to~\citep{dao_wind_2019}, maintenance can account for approximately 20\% to 30\% of the total cost of wind energy production.
+
+The ability to detect potential failures well in advance would significantly reduce unplanned downtime and enable more efficient maintenance scheduling. This proactive approach not only enhances energy production and lowers operational costs, but also improves the return on investment and contributes to making wind energy more affordable for consumers. Given this potential, a growing body of research has focused on applying machine learning (ML) and deep learning (DL) techniques to enable condition monitoring and early fault detection in wind turbines. Among these, Autoencoders (AEs) have emerged as one of the most widely adopted architectures, particularly in unsupervised or semi-supervised anomaly detection settings~\citep{chesterman_overview_2023}.
+
+Autoencoders (AEs), in particular, are favored due to their ability to learn compact representations of high-dimensional input data without requiring labeled anomalies. Typically, an AE is trained solely on data collected during normal turbine operation, under the assumption that it will struggle to accurately reconstruct anomalous inputs. This allows the model to detect novel anomalies which is the common case in wind turbine condition monitoring. However, the authors usually assume a small portion of the data is anomalous, e.g 5-10\%~\citep{fan_analytical_2018}, which means there does not exist a feasible way to compare different methods.
+
+Recent years, labeled data has become more available, enabling the use of supervised training signals to improve anomaly detection performance. The approach ranges from traditional supervised learning methods like SVM or decision trees to more advanced techniques like transfer learning and semi-supervised learning. That said, AEs remain a popular choice due to their ability to detect novel anomalies. However, there still lacks a systematic exploration of how different AE architectures and training strategies affect anomaly detection performance, especially in the context of wind turbine condition monitoring.
+
+
+\section{Problem Statement}
+\label{sec:problem-statement}
+
+
+
+
+
+In this work, I revisit AE-based anomaly detection in the context of wind turbine condition monitoring using a proprietary, labeled dataset—offering a unique opportunity to systematically assess the behavior of AEs under more realistic settings. Specifically, I investigate:
+
+\begin{itemize}
+    \item The reconstruction behavior of Vanilla Autoencoders on both normal and abnormal samples
+
+    \item The impact of latent representation (size and architecture)
+
+    \item The effectiveness of different reconstruction loss functions
+
+    \item The role of AE in supervised anomaly detection, including the use of classification heads and dynamic thresholds
+
+    
+\end{itemize}
+
+
+
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+\cite{ahmad_autoencoder-based_2020, ben_ali_online_2018,shao_detecting_2023} test til fail
+
+\cite{roelofs_transfer_2024,yao_svd-ae_2024} use labeled data
+
+
+
+
+
+
+
+
+
+
+% Monitoring the health of rotating machinery is critical for ensuring operational safety and preventing unexpected failures in industrial systems. With the proliferation of sensor technologies, time series data collected from machinery components—such as vibration or acoustic signals—has become central to fault diagnosis and predictive maintenance. However, one of the core challenges in this domain is the scarcity of labeled fault data, especially for rare or novel anomalies.
+
+% Autoencoders (AEs) have emerged as a popular approach to anomaly detection in such settings, owing to their ability to learn unsupervised representations of normal behavior. By training on normal data and minimizing reconstruction error, AEs are expected to reconstruct in-distribution inputs well while failing to reproduce anomalous signals—thereby enabling the use of reconstruction error as an anomaly score. This assumption underlies many recent works in unsupervised and semi-supervised condition monitoring.
+
+% However, in practice, this assumption often breaks down. Empirical evidence shows that vanilla AEs can generalize well even to anomalous inputs, producing low reconstruction error and blurring the distinction between normal and abnormal states. This failure raises questions about the reliability of reconstruction-based approaches and the expressive power of latent representations learned without supervision.
+
+% To investigate this issue, we conduct a systematic exploration of AE-based architectures, incrementally introducing supervised signals into the model design. Starting from a vanilla AE, we add a classification head, remove the decoder entirely, and ultimately reframe the reconstruction loss as a supervised signal. In parallel, we examine multiple reconstruction loss variants, including both pointwise and distribution-based distances, and evaluate their effect on anomaly separability.
+
+% Our findings reveal that classification-driven models consistently outperform reconstruction-based ones, even when trained on partially labeled data. Moreover, reconstruction loss—when not explicitly trained to be discriminative—tends to capture generic dynamics rather than abnormality-sensitive features.
+
+% \textbf{Our contributions are summarized as follows:}
+% \begin{itemize}
+%     \item We empirically demonstrate the limitations of vanilla autoencoders for anomaly detection in rotating machinery, highlighting their inability to produce reliable reconstruction-based scores.
+%     \item We present and evaluate a series of model variants that incrementally introduce supervision, showing that discriminative training leads to more effective representations.
+%     \item We compare multiple reconstruction loss functions, including MSE, MMD, and frequency-based metrics, and show how auto-weighted loss combinations can improve learning balance.
+%     \item We examine thresholding techniques for abnormality scoring and provide evidence that dynamic, classifier-informed thresholds reduce false positives more effectively than static ones.
+% \end{itemize}
+
+
+
 
 Single sample image. 
 \begin{figure}[!htbp]
