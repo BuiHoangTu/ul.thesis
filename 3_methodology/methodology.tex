@@ -102,7 +102,7 @@ Finally, to prepare for supervised and semi-supervised learning tasks, the label
 \section{Model Architectures}
 \label{sec:models}
 
-This section describes the family of neural architectures developed and evaluated for turbine health monitoring. All models share a common encoder backbone but differ in their downstream heads and training strategies.
+This section describes the components of neural architectures developed and evaluated for turbine health monitoring. All models share a common components but differ in their combinations and training strategies.
 
 \begin{figure}[H]
     \centering
@@ -111,8 +111,85 @@ This section describes the family of neural architectures developed and evaluate
     \label{fig:model-components}
 \end{figure}
 
-As illustrated in Figure~\ref{fig:model-components}, the general architecture is composed of three primary components: an encoder (2), a decoder (4), and a classification head (6). The encoder maps the input sequence (1) into a compact latent representation (3), which is then used either for reconstructing the input via the decoder or for predicting anomaly labels via the classifier head. In addition, a reconstruction error (7) is computed between the original input (1) and its reconstruction (5), which can also be used for downstream classification. The calculation and usage of the reconstruction error varies across model variants and is discussed in Sections~\ref{sec:training} and \ref{sec:eval}.
+As illustrated in Figure~\ref{fig:model-components}, the general architecture is composed of three primary components: an encoder, a decoder, and a classification head. 
+In addition, a reconstruction error is computed between the original input and its reconstruction, which can also be used for downstream classification or as a secondary objective. The calculation and usage of the reconstruction error varies across model variants and is discussed in Sections~\ref{sec:training} and \ref{sec:eval}.
 
+
+\subsection{Encoder}
+\label{subsec:encoder}
+The encoder maps the input sequence into a compact latent representation, which is then used either for reconstructing the input via the decoder or for predicting anomaly labels via the classifier head.
+
+Let $\mathbf{x} \in \mathbb{R}^{C \times T}$ represent the input time series, where $C$ is the number of channels and $T$ is the temporal length. The encoder $E$ maps $\mathbf{x}$ into a lower-dimensional space, producing a latent representation $\mathbf{z} = E(\mathbf{x}) \in \mathbb{R}^{d \times T'}$, where $d$ is the latent channel dimension and $T' < T$ is a compressed temporal length. In this work, $T'$ is typically $T/8$ due to progressive downsampling.
+
+The encoder architecture is composed of a sequence of three sub-encoder blocks, stacked to progressively extract higher-level temporal features while reducing the temporal resolution. Two alternative designs for these sub-blocks are considered in this study: standard convolutional block and multi-scale attention block.
+
+The first design is a conventional convolutional sub-encoder. Each block contains two convolutional layers: one for feature extraction and one for compression. These are followed by batch normalization and average pooling to ensure stability and temporal downsampling.
+
+The second design draws inspiration from the MAMA (multi-scale attention memory) architecture introduced by~\citet{chen_mama_2021}, adapted here to 1D convolutional sequences. Each block integrates both temporal and channel-wise attention mechanisms. Specifically, temporal attention is computed across the entire sequence using position-wise query, key, and value projections, while channel attention is applied using learned convolutional projections.
+
+The multi-scale block begins with a $1 \times 1$ convolution to extract temporal queries, keys, and values. These are used to compute temporal attention weights via dot-product followed by softmax normalization. The attended temporal output then undergoes a second stage of attention applied across channels, with the choice of attention style configurable as one of:
+\begin{itemize}
+    \item Same Attention: standard attention with 1x1 kernel and stride 1.
+    \item Down Attention: uses a 3x3 kernel with stride 2 to downsample the temporal dimension.
+    \item Up Attention: uses a 3x3 kernel with stride 2 to upsample the temporal dimension.
+\end{itemize}
+For encoder, the down attention mode is used.
+
+
+\subsection{Latent Representation}
+\label{sec:latent}
+Two types of latent representations are considered in this study: a encoded vector $z$ and a hashed binary sequence $z_{binary}$.
+
+The encoded vector $z$ is obtained by applying a Tanh activation function to the output of the encoder. The representation is kept in $\mathbb{R}^{d \times T'}$ to preserve the temporal information.
+
+The hashed binary sequence $\mathbf{z}_{\text{binary}} \in \{0,1\}^{d}$ is inspired by the discrete memory mechanism in~\citet{chen_mama_2021}. The objective is to map latent vectors to their closest binary prototypes of normal behavior in a learned memory bank.
+
+To obtain this binary representation, the latent vector $\mathbf{z}$ is passed through a hash projection function (a linear layer), then discretized using the sign function shifted by a small bias:
+\[
+\mathbf{z}_{\text{binary}} = \frac{1}{2} \left( \text{sign}(\text{fc}(\mathbf{z}) - 0.51) + 1 \right),
+\]
+where $\text{fc}(\cdot)$ is a learnable transformation, and the output is thresholded element-wise to yield binary values in $\{0,1\}$.
+
+A memory matrix $\mathcal{M} \in \mathbb{R}^{N \times d}$ stores $N$ prototype representations corresponding to learned normal patterns. The same hash procedure is applied to the memory vectors to produce $\mathbf{M}_{\text{binary}} \in \{0,1\}^{N \times d}$. Hamming distances between $\mathbf{z}_{\text{binary}}$ and each memory entry are computed as:
+\[
+\mathcal{D}_{\text{Hamming}}(\mathbf{z}_{\text{binary}}, \mathbf{M}_{\text{binary}}) = \sum_{j=1}^{d} \mathbb{I} \left[ \mathbf{z}_{\text{binary}}^{(j)} \neq \mathbf{M}_{\text{binary}}^{(j)} \right],
+\]
+and used to retrieve the most similar memory entry.
+The retrieved memory together with the latent vector $\mathbf{z}$ forms the final latent representation used for reconstruction.
+
+
+\subsection{Decoder}
+\label{subsec:decoder}
+
+The decoder is tasked with reconstructing the original input sequence from the encoded latent representation. It complements the encoder and plays a central role in reconstruction-based anomaly detection, where the fidelity of $\hat{\mathbf{x}}$ with respect to the original input $\mathbf{x}$ serves as a signal for abnormality.
+
+Given a latent representation $\mathbf{z} \in \mathbb{R}^{d \times T'}$, the decoder $D$ maps it back to a sequence $\hat{\mathbf{x}} \in \mathbb{R}^{C \times T}$, approximating the original input. The decoder mirrors the encoder architecture and is likewise composed of three stacked sub-decoder blocks. Two decoder variants are implemented in this study to match the encoder styles:
+
+The standard version employs transposed convolutional layers to incrementally upsample the temporal dimension and reduce the feature compression introduced by the encoder. Each sub-decoder block consists of 2 transposed convolution (deconvolution) layers, followed by batch normalization and ReLU activation, mirrowing the sub-encoder structure. 
+
+When the encoder uses multi-scale attention blocks, the decoder adopts a parallel design using the same attention-based blocks but with upsampling configurations.
+
+When the latent representation includes a hashed binary sequence $\mathbf{z}_{\text{binary}}$, the decoder is extended to incorporate this information as part of the reconstruction process, as illustrated in Figure~\ref{fig:decoder-hashed}.
+
+The reconstruction begins by concatenating $\mathbf{z}$ with $\mathbf{z}_{\text{binary}}$ and passing the result through a \emph{SA} block to facilitate interaction between the latent vector and the hashed memory. The resulting representation then flows through a \textit{UA} block to upsample the temporal dimension.
+
+Simultaneously, the original latent vector $\mathbf{z}$ is processed through a separate \textit{UA} block. This output is concatenated again with the previous upsampled result. To enable further upsampling, the decoder applies a \textit{SA} block that reshapes the temporal dimension to match the previous upsampling stage.
+
+The final reconstruction path consists of two additional \textit{UA} blocks applied sequentially. Unlike earlier stages, neither further combination nor attention reshaping is applied at the end of the decoder pipeline.
+
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{mama-net-1d-dec.pdf}
+    \caption{Decoder architecture with hashed binary sequence.}
+    \label{fig:decoder-hashed}
+\end{figure}
+
+
+\section{Model Variants}
+\label{sec:model-variants}
+With different combinations of the components described in Section~\ref{sec:models}, four distinct model variants were developed and evaluated. The models are summarized in Table~\ref{tab:model-variants}.
 
 \begin{table}[H]
 \centering
