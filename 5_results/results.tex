@@ -106,93 +106,73 @@ Given this poor separation, I further examined how reconstruction errors for nor
 This convergence implies that the model gradually learns to represent both normal and abnormal patterns equally well, effectively "overfitting" to the anomalies present in the training set - the data that is nearly an abnormality. 
 Consequently, the discriminative signal in reconstruction error is lost, explaining the near-random AUC observed in Table~\ref{tab:vanilla_feat_auc}.
 
+For the vanilla AE, one of the most important design choices is the size of the latent space. 
+A large latent dimension allows the network to retain more information about the input, but risks allowing abnormal patterns pass through. 
+Conversely, an overly small latent dimension forces excessive compression, potentially discarding information essential for reconstructing normal behaviour. 
+Both extremes can lead to poor separation between normal and abnormal samples.
+
+To investigate this, I performed a latent size sweep, evaluating the model's performance across various latent dimensions. 
+The results, shown in Figure~\ref{fig:vanilla-latent-search}, show a non-linear relationship between latent size and detection performance. 
+Performance is poor at both very small and very large latent sizes.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.85\textwidth]{search-compression-vanilla_model.pdf}
+    \caption{AUC vs latent size for vanilla AE.}
+    \label{fig:vanilla-latent-search}
+\end{figure}
 
 This result suggests that either the difference in reconstruction error is highly non-linear and not captured by a simple threshold, or that the vanilla AE lacks the representational capacity for effective Normal Behavior Modeling in this dataset.
 
 
+\subsection{Classification Net from Reconstruction Errors}
+While tuning the latent size yields a modest improvement, the best ROC remains insufficient for reliable detection. 
+To address this limitation, I next investigate whether a separate classifier trained on the reconstruction error vectors can better exploit potential non-linear separability between normal and abnormal samples.
+
+For this experiment, the reconstruction errors of each sample in the training set are used as inputs to a Multi-Layer Perceptron (MLP) classifier.  
+The MLP consists of a single hidden layer with 64 units and a ReLU activation, followed by a single output neuron representing the probability of normal vs. abnormal operation. The model is trained using cross-entropy loss on the labeled data.
+%% TODO: move to methodology
+
+The resulting AUC of $0.7920$ represents a significant improvement over the vanilla AE's AUC of $0.5036$.  
+This indicates that the MLP successfully learns a more complex decision boundary that better separates the two classes.  
+Other metrics, including F1-score, precision, and recall, also show notable improvements, as summarized in Table~\ref{tab:vanilla-mlp-metrics}.  
+The corresponding confusion matrix is shown in Figure~\ref{fig:vanilla-mlp-cm}.
 
 
-\subsection{Training Dynamics: Epoch-wise Behavior}
-We monitor MSE over training epochs for both normal and abnormal validation sets.
-
-\begin{figure}[h!]
+\begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.85\textwidth]{search-compression-classify_model.pdf}
-    \caption{Epoch-wise mean MSE for normal and abnormal validation sets. The difference $(\text{MSE}_{abn} - \text{MSE}_{norm})$ is also plotted.}
-    \label{fig:vanilla_epoch_mse}
+    \begin{minipage}{0.3\textwidth} % Table
+        \begin{table}[H]
+            \centering
+            \caption{Classification metrics for MLP trained on vanilla AE reconstruction errors.}
+            \label{tab:vanilla-mlp-metrics}
+            \begin{tabular}{lc}
+                \toprule
+                \textbf{Metric} & \textbf{Value} \\
+                \midrule
+                Accuracy & 0.7515 \\
+                Recall & 0.8582 \\
+                Precision & 0.7785 \\
+                F1-score & 0.8164 \\
+                AUC & 0.7920 \\
+                \bottomrule
+            \end{tabular}
+        \end{table}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.68\textwidth} % Confusion Matrix
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{vanilla-mlp-cm.pdf}
+            \caption{Confusion matrix for MLP classifier trained on vanilla AE reconstruction errors.}
+            \label{fig:vanilla-mlp-cm}
+        \end{figure}
+    \end{minipage}
 \end{figure}
 
-As shown in Figure~\ref{fig:vanilla_epoch_mse}, \dots % interpretation
+These results confirm that while the vanilla AE alone struggles to discriminate between normal and abnormal samples, the reconstruction error space still contains useful information that can be exploited by a non-linear classifier.  
+However, the final result indicates vanilla AE is not sufficient for effective anomaly detection, motivating the exploration of architectures that can both reconstruct and discriminate anomalies more effectively within a single framework.
 
-% ---------------------------------------------------------
 
-\subsection{Aggregation Strategy Comparison}
-Different aggregation strategies were applied to per-timestep errors for each window: mean, max, min, and $95^{\text{th}}$ percentile.
 
-\begin{table}[h!]
-\centering
-\caption{Performance (AUC, F1, Precision, Recall) for different error aggregation strategies.}
-\label{tab:agg_strategies}
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Aggregator} & \textbf{AUC} & \textbf{F1} & \textbf{Precision} & \textbf{Recall} \\
-\midrule
-Mean       & <value> & <value> & <value> & <value> \\
-Max        & <value> & <value> & <value> & <value> \\
-Min        & <value> & <value> & <value> & <value> \\
-P95        & <value> & <value> & <value> & <value> \\
-\bottomrule
-\end{tabular}
-\end{table}
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.85\textwidth]{search-compression-classify_model.pdf}
-    \caption{ROC curves for different error aggregation strategies.}
-    \label{fig:vanilla_roc_aggregators}
-\end{figure}
-
-% ---------------------------------------------------------
-
-\subsection{Latent Size Sweep}
-We evaluate the effect of latent size on reconstruction and detection performance.
-
-\begin{table}[h!]
-\centering
-\caption{Effect of latent size on reconstruction and anomaly separability.}
-\label{tab:latent_sweep}
-\begin{tabular}{cccc}
-\toprule
-\textbf{Latent size} & \textbf{MSE$_{norm}$} & \textbf{MSE$_{abn}$} & \textbf{AUC} \\
-\midrule
-2   & <value> & <value> & <value> \\
-4   & <value> & <value> & <value> \\
-8   & <value> & <value> & <value> \\
-16  & <value> & <value> & <value> \\
-32  & <value> & <value> & <value> \\
-64  & <value> & <value> & <value> \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.85\textwidth]{search-compression-classify_model.pdf}
-    \caption{AUC vs latent size.}
-    \label{fig:vanilla_latent_auc}
-\end{figure}
-
-% ---------------------------------------------------------
-
-\subsection{Per-feature Error Analysis}
-Per-feature MSE was computed for normal and abnormal sets to identify which sensors contributed most to anomaly separability.
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.9\textwidth]{search-compression-classify_model.pdf}
-    \caption{Heatmap of per-feature MSE for normal and abnormal samples.}
-    \label{fig:vanilla_feature_error_heatmap}
-\end{figure}
-
-\subsection{Summary}
-In summary, the vanilla AE \dots % Your conclusion here.
