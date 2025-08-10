@@ -176,4 +176,58 @@ However, the final result indicates vanilla AE is not sufficient for effective a
 
 
 \section{Multi-Head Autoencoder}
+\label{sec:multi-head-results}
+The multi-head autoencoder extends the vanilla AE by adding a classification head to the latent space, presented in Table~\ref{tab:model-variants}. 
+The hypothesis is that the supervised head will encourage the latent space to separate normal and abnormal samples, which can improve anomaly detection both directly (through the classification head) and indirectly (via reconstruction-based methods).
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.85\textwidth]{m_head-norm-abn-over-epoch.pdf}
+    \caption{Multi-head autoencoder Normal vs Abnormal Reconstruction Error over epochs.}
+    \label{fig:multi-head-norm-abn-over-epoch}
+\end{figure}
+
+Figure~\ref{fig:multi-head-norm-abn-over-epoch} shows the tendency to separate normal and abnormal samples throughout training process.
+The gap between the two classes kept increasing until the end of training, indicating that the model is learning to distinguish between normal and abnormal samples effectively.
+
+Unlike the vanilla AE, this model has an extra classification head that has potential to act as the anomaly detector.
+Next subsection evaluates the classification performance of the multi-head autoencoder.
+
+
+\subsection{Classification Performance}
+The classification capabilities of the multi-head autoencoder lies in 2 parts: the classification head and the reconstruction error space.
+While the classification head benefits from direct supervision, it is not explicitly optimized to maximize reconstruction error separation.  
+Therefore, we additionally train an MLP classifier on the reconstruction error vectors to evaluate whether the supervised latent space also improves discrimination in the reconstruction domain.
+
+
+\begin{table}[h!]
+\centering
+\caption{Classification powers of multi-head autoencoder.}
+\label{tab:auc-vanilla-m_head}
+\begin{tabular}{lcc}
+    \toprule
+    & \textbf{Vanilla AE} & \textbf{Multi-Head AE} \\
+    \midrule
+    
+    RErr as abnormal score & 
+    0.5036 & 
+    0.7893 \\
+
+    Classifier on RErr & 
+    0.7920 & 
+    0.9758 \\
+
+    Classifier on latent space & 
+    N/A & 
+    0.9288 \\
+    
+    \bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:auc-vanilla-m_head} shows that the multi-head AE substantially improves performance across all applicable scoring strategies.  
+The reconstruction-error-based score improves from near-random performance ($0.5036$) to $0.7893$, indicating that the latent space shaping indirectly enhances reconstruction separability.  
+The largest gain is observed when training an MLP on reconstruction errors, reaching $0.9758$ AUC.  
+The classification head itself achieves $0.9288$ AUC without relying on reconstruction errors, demonstrating that supervised guidance in the latent space yields a highly discriminative representation for anomaly detection.
+On the other hand, the MLP classifier reaches a non-ignorable higher AUC than the classification head, indicating that the reconstruction error space contains more useful information that can be exploited by a non-linear classifier.
 
