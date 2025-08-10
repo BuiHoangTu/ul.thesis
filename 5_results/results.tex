@@ -50,7 +50,7 @@ Overall, the reconstruction errors on normal validation data are low across all 
 
 
 \subsection{Normal vs. Abnormal Reconstruction}
-For anomaly detection, the most straightforward approach is to use a static threshold on reconstruction error. For this study, ROC is first used to determine whether a significant difference exists in the reconstruction error between normal and abnormal samples.
+For anomaly detection, the most straightforward approach is to use a static threshold on reconstruction error. For this study, AUC is first used to determine whether a significant difference exists in the reconstruction error between normal and abnormal samples.
 
 \begin{table}[h!]
 \centering
@@ -74,13 +74,13 @@ For anomaly detection, the most straightforward approach is to use a static thre
 \end{table}
 
 The overall AUC for the vanilla AE is close to 0.5, i.e., random performance, with feature-wise AUCs present in Table~\ref{tab:vanilla_feat_auc}.
-The distribution of reconstruction errors for normal and abnormal validation samples is shown in Figure~\ref{fig:vanilla_norm_abnorm_roc}.
+The distribution of reconstruction errors for normal and abnormal validation samples is shown in Figure~\ref{fig:vanilla-norm-abnorm-roc}.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{vanilla-roc.pdf}
     \caption{Vanilla AE ROC curve for normal vs. abnormal validation samples.}
-    \label{fig:vanilla_norm_abnorm_roc}
+    \label{fig:vanilla-norm-abnorm-roc}
 \end{figure}
 
 
@@ -92,7 +92,7 @@ The distribution of reconstruction errors for normal and abnormal validation sam
 \end{figure}
 
 
-Figure~\ref{fig:vanilla_norm_abnorm_reconst_hist}, Figure~\ref{fig:vanilla_norm_abnorm_roc} and Table~\ref{tab:vanilla_feat_auc} show that the vanilla AE is unable to create a linear separation between normal and abnormal samples based on reconstruction error. The AUC of $0.5036$ indicates that the model does not effectively distinguish between the two classes, as it is close to random guessing. The per-feature AUCs also suggest that some features provide a strong discrimination. It is easy to see that stable features such as air density and temperature have higher AUCs. These features are easier to reconstruct, thus, they are also more sensitive to anomalies.
+Figure~\ref{fig:vanilla_norm_abnorm_reconst_hist}, Figure~\ref{fig:vanilla-norm-abnorm-roc} and Table~\ref{tab:vanilla_feat_auc} show that the vanilla AE is unable to create a linear separation between normal and abnormal samples based on reconstruction error. The AUC of $0.5036$ indicates that the model does not effectively distinguish between the two classes, as it is close to random guessing. The per-feature AUCs also suggest that some features provide a strong discrimination. It is easy to see that stable features such as air density and temperature have higher AUCs. These features are easier to reconstruct, thus, they are also more sensitive to anomalies.
 However, they also did not provide enough information to achieve a meaningful separation overall.
 
 \begin{figure}[h]
@@ -126,7 +126,7 @@ This result suggests that either the difference in reconstruction error is highl
 
 
 \subsection{Classification Net from Reconstruction Errors}
-While tuning the latent size yields a modest improvement, the best ROC remains insufficient for reliable detection. 
+While tuning the latent size yields a modest improvement, the best AUC remains insufficient for reliable detection. 
 To address this limitation, I next investigate whether a separate classifier trained on the reconstruction error vectors can better exploit potential non-linear separability between normal and abnormal samples.
 
 For this experiment, the reconstruction errors of each sample in the training set are used as inputs to a Multi-Layer Perceptron (MLP) classifier.  
