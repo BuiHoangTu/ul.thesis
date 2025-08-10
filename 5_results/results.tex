@@ -15,12 +15,10 @@
     \graphicspath{{5_results/figures/EPS/}{5_results/figures/}}
 \fi
 
-\includegraphics[width=1.2\textwidth]{search-compression-classify_model.pdf}
-
 
 
 \section{Vanilla Autoencoder}
-\label{sec:vanilla-ae}
+\label{sec:vanilla-ae-results}
 For vanilla autoencoder, the concerns are mainly focused on the reconstruction quality of normal data and the ability to distinguish anomalies based on reconstruction errors.
 
 
@@ -191,8 +189,25 @@ Figure~\ref{fig:multi-head-norm-abn-over-epoch} shows the tendency to separate n
 The gap between the two classes kept increasing until the end of training, indicating that the model is learning to distinguish between normal and abnormal samples effectively.
 
 Unlike the vanilla AE, this model has an extra classification head that has potential to act as the anomaly detector.
+This leads to a small decrease in reconstruction quality from $0.0306$ to $0.0806$, as the model is now optimizing for both reconstruction and classification objectives.
+This small decrease is acceptable, as the model is still able to reconstruct normal samples with high fidelity.
 Next subsection evaluates the classification performance of the multi-head autoencoder.
 
+
+\subsection{Latent Space Size Analysis}
+Similar to the vanilla AE, we perform a sweep over latent space sizes to investigate their impact on anomaly detection performance for the multi-head AE. 
+At each latent size, 30 models are trained and its reconstruction error is evaluated on the validation set.
+The AUC is computed for each latent size, and the box plot results are shown in Figure~\ref{fig:multi-head-latent-search}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1.2\textwidth]{search-compression-classify_model.pdf}
+    \caption{AUC vs latent size for multi-head AE.}
+    \label{fig:multi-head-latent-search}
+\end{figure}
+
+The results show that having a large the compression (low number of latent channels), the linear separation between normal and abnormal samples is not feasible.
+The best performance is achieved with compression rate around 1.22. However, a lot of outliers are present, indicating that the raw reconstruction error is reliable enough for anomaly detection.
 
 \subsection{Classification Performance}
 The classification capabilities of the multi-head autoencoder lies in 2 parts: the classification head and the reconstruction error space.
@@ -211,7 +226,7 @@ Therefore, we additionally train an MLP classifier on the reconstruction error v
     
     RErr as abnormal score & 
     0.5036 & 
-    0.7893 \\
+    0.6893 \\
 
     Classifier on RErr & 
     0.7920 & 
@@ -225,9 +240,33 @@ Therefore, we additionally train an MLP classifier on the reconstruction error v
 \end{tabular}
 \end{table}
 
+\begin{figure}[htb]
+    \centering
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{m_head-cm-classify-head.pdf}
+        \caption{Confusion matrix of the classification head}
+        \label{fig:m_head-cm-classify-head}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{m_head-cm-RErr.pdf}
+        \caption{Confusion matrix of the reconstruction-error-based classifier}
+        \label{fig:m_head-cm-RErr}
+    \end{subfigure}
+    \caption{Comparison of confusion matrices between the standard classification head (left) and the reconstruction-error-based classifier (right)}
+    \label{fig:m_head-cms}
+\end{figure}
+
+
+
 Table~\ref{tab:auc-vanilla-m_head} shows that the multi-head AE substantially improves performance across all applicable scoring strategies.  
-The reconstruction-error-based score improves from near-random performance ($0.5036$) to $0.7893$, indicating that the latent space shaping indirectly enhances reconstruction separability.  
+The reconstruction-error-based score improves from near-random performance ($0.5036$) to $0.6893$, indicating that the latent space shaping indirectly enhances reconstruction separability.  
 The largest gain is observed when training an MLP on reconstruction errors, reaching $0.9758$ AUC.  
 The classification head itself achieves $0.9288$ AUC without relying on reconstruction errors, demonstrating that supervised guidance in the latent space yields a highly discriminative representation for anomaly detection.
 On the other hand, the MLP classifier reaches a non-ignorable higher AUC than the classification head, indicating that the reconstruction error space contains more useful information that can be exploited by a non-linear classifier.
 
+Figure~\ref{fig:m_head-cms} shows the confusion matrices for both the classification head and the MLP classifier trained on reconstruction errors. 
+Both methods share a similar distribution of true positives, false positives, and false negatives, 
+with the MLP classifier achieving slightly better classification, particularly in reducing false negatives.
