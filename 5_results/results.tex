@@ -136,8 +136,6 @@ The MLP consists of a single hidden layer with 64 units and a ReLU activation, f
 The resulting AUC of $0.7920$ represents a significant improvement over the vanilla AE's AUC of $0.5036$.  
 This indicates that the MLP successfully learns a more complex decision boundary that better separates the two classes.  
 Other metrics, including F1-score, precision, and recall, also show notable improvements, as summarized in Table~\ref{tab:vanilla-mlp-metrics}.  
-The corresponding confusion matrix is shown in Figure~\ref{fig:vanilla-mlp-cm}.
-
 
 \begin{figure}[!ht]
     \centering
@@ -170,9 +168,12 @@ The corresponding confusion matrix is shown in Figure~\ref{fig:vanilla-mlp-cm}.
     \end{minipage}
 \end{figure}
 
+The corresponding confusion matrix shown in Figure~\ref{fig:vanilla-mlp-cm} reveals that the vanilla AE reconstruction errors allow relatively good confirmation of normal status. However, its ability to identify abnormal samples is still near random, with almost half of the abnormal samples being misclassified as normal.
+
+
 These results confirm that while the vanilla AE alone struggles to discriminate between normal and abnormal samples, the reconstruction error space still contains useful information that can be exploited by a non-linear classifier.  
 However, the final result indicates vanilla AE is not sufficient for effective anomaly detection, motivating the exploration of architectures that can both reconstruct and discriminate anomalies more effectively within a single framework.
 
 
-
+\section{Multi-Head Autoencoder}
 
