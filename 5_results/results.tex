@@ -270,3 +270,80 @@ On the other hand, the MLP classifier reaches a non-ignorable higher AUC than th
 Figure~\ref{fig:m_head-cms} shows the confusion matrices for both the classification head and the MLP classifier trained on reconstruction errors. 
 Both methods share a similar distribution of true positives, false positives, and false negatives, 
 with the MLP classifier achieving slightly better classification, particularly in reducing false negatives.
+
+
+\section{Non Autoencoder Models}
+\label{sec:not-ae-models}
+To better understand the limitations and justify the design of the multi-head autoencoder and vanilla AE models, I examine three alternative architectures: a classifier-only model without a decoder, and two bottleneck variants (with and without the autoencoder capabilities) as shown in Table~\ref{tab:model-variants}.
+These models serve to highlight the importance of the competing objectives between classification and reconstruction heads, and the role of the autoencoder in capturing meaningful representations for anomaly detection.
+
+
+\subsection{Classifier-Only Model}
+This model derives its architecture from the multi-head AE but has its decoder removed entirely making it a normal classifier that operates directly on the input data.
+As discussed in Section~\ref{sec:multi-head-results}, the multi-head AE balances multiple objectives—reconstruction and classification—which this model does not.  
+This subsection aims to evaluate the performance of a model that only focuses on classification without the reconstruction objective.
+
+\begin{table}[h!]
+\centering
+\caption{Classification metrics for the classifier-only model vs. classifier head of multi-head AE.}
+\label{tab:classifier-only-metrics}
+\begin{tabular}{lcc}
+    \toprule
+    \textbf{Metric} & \textbf{Classifier-Only} & \textbf{Multi-Head AE} \\
+    \midrule
+    Accuracy & 0.8485 & 0.8610 \\
+    Recall & 0.8956 & 0.9117 \\
+    Precision & 0.8726 & 0.8772 \\
+    F1-score & 0.8839 & 0.8942 \\
+    AUC & 0.9261 & 0.9288 \\
+    \bottomrule
+\end{tabular}
+\end{table}
+
+Interestingly, the result presented in Table~\ref{tab:classifier-only-metrics} shows that the classifier-only model exhibits degraded anomaly detection performance compared to the multi-head AE, confirming that:
+(1) The absence of a reconstruction objective reduces the quality of the learned representation leading to degraded classification performance;
+(2) The relationship from the reconstruction head is supportive to the classification head, acting as a regularizer that encourages meaningful latent features that support classification.
+
+
+
+\subsection{Bottleneck Autoencoder}
+One limitation of both the vanilla AE and multi-head AE models, as demonstrated in Sections~\ref{sec:vanilla-ae-results} and \ref{sec:multi-head-results}, is that the reconstruction error alone does not provide a linearly separable feature space for anomaly detection.  
+Both models rely on a separate classifier trained on frozen reconstruction errors to achieve stable and improved performance.
+
+To address this, two variants of the bottleneck architecture are investigated: 
+
+\begin{itemize}
+    \item \textbf{Bottleneck AE}: This model integrates the classification loss directly into the training objective, enabling end-to-end learning that jointly optimizes reconstruction and classification in a single phase.
+    \item \textbf{Bottleneck No AE}: This variant removes the reconstruction objective, focusing solely on the classification task.
+\end{itemize}
+
+\begin{table}[h!]
+\centering
+\caption{Comparison of classification metrics for bottleneck AE.}
+\label{tab:bottleneck-comparison}
+\begin{tabular}{lccc}
+    \toprule
+    \textbf{Metric} & \textbf{Bottleneck AE} & \textbf{Bottleneck No AE} & \textbf{Multi-Head AE} \\
+    \midrule
+    Accuracy & 0.9913 & 0.9751 & 0.8610 \\
+    Recall & 0.9936 & 0.9768 & 0.9117 \\
+    Precision & 0.9929 & 0.9844 & 0.8772 \\ 
+    F1-score & 0.9932 & 0.9806 & 0.8942 \\
+    AUC & 0.9983 & 0.9961 & 0.9288 \\
+    \bottomrule
+\end{tabular}
+\end{table}
+
+The results in Table~\ref{tab:bottleneck-comparison} clearly show that both bottleneck variants outperform the multi-head AE by a substantial margin across all metrics.  
+The \textit{Bottleneck AE} achieves the highest performance, with an almost perfect AUC of $0.9983$ and corresponding precision, recall, and F1-scores above $0.99$.  
+This indicates that jointly optimizing reconstruction and classification in a strongly compressed latent space yields highly discriminative representations for anomaly detection.
+
+The \textit{Bottleneck No AE} variant also performs very well, but its results are consistently lower than the full bottleneck AE, with drops of approximately $1.6\%$ in accuracy and $0.22\%$ in AUC.  
+This performance gap may indicate that the reconstruction objective contributes meaningful regularization, guiding the latent space toward features that are both representative of normal data and sensitive to anomalies.  
+However, this statement needs further investigation, as the small difference may also be due to the inherent variability in model training and evaluation.
+In brief, the reconstruction objective in both multi-head AE and bottleneck AE models provides no negative impact on classification performance, and in fact, it may help to improve the quality of the learned representations.
+
+The \textit{Multi-Head AE}, while competitive in earlier comparisons, lags behind both bottleneck variants here.  
+This suggests that the reconstruction error space contains more useful and easier-to-extract information compared to the sample data alone.
+
+
