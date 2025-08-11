@@ -347,3 +347,99 @@ The \textit{Multi-Head AE}, while competitive in earlier comparisons, lags behin
 This suggests that the reconstruction error space contains more useful and easier-to-extract information compared to the sample data alone.
 
 
+\section{Anomaly Reinforced Autoencoder}
+Supervised approaches—whether directly supervised, as in the bottleneck variants, or indirectly supervised, as in reconstruction-error-based classifiers—achieve high AUC scores on the validation set.  
+However, these methods share a key limitation: they are trained to distinguish between normal data and a fixed set of known abnormal conditions. 
+In real-world deployments, many anomalies will not appear in the training data, and models tuned to specific, known abnormal patterns may fail to generalize to unseen faults.
+
+To address this, I propose the \textit{Anomaly Reinforced Autoencoder (ARAE)}.
+The model shares the same structure as the Vanilla AE with the difference lying in the training process.
+The core idea is to explicitly shape the reconstruction objective so that the model maximizes the reconstruction error for abnormal samples, while simultaneously minimizing it for normal samples.  
+In this formulation, anomalies do not simply appear as poorly reconstructed by chance; instead, the model is actively guided to produce reconstructions that accentuate deviations for abnormal inputs.
+This reinforcement mechanism aims to improve robustness and detection performance, even for anomaly types not encountered during training.
+
+\begin{figure}[!ht]
+    \centering
+    \begin{minipage}{0.3\textwidth} % Table
+        \begin{table}[H]
+            \centering
+            \caption{Classification metrics for Anomaly Reinforced Autoencoder.}
+            \label{tab:anomaly-reinforced-ae-metrics}
+            \begin{tabular}{lc}
+                \toprule
+                \textbf{Metric} & \textbf{Value} \\
+                \midrule
+                Accuracy & 0.8776 \\
+                Recall & 0.9651 \\
+                Precision & 0.8782 \\
+                F1-score & 0.9196 \\
+                AUC & 0.8607 \\
+                \bottomrule
+            \end{tabular}
+        \end{table}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.68\textwidth} % Confusion Matrix
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{abnorm-reinforce-cm.pdf}
+            \caption{Confusion matrix for Anomaly Reinforced Autoencoder.}
+            \label{fig:anomaly-reinforced-ae-cm}
+        \end{figure}
+    \end{minipage}
+\end{figure}
+
+
+As expected, the results in Table~\ref{tab:anomaly-reinforced-ae-metrics} show that the anomaly reinforced autoencoder achieves a lower capability compared to the bottleneck AE and multi-head AE models but higher than the vanilla AE even with the support of the MLP classifier.
+
+The confusion matrix in Figure~\ref{fig:anomaly-reinforced-ae-cm} shows that the model is able to identify most of the normal patterns, but it also misclassifies a significant number of abnormal samples as normal.
+This enforces the idea that the dataset contains similarities between normal and abnormal samples, which is difficult to capture linearly from the reconstruction error alone.
+
+While the AUC results of the ARAE do not surpass the best bottleneck AE configurations,  
+Table~\ref{tab:anomaly-reinforced-ae-abnorm-ratios} reveals an important practical advantage:  
+the ARAE maintains relatively stable recall even when the proportion of abnormal samples in the training set is reduced.  
+For example, at an abnormal-to-normal ratio of $1:4$, the recall remains at $0.8547$, only a small drop from the $0.8703$ observed at the $1:2$ ratio.  
+This suggests that the reinforcement mechanism enables the model to learn to suppress accurate reconstruction of abnormal samples from a limited set of examples, rather than requiring a large abnormal dataset to counter class imbalance.
+
+\begin{table}[h!]
+\centering
+\caption{Classification metrics for Anomaly Reinforced Autoencoder with different number of abnormal samples.}
+\label{tab:anomaly-reinforced-ae-abnorm-ratios}
+\begin{tabular}{lcccc}
+    \toprule
+    \textbf{Ratio of Abnormal to Normal} & \textbf{Accuracy} & \textbf{Recall} & \textbf{Precision} & \textbf{F1-score}  \\
+    \midrule
+    1:2 & 0.7376 & 0.8703 & 0.7963 & 0.8703 \\
+    1:3 & 0.6793 & 0.7511 & 0.7953 & 0.7726 \\
+    1:4 & 0.6605 & 0.8547 & 0.7523 & 0.8002 \\
+
+    \bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}[h!]
+\centering
+\caption{Classification metrics for Bottleneck with Autoencoder with different number of abnormal samples.}
+\label{tab:bottleneck-ae-abnorm-abnorm-ratios}
+\begin{tabular}{lcccc}
+    \toprule
+    \textbf{Ratio of Abnormal to Normal} & \textbf{Accuracy} & \textbf{Recall} & \textbf{Precision} & \textbf{F1-score}  \\
+    \midrule
+    1:2 & 0.9913 & 0.9936 & 0.9929 & 0.9932 \\
+    1:3 & 0.7237 & 0.9452 & 0.7163 & 0.8150 \\
+    1:4 & 0.6817 & 0.9890 & 0.6718 & 0.8001 \\
+    \bottomrule
+\end{tabular}
+\end{table}
+
+By contrast, the bottleneck AE (Table~\ref{tab:bottleneck-ae-abnorm-abnorm-ratios}) shows more pronounced degradation in certain metrics under the same conditions.  
+While its recall at $1:4$ is extremely high ($0.9890$), this comes at the cost of precision dropping to $0.6718$,  
+indicating a larger number of false positives.  
+The ARAE, in comparison, achieves a more balanced trade-off between recall and precision in lower abnormal-data scenarios,  
+which is valuable in real-world deployments where anomalies are rare and collecting large abnormal datasets is impractical.
+
+Overall, these results suggest that while the ARAE may not match the peak performance of the bottleneck AE when abundant abnormal data is available,  
+its ability to operate effectively with fewer abnormal samples makes it a promising candidate for low-data anomaly detection settings.
+
+
