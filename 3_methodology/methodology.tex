@@ -293,8 +293,39 @@ In this study, multiple loss functions are tested in support of the traditional 
 \mathcal{L}_{\text{total}} = \sum_{i} \frac{1}{2\sigma_i^2} \mathcal{L}_i + \log \sigma_i^2
 \end{equation}
 where $\mathcal{L}_i$ is the $i$-th loss term, and $\sigma_i^2$ is a learnable parameter that dynamically adjusts the contribution of each component during training. This formulation allows the model to automatically balance the importance of different reconstruction objectives—whether to prioritize exact point-wise matching of MSE, structural similarity, or frequency-domain alignment—based on their relative difficulty and uncertainty.
+The considered auxiliary losses include:
 
-%%% TODO: add a table describe each loss if not in related work
+\begin{itemize}
+    \item \textbf{Mean Squared Error (MSE)}: primary reconstruction loss, measuring the average squared difference between input and reconstruction.
+    \begin{equation}
+    \mathcal{L}_{\text{MSE}} = \frac{1}{N} \sum_{i=1}^{N} (x_i - \hat{x}_i)^2
+    \end{equation}
+
+    \item \textbf{Maximum Mean Discrepancy (MMD)}: a kernel-based statistical measure used to quantify the difference between two probability distributions by comparing their mean embeddings in a reproducing kernel Hilbert space (RKHS).
+    \begin{equation}
+        \mathcal{L}_{\text{MMD}}^2(P, Q) = \mathbb{E}_{x, x' \sim P}[k(x,x')] + \mathbb{E}_{y, y' \sim Q}[k(y,y')] - 2\mathbb{E}_{x \sim P, y \sim Q}[k(x,y)]
+    \end{equation}
+    where \(k(\cdot, \cdot)\) is a kernel function.
+
+
+    \item \textbf{Wasserstein Distance}: measures the minimum cost of transporting mass to transform one probability distribution into another, considering both the amount of mass and the distance it must be moved.
+    \begin{equation}
+        \mathcal{L}_{\text{W}}(P, Q) = \inf_{\gamma \in \Pi(P, Q)} \mathbb{E}_{(x,\hat{x}) \sim \gamma} [\| x - \hat{x} \|]
+    \end{equation}
+    where \(\Pi(P, Q)\) is the set of all joint distributions with marginals \(P\) and \(Q\).
+
+    \item \textbf{Fourier Loss}: Operates in the frequency domain, comparing Fourier transforms of input and reconstruction to ensure spectral consistency.
+    \begin{equation}
+        \mathcal{L}_{\text{Fourier}} = \frac{1}{N} \sum_{i=1}^N \left| \mathcal{F}(x_i) - \mathcal{F}(\hat{x}_i) \right|^2
+    \end{equation}
+
+
+    \item \textbf{Mahalanobis Distance}: Measures the distance between input and reconstruction distributions, accounting for correlations between variables.
+    \begin{equation}
+        \mathcal{L}_{\text{Mahalanobis}} = \sqrt{(x - \hat{x})^\top \Sigma^{-1} (x - \hat{x})}
+    \end{equation}
+
+\end{itemize}
 
 
 \subsection{Reconstruction-Based Classification}
