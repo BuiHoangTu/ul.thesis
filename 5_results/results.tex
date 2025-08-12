@@ -443,3 +443,63 @@ Overall, these results suggest that while the ARAE may not match the peak perfor
 its ability to operate effectively with fewer abnormal samples makes it a promising candidate for low-data anomaly detection settings.
 
 
+\section{Multi-scale Attention Memory}
+In this section, I aim to explore the potential of a more complex architecture that combines the strengths of both autoencoders and attention mechanisms across three models: 
+(1) multi-head autoencoder - which gives quite good results with a relative large space to improve; 
+(2) bottleneck with autoencoder - which achieves the best performance in this study; 
+(3) anomaly reinforced autoencoder - the approach that is more favorable for detecting unseen anomalies.
+
+The adaptations are presented in Subsections~\ref{subsec:encoder},~\ref{subsec:latent}, and~\ref{subsec:decoder}, including MAMA adaptations to the encoder, latent space, and decoder, respectively.
+The comparison of the baseline models and their MAMA-adapted variants is presented in Table~\ref{tab:mama-adapted-results}.
+
+
+\begin{table}[h!]
+\centering
+\caption{Performance comparison of baseline and mama-adapted variants across models. 
+"Enc-Dec" = mama-adapted encoder and decoder; "All" = mama-adapted encoder, decoder, and latent space.}
+\label{tab:mama-adapted-results}
+\begin{tabular}{lcccc}
+    \toprule
+    \textbf{Model + Adaptations} & \textbf{Accuracy} & \textbf{Recall} & \textbf{Precision} & \textbf{F1-score} \\
+    \midrule
+    
+    \textbf{Bottleneck AE} \\
+    \quad None    & 0.9913 & 0.9936 & 0.9929 & 0.9932 \\
+    \quad Enc–Dec & 0.9133  & 0.9439  & 0.9231  & 0.9334  \\
+    \quad All     & 0.7112  & 0.9549  & 0.7030  & 0.8098  \\
+    \hline\hline
+    
+    \textbf{Multi-Head AE} \\
+    \quad None    & 0.8610 & 0.9117 & 0.8772 & 0.8942 \\
+    \quad Enc–Dec & 0.8523 & 0.9156 & 0.8633 & 0.8887 \\
+    \quad All     & 0.8320 & 0.8943 & 0.8521 & 0.8727 \\
+    \hline\hline
+    
+    \textbf{ARAE (1:2)} \\
+    \quad None    & 0.7376 & 0.8703 & 0.7963 & 0.8703 \\
+    \quad Enc–Dec & 0.6261 & 0.6785 & 0.7777 & 0.7247 \\
+    \quad All     & 0.5340 & 0.5990 & 0.7127 & 0.6509 \\
+    \hline\hline
+
+    \textbf{ARAE (1:4)} \\
+    \quad None    & 0.6605 & 0.8547 & 0.7523 & 0.8002 \\
+    \quad Enc–Dec & 0.5473 & 0.6121 & 0.7215 & 0.6623 \\
+    \quad All     & 0.5278 & 0.5967 & 0.7066 & 0.6470 \\
+
+    \bottomrule
+\end{tabular}
+\end{table}
+
+For the Bottleneck AE, the baseline already achieves near-perfect performance (Accuracy $\approx 0.99$, F1-score $\approx 0.99$), leaving little headroom for improvement. 
+Introducing the mama-adapted encoder–decoder alone causes a moderate performance drop, and adding the full adaptation (encoder, decoder, and latent space) degrades the results substantially. 
+This suggests that for a well-suited bottleneck model, the proposed architectural changes may disrupt the latent space.
+Especially, with more adaptations, the worse the performance becomes.
+
+The Multi-Head AE shows only minor performance variation under adaptation. Both the encoder–decoder adaptation and the full adaptation lead to a small but consistent decline across all metrics. Given that the multi-head setup already benefits from a reconstruction-driven regularization effect, the added complexity of the proposed components may not translate into better feature representations for this architecture.
+
+In the case of the ARAE, which is trained with the anomaly-reinforcement objective, the effect of the adaptations is more pronounced—and negative. For both the 1:2 and 1:4 abnormal-to-normal ratios, the adapted encoder–decoder reduces performance, while the full adaptation yields a larger decline in every metric. The degradation is particularly severe for recall in the low-abnormality (1:4) case, where the ARAE relies heavily on stable reconstruction dynamics that appear sensitive to architectural alterations.
+
+Overall, the results indicate that the mama-adapted components are not universally beneficial when directly swapped into existing high-performing designs. Their integration seems to require re-tuning or model-specific adaptation, especially when the baseline is already near-optimal. 
+
+
+
