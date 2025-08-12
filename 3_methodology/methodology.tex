@@ -354,7 +354,11 @@ Additionally, a semi-supervised variation of the Vanilla Autoencoder, referred t
 \end{equation}
 This encourages the model to reinforce a separation in reconstruction behavior between normal and abnormal inputs, effectively pushing the autoencoder to "unlearn" anomalies.
 
-%% TODO: add MLP classifier training details
+To enhance the classification performance, a shallow MLP is trained on top of the reconstruction error vector. 
+This MLP is trained in a supervised manner using both normal and abnormal samples, with the goal of learning a more adaptive decision boundary that can better distinguish between the two classes based on the reconstruction error patterns.
+The main model is first trained to reconstruct normal sequences, and then the MLP is trained with the frozen encoder and decoder. 
+The MLP takes the reconstruction error as input and outputs a probability score for each sample, acting as a dynamic threshold for classification.
+
 
 % % === Evaluation Framework ===
 %% TODO: possibly add AE reconstruction ability to evaluation
