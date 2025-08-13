@@ -11,3 +11,24 @@
 \else
     \graphicspath{{2_background/figures/EPS/}{2_background/figures/}}
 \fi
+
+
+Modern Supervisory Control and Data Acquisition (SCADA) systems now generate high-frequency time-series telemetry data from various turbine components, enabling what is commonly referred to as Normal Behavior Modeling (NBM) — the task of modeling normal operational patterns to detect abnormal deviations.
+
+The methods employed in NBM broadly fall into three categories: statistical approaches, traditional (shallow) machine learning, and deep learning-based methods.
+
+Statistical methods, such as Ordinary Least Squares (OLS), ARIMA, and Principal Component Analysis (PCA), are still used in certain settings~\citep{chesterman_overview_2023}.
+These models are computationally efficient, interpretable, and data-efficient, making them suitable for constrained environments or first-pass screening.
+However, their simplicity makes them less capable of modeling complex, non-linear system behavior.
+
+Traditional machine learning models, including Random Forests, Gradient Boosting Machines, and Support Vector Machines, have grown more popular due to their better performance on non-linear tasks and moderate data requirements.
+These methods still require some feature engineering and are sensitive to class imbalance, but they offer a strong middle ground in performance versus complexity trade-offs.
+The methods are presented by~\cite{ben_ali_online_2018, bilendo_normal_2022, liu_wind_2022}.
+
+Deep learning methods—especially neural network-based architectures—have rapidly become the dominant approach in recent research.
+These models offer superior ability to capture non-linear dependencies in high-dimensional data but come at the cost of increased computational demand and reduced interpretability.
+Within this category, Autoencoders (AEs) have emerged as a popular choice for anomaly detection, particularly in unsupervised or semi-supervised settings.
+Just like PCA, Autoencoders learn latent representations of normal behavior via dimension reduction, but with significantly more expressive power due to their ability to model non-linearities.
+
+Accordingly, a growing body of research has focused on applying machine learning (ML) and deep learning (DL) techniques to enable condition monitoring and early fault detection in wind turbines.
+Among these, Autoencoders (AEs) have emerged as one of the most widely adopted architectures, particularly in unsupervised or semi-supervised anomaly detection settings~\citep{chesterman_overview_2023}.
