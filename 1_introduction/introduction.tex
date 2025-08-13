@@ -44,6 +44,8 @@ The approach ranges from traditional supervised learning methods like SVM or dec
 That said, AEs remain a popular choice due to their ability to detect novel anomalies.
 However, there still lacks a systematic exploration of how different AE architectures and training strategies affect anomaly detection performance, especially in the context of wind turbine condition monitoring.
 
+By systematically comparing Autoencoder architectures under realistic industrial conditions, this work aims to identify strategies that can be directly implemented in operational wind farms to reduce unplanned maintenance costs.
+
 \section{Problem Statement}
 \label{sec:problem-statement}
 Despite the increasing use of machine learning techniques for wind turbine condition monitoring, there remains a critical gap in how anomaly detection models—particularly Autoencoders (AEs)—are evaluated and benchmarked.
@@ -62,8 +64,8 @@ This dissertation revisits Autoencoder (AE)-based anomaly detection within the c
 This unique access enables a more realistic and systematic evaluation of AE behavior, addressing key limitations found in prior research that relied heavily on synthetic assumptions or unlabeled datasets.
 By doing so, this work aims to bridge the gap between academic research and industrial deployment.
 
-Firstly, the study investigates how Vanilla Autoencoders reconstruct both normal and abnormal samples, providing insights into the reliability of reconstruction error as an anomaly detection signal in realistic industrial settings.
-It also validates the common assumption that AEs can effectively distinguish between normal and abnormal states with exclusive access to normal data.
+Firstly, the study investigates how Autoencoders reconstruct both normal and abnormal samples, providing insights into the reliability of reconstruction error as an anomaly detection signal in realistic industrial settings.
+It also validates the common assumption that Vanilla AE can effectively distinguish between normal and abnormal states with exclusive access to normal data.
 
 Secondly, the research explores the impact of latent representation size and architecture on anomaly detection performance.
 In addition, the separation of normal and abnormal with the help of a secondary classification head is examined.
