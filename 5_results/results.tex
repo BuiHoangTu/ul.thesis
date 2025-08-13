@@ -43,6 +43,7 @@ Wasserstein distance & 0.0076 \\
 \end{tabular}
 \end{table}
 
+%juan Did you explain above the interpretation of PSNR, in particula why it is expressed in decibels? I understand that its description is not in Sec 4.5.2, as it is not a loss function, but you included the Wasserstein distance, which is also not a loss function, so you may consider adding a brief explanation of PSNR there and renaming the section as "Loss functions and performance metrics". As it is now, it is difficult for the reader to follow you train of thoughts in this paragraph.
 Overall, the reconstruction errors on normal validation data are low across all evaluated metrics, indicating that the vanilla AE learns to replicate healthy input signals with high fidelity. The mean absolute error (MAE) of $0.0306$ corresponds to a small deviation relative to the signal range, while the peak signal-to-noise ratio (PSNR) of $24.72$\,dB suggests a strong similarity between reconstructed and original signals. The maximum observed reconstruction error ($0.1066$) remains an order of magnitude smaller than typical anomaly-induced deviations, and the minimum error ($0.0070$) confirms that some time windows are reconstructed almost perfectly. The near-zero Max--Min discrepancy implies a consistent reconstruction quality across time windows, and the small Wasserstein distance ($0.0076$) shows that the overall error distribution closely matches that of the original data. These results confirm that the AE is capable of accurately modeling normal operating conditions.
 
 
@@ -90,7 +91,7 @@ The distribution of reconstruction errors for normal and abnormal validation sam
 \end{figure}
 
 
-Figure~\ref{fig:vanilla_norm_abnorm_reconst_hist}, Figure~\ref{fig:vanilla-norm-abnorm-roc} and Table~\ref{tab:vanilla_feat_auc} show that the vanilla AE is unable to create a linear separation between normal and abnormal samples based on reconstruction error. The AUC of $0.5036$ indicates that the model does not effectively distinguish between the two classes, as it is close to random guessing. The per-feature AUCs also suggest that some features provide a strong discrimination. It is easy to see that stable features such as air density and temperature have higher AUCs. These features are easier to reconstruct, thus, they are also more sensitive to anomalies.
+Figures~\ref{fig:vanilla_norm_abnorm_reconst_hist} and~\ref{fig:vanilla-norm-abnorm-roc}, and Table~\ref{tab:vanilla_feat_auc} show that the vanilla AE is unable to create a linear separation between normal and abnormal samples based on reconstruction error. The AUC of $0.5036$ indicates that the model does not effectively distinguish between the two classes, as it is close to random guessing. The per-feature AUCs also suggest that some features provide a strong discrimination. It is easy to see that stable features such as air density and temperature have higher AUCs. These features are easier to reconstruct, thus, they are also more sensitive to anomalies.
 However, they also did not provide enough information to achieve a meaningful separation overall.
 
 \begin{figure}[h]
@@ -135,6 +136,8 @@ The resulting AUC of $0.7920$ represents a significant improvement over the vani
 This indicates that the MLP successfully learns a more complex decision boundary that better separates the two classes.  
 Other metrics, including F1-score, precision, and recall, also show notable improvements, as summarized in Table~\ref{tab:vanilla-mlp-metrics}.  
 
+%juan I know the fact that tab:vanilla-mlp-metrics is too narrow kind of looks that there is a lot of unused blank space, but forcing the table environment to fit this way looks really weird. I suggest to transpose the table, so it becomes page-width (same with tab:anomaly-reinforced-ae-metrics)
+% juan Also, I noticed the confusion metrics figures are not very space-efficient, as they are too wide for the font size. And for example, in fig:m_head-cm-classify-head and fig:m_head-cm-RErr, you cannot even see the numbers. For this there are two solutions i) Regenerate the images with matplotlib using a smaller total figure size, and this will automatically make the font larger, or ii) Redo them in Latex, as a Table environment, it's not so complicated and you can keep the colors, the only problem is the heatmap scale but, honestly, it is not really necessary, as you are only seeing four cells, but if you really want to keep the color bar, then you may use tikz (third option? But I think it's too much for so little).
 \begin{figure}[!ht]
     \centering
     \begin{minipage}{0.3\textwidth} % Table
@@ -195,18 +198,21 @@ Next subsection evaluates the classification performance of the multi-head autoe
 
 
 \subsection{Latent Space Size Analysis}
+%juan ON this regard, can you explain why in the previous section you didn't perform the 30 runs for the vanilla AE, as you did for the multi-head AE? The answer is that no pattern was noticed and Vanilla kept the same performance across runs, but it is not clear in the text that for that many runs would not make any difference.
+%juan Also, in the previous comparison you displayed directly the number of channels and here you display the compression rate. Is it complicated for you to regenerate the figures with a consisten x-axis?
 Similar to the vanilla AE, we perform a sweep over latent space sizes to investigate their impact on anomaly detection performance for the multi-head AE. 
-At each latent size, 30 models are trained and its reconstruction error is evaluated on the validation set.
+At each latent size, 30 models are trained, and its reconstruction error is evaluated on the validation set.
 The AUC is computed for each latent size, and the box plot results are shown in Figure~\ref{fig:multi-head-latent-search}.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1.2\textwidth]{search-compression-classify_model.pdf}
+    %juan Can you please add in the description of the figure what do the triangles and the colored horizontal line inside the box mean?
     \caption{AUC vs latent size for multi-head AE.}
     \label{fig:multi-head-latent-search}
 \end{figure}
 
-The results show that having a large the compression (low number of latent channels), the linear separation between normal and abnormal samples is not feasible.
+The results show that when having a large the compression (low number of latent channels), the linear separation between normal and abnormal samples is not feasible.
 The best performance is achieved with compression rate around 1.22. However, a lot of outliers are present, indicating that the raw reconstruction error is reliable enough for anomaly detection.
 
 \subsection{Classification Performance}
