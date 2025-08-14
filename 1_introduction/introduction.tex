@@ -27,7 +27,7 @@ Wind turbines are increasingly being installed in remote and offshore locations,
 While such placements reduce installation costs per kWh due to higher wind and turbine placement availability, they simultaneously make maintenance operations significantly more expensive and logistically challenging.
 
 This context has accelerated the shift toward condition-based maintenance strategies supported by telemetry and remote monitoring. 
-Modern Supervisory Control and Data Acquisition (SCADA) systems now generate high-frequency time-series data from various turbine components, enabling the modelling of normal operational behaviour to detect early signs of faults. 
+Modern Supervisory Control and Data Acquisition (SCADA) systems now generate high-frequency time-series data from various turbine components, enabling the modeling of normal operational behaviour to detect signs of faults. 
 A variety of approaches exist for this task, ranging from statistical models to advanced deep learning architectures.
 The technical foundations of these methods, along with their advantages and limitations, are reviewed in \textbf{Chapter~\ref{ch:background}}.
 
@@ -49,14 +49,14 @@ By systematically comparing Autoencoder architectures under realistic industrial
 \section{Problem Statement}
 \label{sec:problem-statement}
 Despite the increasing use of machine learning techniques for wind turbine condition monitoring, there remains a critical gap in how anomaly detection models—particularly Autoencoders (AEs)—are evaluated and benchmarked.
-Existing studies often rely on strong assumptions about the anomaly rate in training data (e.g., 5–10\%) or lab experiments where the systems operated until failure.
+Existing studies often rely on strong assumptions about the anomaly rate in training data (e.g., 5-10\%) or lab experiments where the systems operated until failure.
 These conditions can vary significantly in real-world deployments and make cross-study comparisons unreliable.
 
 Moreover, while various AE architectures and training strategies (e.g., unsupervised, semi-supervised) have been proposed, there has been no systematic investigation into how these differences affect anomaly detection performance in the wind energy domain.
 This lack of rigorous comparative analysis impedes the development of robust, generalizable models and slows down the deployment of ML-based predictive maintenance systems in industry.
 
 Addressing this issue is essential to improving model reliability, reducing operational costs, and supporting the broader adoption of wind energy.
-Therefore, this study aims to fill this gap by providing a comprehensive evaluation of AE-based approaches under varying data conditions and training paradigms, with the goal of identifying optimal strategies for early fault detection in wind turbines.
+Therefore, this study aims to fill this gap by providing a comprehensive evaluation of AE-based approaches under varying data conditions and training paradigms, with the goal of identifying optimal strategies for NBM in wind turbines.
 
 \section{Aims and Contributions}
 \label{sec:aims}
