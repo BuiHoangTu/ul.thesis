@@ -62,6 +62,9 @@
 \usepackage[nottoc]{tocbibind} % correct page numbers for bib in TOC, nottoc suppresses an entry for TOC itself
 %\usepackage{nextpage}
 
+\usepackage{siunitx}
+
+
 %:-------------------------- Glossary/Abbrev./Symbols -----------------------
 \usepackage[acronym, toc]{glossaries}
 \input{0_frontmatter/glossary.tex}
