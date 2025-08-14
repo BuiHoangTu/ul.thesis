@@ -25,7 +25,7 @@ The combined datasets underpin reliability analyses, facilitate the optimization
 
 Maintenance activities within the wind energy sector are generally classified into three principal categories~\citep{yang_operations_2021,henrique_global_nodate}:
 
-Reactive (Corrective) Maintenance (CM): Interventions performed only after a failure has occurred or performance has dropped below acceptable thresholds.
+Reactive (Corrective) Maintenance: Interventions performed only after a failure has occurred or performance has dropped below acceptable thresholds.
 While such actions restore operational capability, they are typically associated with elevated costs due to unplanned downtime, emergency repairs, and potential collateral damage to adjacent components.
 
 Condition-Based Maintenance (CBM): A proactive strategy in which maintenance is triggered when monitored parameters, such as vibration or temperature, deviate from predefined operational thresholds.
@@ -90,7 +90,7 @@ Furthermore, the high dimensionality and temporal correlations present in SCADA 
 
 The most widely used reconstructive models for NBM are Autoencoders (AEs) and their variants. 
 A standard AE consists of an encoder, which maps the input data into a lower-dimensional latent space, and a decoder, which reconstructs the data from this latent representation. 
-Variants such as Denoising Autoencoders, Variational Autoencoders (VAEs), and Convolutional Autoencoders introduce modifications to improve robustness, regularise the latent space, or exploit spatial structure in the input.
+Variants such as Denoise Autoencoders, Variational Autoencoders (VAEs), and Convolutional Autoencoders introduce modifications to improve robustness, regularise the latent space, or exploit spatial structure in the input.
 
 Training strategies vary from purely unsupervised — using only normal operational data — to semi-supervised or supervised approaches that incorporate labelled anomalies. 
 Loss functions also differ: while mean squared error (MSE) is the most common choice, alternative or complementary terms such as maximum mean discrepancy, adversarial losses, or frequency-domain metrics can enhance sensitivity to particular fault types.
