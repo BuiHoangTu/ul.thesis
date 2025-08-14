@@ -34,38 +34,38 @@ The technical foundations of these methods, along with their advantages and limi
 
 \section{Motivation}
 \label{sec:motivation}
-Autoencoders (AEs), in particular, are favored due to their ability to learn compact representations of high-dimensional input data without requiring labeled anomalies.
-Typically, an AE is trained solely on data collected during normal turbine operation, under the assumption that it will struggle to accurately reconstruct anomalous inputs.
+\gls{ae_s}, in particular, are favored due to their ability to learn compact representations of high-dimensional input data without requiring labeled anomalies.
+Typically, an \gls{ae} is trained solely on data collected during normal turbine operation, under the assumption that it will struggle to accurately reconstruct anomalous inputs.
 This allows the model to detect novel anomalies, which is the common case in wind turbine condition monitoring.
 However, authors usually assume a small portion of the data is anomalous (e.g., 5--10\%)~\citep{fan_analytical_2018}, which makes it difficult to compare different methods in a standardized and reproducible manner.
 
 In recent years, labeled data has become more available, enabling the use of supervised training signals to improve anomaly detection performance.
 The approach ranges from traditional supervised learning methods like SVM or decision trees to more advanced techniques like transfer learning and semi-supervised learning.
-That said, AEs remain a popular choice due to their ability to detect novel anomalies.
-However, there still lacks a systematic exploration of how different AE architectures and training strategies affect anomaly detection performance, especially in the context of wind turbine condition monitoring.
+That said, \gls{ae_s} remain a popular choice due to their ability to detect novel anomalies.
+However, there still lacks a systematic exploration of how different \gls{ae} architectures and training strategies affect anomaly detection performance, especially in the context of wind turbine condition monitoring.
 
 By systematically comparing Autoencoder architectures under realistic industrial conditions, this work aims to identify strategies that can be directly implemented in operational wind farms to reduce unplanned maintenance costs.
 
 \section{Problem Statement}
 \label{sec:problem-statement}
-Despite the increasing use of machine learning techniques for wind turbine condition monitoring, there remains a critical gap in how anomaly detection models—particularly Autoencoders (AEs)—are evaluated and benchmarked.
+Despite the increasing use of machine learning techniques for wind turbine condition monitoring, there remains a critical gap in how anomaly detection models—particularly \gls{ae_s}—are evaluated and benchmarked.
 Existing studies often rely on strong assumptions about the anomaly rate in training data (e.g., 5-10\%) or lab experiments where the systems operated until failure.
 These conditions can vary significantly in real-world deployments and make cross-study comparisons unreliable.
 
-Moreover, while various AE architectures and training strategies (e.g., unsupervised, semi-supervised) have been proposed, there has been no systematic investigation into how these differences affect anomaly detection performance in the wind energy domain.
+Moreover, while various \gls{ae} architectures and training strategies (e.g., unsupervised, semi-supervised) have been proposed, there has been no systematic investigation into how these differences affect anomaly detection performance in the wind energy domain.
 This lack of rigorous comparative analysis impedes the development of robust, generalizable models and slows down the deployment of ML-based predictive maintenance systems in industry.
 
 Addressing this issue is essential to improving model reliability, reducing operational costs, and supporting the broader adoption of wind energy.
-Therefore, this study aims to fill this gap by providing a comprehensive evaluation of AE-based approaches under varying data conditions and training paradigms, with the goal of identifying optimal strategies for NBM in wind turbines.
+Therefore, this study aims to fill this gap by providing a comprehensive evaluation of \gls{ae}-based approaches under varying data conditions and training paradigms, with the goal of identifying optimal strategies for NBM in wind turbines.
 
 \section{Aims and Contributions}
 \label{sec:aims}
-This dissertation revisits Autoencoder (AE)-based anomaly detection within the context of wind turbine condition monitoring, leveraging a proprietary, labeled dataset provided by an industry partner.
-This unique access enables a more realistic and systematic evaluation of AE behavior, addressing key limitations found in prior research that relied heavily on synthetic assumptions or unlabeled datasets.
+This dissertation revisits \gls{ae}-based anomaly detection within the context of wind turbine condition monitoring, leveraging a proprietary, labeled dataset provided by an industry partner.
+This unique access enables a more realistic and systematic evaluation of \gls{ae} behavior, addressing key limitations found in prior research that relied heavily on synthetic assumptions or unlabeled datasets.
 By doing so, this work aims to bridge the gap between academic research and industrial deployment.
 
 Firstly, the study investigates how Autoencoders reconstruct both normal and abnormal samples, providing insights into the reliability of reconstruction error as an anomaly detection signal in realistic industrial settings.
-It also validates the common assumption that Vanilla AE can effectively distinguish between normal and abnormal states with exclusive access to normal data.
+It also validates the common assumption that Vanilla \gls{ae} can effectively distinguish between normal and abnormal states with exclusive access to normal data.
 
 Secondly, the research explores the impact of latent representation size and architecture on anomaly detection performance.
 In addition, the separation of normal and abnormal with the help of a secondary classification head is examined.
@@ -74,8 +74,8 @@ Thirdly, the study compares multiple reconstruction loss functions.
 While mean squared error (MSE) remains the most commonly used loss function in the literature, several works have suggested incorporating secondary loss terms to capture additional characteristics of the data, such as distributional or frequency-based properties.
 Accordingly, this study evaluates a range of supplementary loss functions to complement MSE, including Maximum Mean Discrepancy (MMD), Wasserstein distance, and frequency-domain metrics derived through Fourier transformation.
 
-Finally, the dissertation investigates the importance of AEs in supervised anomaly detection settings, with a particular focus on the integration of classification heads and dynamic thresholding strategies.
-This includes a detailed analysis of how different AE components influence anomaly detection performance.
+Finally, the dissertation investigates the importance of \gls{ae_s} in supervised anomaly detection settings, with a particular focus on the integration of classification heads and dynamic thresholding strategies.
+This includes a detailed analysis of how different \gls{ae} components influence anomaly detection performance.
 
 
 \section{Thesis Structure}

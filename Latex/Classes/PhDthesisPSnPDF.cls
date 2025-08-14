@@ -63,6 +63,8 @@
 %\usepackage{nextpage}
 
 %:-------------------------- Glossary/Abbrev./Symbols -----------------------
+\usepackage[acronym, toc]{glossaries}
+\input{0_frontmatter/glossary.tex}
 
 \usepackage[intoc]{nomencl} % load nomencl extension; include in TOC
 %\nomrefpage % to include page numbers after abbrevations

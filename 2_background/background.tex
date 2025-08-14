@@ -62,7 +62,7 @@ These methods still require feature engineering and are sensitive to class imbal
 
 Deep learning methods—especially neural network-based architectures—have rapidly become the dominant approach in recent research.
 These models offer superior capability to capture non-linear dependencies in high-dimensional data but come at the cost of increased computational demand and reduced interpretability.
-Within this category, Autoencoders (AEs) have emerged as a popular choice for anomaly detection, particularly in unsupervised or semi-supervised settings.
+Within this category, \gls{ae_s} have emerged as a popular choice for anomaly detection, particularly in unsupervised or semi-supervised settings.
 Like PCA, Autoencoders learn latent representations of normal behaviour via dimensionality reduction, but with significantly greater expressive power due to their ability to model non-linearities.
 
 Accordingly, a growing body of research has focused on applying machine learning (ML) and deep learning (DL) techniques to enable condition monitoring and early fault detection in wind turbines.
@@ -88,8 +88,8 @@ In the context of wind turbine condition monitoring, this approach is well-suite
 By modelling only the normal state, reconstructive models can detect novel anomalies without requiring extensive fault-labelled datasets. 
 Furthermore, the high dimensionality and temporal correlations present in SCADA sensor streams make deep architectures particularly advantageous, as they can model non-linear dependencies that simpler statistical methods cannot capture.
 
-The most widely used reconstructive models for NBM are Autoencoders (AEs) and their variants. 
-A standard AE consists of an encoder, which maps the input data into a lower-dimensional latent space, and a decoder, which reconstructs the data from this latent representation. 
+The most widely used reconstructive models for NBM are \gls{ae_s} and their variants. 
+A standard \gls{ae} consists of an encoder, which maps the input data into a lower-dimensional latent space, and a decoder, which reconstructs the data from this latent representation. 
 Variants such as Denoise Autoencoders, Variational Autoencoders (VAEs), and Convolutional Autoencoders introduce modifications to improve robustness, regularise the latent space, or exploit spatial structure in the input.
 
 Training strategies vary from purely unsupervised — using only normal operational data — to semi-supervised or supervised approaches that incorporate labelled anomalies. 
