@@ -286,13 +286,8 @@ For classification, I use the standard binary cross-entropy loss, which measures
 
 For reconstruction, the primary objective is to accurately reproduce the input time series. Thus, \gls{mse} is used as the base reconstruction loss, computed as the average squared difference between the input and its reconstruction. Additional distance-based losses such as \gls{mmd}, Wasserstein distance, and spectral-domain differences (e.g., Fourier loss) are also considered as auxiliary components to guide reconstruction quality. These are detailed in the~\ref{ch:related-works}
 
-In this study, multiple loss functions are tested in support of the traditional \gls{mse} reconstruction objective. To combine \gls{mse} with an auxiliary distance metric, I adopt an uncertainty-based dynamic loss weighting scheme proposed by~\cite{yao_svd-ae_2024}. The total loss is formulated as:
-
-\begin{equation}
-\label{eq:auto-weight-loss}
-\mathcal{L}_{\text{total}} = \sum_{i} \frac{1}{2\sigma_i^2} \mathcal{L}_i + \log \sigma_i^2
-\end{equation}
-where $\mathcal{L}_i$ is the $i$-th loss term, and $\sigma_i^2$ is a learnable parameter that dynamically adjusts the contribution of each component during training. This formulation allows the model to automatically balance the importance of different reconstruction objectives—whether to prioritize exact point-wise matching of \gls{mse}, structural similarity, or frequency-domain alignment—based on their relative difficulty and uncertainty.
+In this study, multiple loss functions are tested in support of the traditional \gls{mse} reconstruction objective. To combine \gls{mse} with an auxiliary distance metric, I adopt an uncertainty-based dynamic loss weighting scheme proposed by~\cite{yao_svd-ae_2024}.
+The total loss, formulated in Equation~\ref{eq:auto-weight-loss}, allows the model to automatically balance the importance of different reconstruction objectives—whether to prioritize exact point-wise matching of \gls{mse}, structural similarity, or frequency-domain alignment—based on their relative difficulty and uncertainty.
 The considered auxiliary losses include:
 
 \begin{itemize}
