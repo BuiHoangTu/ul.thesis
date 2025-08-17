@@ -4,7 +4,7 @@
 %: ----------------------- name of chapter  -------------------------
 
 \chapter{Methodology}
-\label{chap:methodology}
+\label{ch:methodology}
 
 % change according to folder and file names
 % \ifpdf
@@ -87,12 +87,12 @@ The operational ranges for the selected features, as observed in the dataset, ar
 \toprule
 \textbf{Feature} & \textbf{Operational Range} \\
 \midrule
-Average Power Output & 0 - 2050 kW \\
-Average Rotor Speed & 0 - 18 RPM \\
-Average Wind Speed & 3 - 15 m/s \\
-Air Density & 1.0 - 1.3 kg/m\textsuperscript{3} \\
-Ambient Temperature & -5 - 30°C \\
-Average Wind Direction & 0 - 360° \\
+    Average Power Output & \SIrange{0}{2050}{\kilo\watt} \\
+    Average Rotor Speed & \SIrange{0}{18}{RPM} \\
+    Average Wind Speed & \SIrange{3}{15}{\meter\per\second} \\
+    Air Density & \SIrange{1.0}{1.3}{\kilogram\per\cubic\meter} \\
+    Ambient Temperature & \SIrange{-5}{30}{\degreeCelsius} \\
+    Average Wind Direction & \SIrange{0}{360}{\degree} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -128,7 +128,7 @@ The encoder architecture is composed of a sequence of three sub-encoder blocks, 
 
 The first design is a conventional convolutional sub-encoder. Each block contains two convolutional layers: one for feature extraction and one for compression. These are followed by batch normalization and average pooling to ensure stability and temporal downsampling.
 
-The second design draws inspiration from the MAMA (multi-scale attention memory) architecture introduced by~\citet{chen_mama_2021}, adapted here to 1D convolutional sequences. Each block integrates both temporal and channel-wise attention mechanisms. Specifically, temporal attention is computed across the entire sequence using position-wise query, key, and value projections, while channel attention is applied using learned convolutional projections.
+The second design draws inspiration from the \gls{mama} architecture introduced by~\citet{chen_mama_2021}, adapted here to 1D convolutional sequences. Each block integrates both temporal and channel-wise attention mechanisms. Specifically, temporal attention is computed across the entire sequence using position-wise query, key, and value projections, while channel attention is applied using learned convolutional projections.
 
 The multi-scale block begins with a $1 \times 1$ convolution to extract temporal queries, keys, and values. These are used to compute temporal attention weights via dot-product followed by softmax normalization. The attained temporal output then undergoes a second stage of attention applied across channels, with the choice of attention style configurable as one of:
 \begin{itemize}
@@ -267,9 +267,9 @@ The motivation for this design was twofold. First, results from the Multi-Head v
 The final variant explored in this study, referred to as the \emph{Bottleneck} model, revisits the autoencoder structure with a significant shift in the training objective. Rather than minimizing the reconstruction error uniformly across all samples, this model is explicitly trained to produce reconstruction errors that are \emph{discriminative} between normal and abnormal classes.
 
 Structurally, the model retains the full encoder-decoder architecture of the Vanilla Autoencoder.
-In addition, a simple MLP classification head is added on top of the reconstruction error to classify whether the error corresponds to a normal or abnormal sample.
-From this perspective, the architecture serves more like a supervised bottleneck model than a traditional autoencoder.
-Instead of treating reconstruction as an end in itself, the model is optimized to produce error patterns that aid classification.
+In addition, a simple \gls{mlp} classification head is added on top of the reconstruction error to classify whether the error corresponds to a normal or abnormal sample.
+From this perspective, the architecture serves more like a supervised bottleneck model than a traditional autoencoder. Instead of treating reconstruction as an end in itself, the model is optimized to produce error patterns that aid classification.
+
 
 
 % % === Training Protocol ===
@@ -285,27 +285,22 @@ All models were trained using the Adam optimizer with initial learning rate of $
 \subsection{Loss Functions}
 The loss functions used in this study can be put into two main categories by their purposes: \textbf{reconstruction loss} and \textbf{classification loss}. The reconstruction loss encourages the model to accurately reproduce the input sequence, while the classification loss optimizes the binary decision-making head. Depending on the model architecture, one or both losses may be present. When both are used, they are weighted equally unless otherwise stated.
 
-For classification, we use the standard binary cross-entropy (BCE) loss, which measures the discrepancy between predicted probabilities and true labels. This encourages the model to assign high confidence to normal samples and low confidence to abnormal ones.
+For classification, I use the standard binary cross-entropy loss, which measures the discrepancy between predicted probabilities and true labels. This encourages the model to assign high confidence to normal samples and low confidence to abnormal ones.
 
 %juan Here you call MMD and Wasserstein distance-based losses but later in the text you call them distribution-alignment ones. All of them are distances but MSE is point-to-point, Mahalanobis is point-to-distribution, and MMD and Wasserstein are distribution-to-distribution. Fourier loss is also point-to-point, right? As it is simply the MSE of the Fourier (please, correct me if I'm wrong).
-For reconstruction, the primary objective is to accurately reproduce the input time series. We use the mean squared error (MSE) as the base reconstruction loss, computed as the average squared difference between the input and its reconstruction. Additional distance-based losses such as Maximum Mean Discrepancy (MMD), Wasserstein distance, and spectral-domain differences (e.g., Fourier loss) are also considered as auxiliary components to guide reconstruction quality. These are detailed in the~\ref{ch:related-works}
+For reconstruction, the primary objective is to accurately reproduce the input time series. Thus, \gls{mse} is used as the base reconstruction loss, computed as the average squared difference between the input and its reconstruction. Additional distance-based losses such as \gls{mmd}, Wasserstein distance, and spectral-domain differences (e.g., Fourier loss) are also considered as auxiliary components to guide reconstruction quality. These are detailed in the~\ref{ch:related-works}
 
-In this study, multiple loss functions are tested in support of the traditional MSE reconstruction objective. To combine MSE with an auxiliary distance metric, I adopt an uncertainty-based dynamic loss weighting scheme proposed by~\cite{yao_svd-ae_2024}. The total loss is formulated as:
-
-\begin{equation}
-\label{eq:auto-weight-loss}
-\mathcal{L}_{\text{total}} = \sum_{i} \frac{1}{2\sigma_i^2} \mathcal{L}_i + \log \sigma_i^2
-\end{equation}
-where $\mathcal{L}_i$ is the $i$-th loss term, and $\sigma_i^2$ is a learnable parameter that dynamically adjusts the contribution of each component during training. This formulation allows the model to automatically balance the importance of different reconstruction objectives—whether to prioritize exact point-wise matching of MSE, structural similarity, or frequency-domain alignment—based on their relative difficulty and uncertainty.
+In this study, multiple loss functions are tested in support of the traditional \gls{mse} reconstruction objective. To combine \gls{mse} with an auxiliary distance metric, I adopt an uncertainty-based dynamic loss weighting scheme proposed by~\cite{yao_svd-ae_2024}.
+The total loss, formulated in Equation~\ref{eq:auto-weight-loss}, allows the model to automatically balance the importance of different reconstruction objectives—whether to prioritize exact point-wise matching of \gls{mse}, structural similarity, or frequency-domain alignment—based on their relative difficulty and uncertainty.
 The considered auxiliary losses include:
 
 \begin{itemize}
-    \item \textbf{Mean Squared Error (MSE)}: primary reconstruction loss, measuring the average squared difference between input and reconstruction.
+    \item \textbf{\gls{mse}}: primary reconstruction loss, measuring the average squared difference between input and reconstruction.
     \begin{equation}
     \mathcal{L}_{\text{MSE}} = \frac{1}{N} \sum_{i=1}^{N} (x_i - \hat{x}_i)^2
     \end{equation}
 
-    \item \textbf{Maximum Mean Discrepancy (MMD)}: a kernel-based statistical measure used to quantify the difference between two probability distributions by comparing their mean embeddings in a reproducing kernel Hilbert space (RKHS).
+    \item \textbf{\gls{mmd}}: a kernel-based statistical measure used to quantify the difference between two probability distributions by comparing their mean embeddings in a reproducing kernel Hilbert space.
     \begin{equation}
         \mathcal{L}_{\text{MMD}}^2(P, Q) = \mathbb{E}_{x, x' \sim P}[k(x,x')] + \mathbb{E}_{y, y' \sim Q}[k(y,y')] - 2\mathbb{E}_{x \sim P, y \sim Q}[k(x,y)]
     \end{equation}
@@ -335,9 +330,9 @@ The considered auxiliary losses include:
 \subsection{Reconstruction-Based Classification}
 For model variants that use reconstruction error to identify abnormal conditions (e.g., Vanilla Autoencoder, Multi-Head Autoencoder, Bottleneck), two strategies are explored to map reconstruction behaviour to binary predictions.
 
-First, a static-threshold approach is applied, where the scalar reconstruction error (via loss function) is used directly as an anomaly score. A threshold is then selected based on validation performance by maximizing the AUROC. This method assumes that normal and abnormal samples yield statistically separable loss values.
+First, a static-threshold approach is applied, where the scalar reconstruction error (via loss function) is used directly as an anomaly score. A threshold is then selected based on validation performance by maximizing the F1 score. This method assumes that normal and abnormal samples yield statistically separable loss values.
 
-Second, a learned classifier approach is tested. In this setting, the encoder and decoder are frozen, and a lightweight MLP is trained to classify normal versus abnormal samples using the reconstruction error vector as input. This allows the model to exploit finer-grained patterns in the error signal that a scalar threshold might miss, while avoiding interference with the main model parameters. It creates a dynamic threshold, which \cite{zhao_anomaly_2018} found to be more effective in reducing false positives.
+Second, a learned classifier approach is tested. In this setting, the encoder and decoder are frozen, and a lightweight \gls{mlp} is trained to classify normal versus abnormal samples using the reconstruction error vector as input. This allows the model to exploit finer-grained patterns in the error signal that a scalar threshold might miss, while avoiding interference with the main model parameters. It creates a dynamic threshold, which \cite{zhao_anomaly_2018} found to be more effective in reducing false positives.
 
 
 \subsection{Training Strategies}
@@ -358,10 +353,10 @@ Additionally, a semi-supervised variation of the Vanilla Autoencoder, referred t
 \end{equation}
 This encourages the model to reinforce a separation in reconstruction behaviour between normal and abnormal inputs, effectively pushing the autoencoder to "unlearn" anomalies.
 
-To enhance the classification performance, a shallow MLP is trained on top of the reconstruction error vector. 
-This MLP is trained in a supervised manner using both normal and abnormal samples, with the goal of learning a more adaptive decision boundary that can better distinguish between the two classes based on the reconstruction error patterns.
-The main model is first trained to reconstruct normal sequences, and then the MLP is trained with the frozen encoder and decoder. 
-The MLP takes the reconstruction error as input and outputs a probability score for each sample, acting as a dynamic threshold for classification.
+To enhance the classification performance, a shallow \gls{mlp} is trained on top of the reconstruction error vector. 
+This \gls{mlp} is trained in a supervised manner using both normal and abnormal samples, with the goal of learning a more adaptive decision boundary that can better distinguish between the two classes based on the reconstruction error patterns.
+The main model is first trained to reconstruct normal sequences, and then the \gls{mlp} is trained with the frozen encoder and decoder. 
+The \gls{mlp} takes the reconstruction error as input and outputs a probability score for each sample, acting as a dynamic threshold for classification.
 
 
 % % === Evaluation Framework ===
@@ -382,11 +377,11 @@ The reconstruction loss itself is used as the anomaly score: $s(x) = \mathcal{L}
 \end{equation}
 
 \item \textbf{Classifier-on-loss scoring:}  
-A shallow MLP is trained on top of features such as reconstruction error patterns, while the main model is frozen. The MLP outputs a class probability \( p(y=1|x) \), serving as the anomaly score. This supervised post-processing enables more adaptive behaviour, including dynamic thresholding.
+A shallow \gls{mlp} is trained on top of features such as reconstruction error patterns, while the main model is frozen. The \gls{mlp} outputs a class probability \( p(y=1|x) \), serving as the anomaly score. This supervised post-processing enables more adaptive behaviour, including dynamic thresholding.
 
 \end{enumerate}
 
-Once a threshold is established, standard classification metrics—accuracy, precision, recall, F1-score, and AUC—are computed to assess model performance.
+Once a threshold is established, standard classification metrics — accuracy, precision, recall, F1-score, and \gls{auc} — are computed to assess model performance.
 These metrics allow comparison across models with different output modalities and are further analyzed in Section~\ref{ch:results}.
 
 %% TODO: add metrics Definitions, Justification

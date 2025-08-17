@@ -23,7 +23,7 @@ For vanilla autoencoder, the concerns are mainly focused on the reconstruction q
 
 
 \subsection{Reconstruction Quality on Normal Data}
-To evaluate the reconstruction ability of the vanilla AE on normal operating conditions, we compute several standard metrics: mean average error (MAE), peak signal-to-noise ratio (PSNR), maximum reconstruction error, minimum reconstruction error, maximum min discrepancy and Wasserstein distance across time windows.
+To evaluate the reconstruction ability of the vanilla \gls{ae} on normal operating conditions, I compute several standard metrics: \gls{mae}, \gls{psnr}, maximum reconstruction error, minimum reconstruction error, maximum min discrepancy and Wasserstein distance across time windows.
 
 \begin{table}[h!]
 \centering
@@ -44,16 +44,16 @@ Wasserstein distance & 0.0076 \\
 \end{table}
 
 %juan Did you explain above the interpretation of PSNR, in particula why it is expressed in decibels? I understand that its description is not in Sec 4.5.2, as it is not a loss function, but you included the Wasserstein distance, which is also not a loss function, so you may consider adding a brief explanation of PSNR there and renaming the section as "Loss functions and performance metrics". As it is now, it is difficult for the reader to follow you train of thoughts in this paragraph.
-Overall, the reconstruction errors on normal validation data are low across all evaluated metrics, indicating that the vanilla AE learns to replicate healthy input signals with high fidelity. The mean absolute error (MAE) of $0.0306$ corresponds to a small deviation relative to the signal range, while the peak signal-to-noise ratio (PSNR) of $24.72$\,dB suggests a strong similarity between reconstructed and original signals. The maximum observed reconstruction error ($0.1066$) remains an order of magnitude smaller than typical anomaly-induced deviations, and the minimum error ($0.0070$) confirms that some time windows are reconstructed almost perfectly. The near-zero Max--Min discrepancy implies a consistent reconstruction quality across time windows, and the small Wasserstein distance ($0.0076$) shows that the overall error distribution closely matches that of the original data. These results confirm that the AE is capable of accurately modeling normal operating conditions.
+Overall, the reconstruction errors on normal validation data are low across all evaluated metrics, indicating that the vanilla \gls{ae} learns to replicate healthy input signals with high fidelity. The \gls{mae} of $0.0306$ corresponds to a small deviation relative to the signal range, while the \gls{psnr} of $24.72$\,dB suggests a strong similarity between reconstructed and original signals. The maximum observed reconstruction error ($0.1066$) remains an order of magnitude smaller than typical anomaly-induced deviations, and the minimum error ($0.0070$) confirms that some time windows are reconstructed almost perfectly. The near-zero Max--Min discrepancy implies a consistent reconstruction quality across time windows, and the small Wasserstein distance ($0.0076$) shows that the overall error distribution closely matches that of the original data. These results confirm that the \gls{ae} is capable of accurately modeling normal operating conditions.
 
 
 
 \subsection{Normal vs. Abnormal Reconstruction}
-For anomaly detection, the most straightforward approach is to use a static threshold on reconstruction error. For this study, AUC is first used to determine whether a significant difference exists in the reconstruction error between normal and abnormal samples.
+For anomaly detection, the most straightforward approach is to use a static threshold on reconstruction error. For this study, \gls{auc} is first used to determine whether a significant difference exists in the reconstruction error between normal and abnormal samples.
 
 \begin{table}[h!]
 \centering
-\caption{Feature-wise AUC for vanilla AE reconstruction error.}
+\caption{Feature-wise \gls{auc} for vanilla \gls{ae} reconstruction error.}
 \label{tab:vanilla_feat_auc}
 \begin{tabular}{lc}
     \toprule
@@ -72,13 +72,13 @@ For anomaly detection, the most straightforward approach is to use a static thre
 \end{tabular}
 \end{table}
 
-The overall AUC for the vanilla AE is close to 0.5, i.e., random performance, with feature-wise AUCs present in Table~\ref{tab:vanilla_feat_auc}.
+The overall \gls{auc} for the vanilla \gls{ae} is close to 0.5, i.e., random performance, with feature-wise AUCs present in Table~\ref{tab:vanilla_feat_auc}.
 The distribution of reconstruction errors for normal and abnormal validation samples is shown in Figure~\ref{fig:vanilla-norm-abnorm-roc}.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{vanilla-roc.pdf}
-    \caption{Vanilla AE ROC curve for normal vs. abnormal validation samples.}
+    \caption{Vanilla \gls{ae} ROC curve for normal vs. abnormal validation samples.}
     \label{fig:vanilla-norm-abnorm-roc}
 \end{figure}
 
@@ -86,26 +86,26 @@ The distribution of reconstruction errors for normal and abnormal validation sam
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\textwidth]{vanilla-reconst-hist.pdf}
-    \caption{Vanilla AE reconstruction error (MSE) histogram for normal vs. abnormal validation samples.}
+    \caption{Vanilla \gls{ae} reconstruction error histogram for normal vs. abnormal validation samples.}
     \label{fig:vanilla_norm_abnorm_reconst_hist}
 \end{figure}
 
 
-Figures~\ref{fig:vanilla_norm_abnorm_reconst_hist} and~\ref{fig:vanilla-norm-abnorm-roc}, and Table~\ref{tab:vanilla_feat_auc} show that the vanilla AE is unable to create a linear separation between normal and abnormal samples based on reconstruction error. The AUC of $0.5036$ indicates that the model does not effectively distinguish between the two classes, as it is close to random guessing. The per-feature AUCs also suggest that some features provide a strong discrimination. It is easy to see that stable features such as air density and temperature have higher AUCs. These features are easier to reconstruct, thus, they are also more sensitive to anomalies.
+Figures~\ref{fig:vanilla_norm_abnorm_reconst_hist} and~\ref{fig:vanilla-norm-abnorm-roc}, and Table~\ref{tab:vanilla_feat_auc} show that the vanilla \gls{ae} is unable to create a linear separation between normal and abnormal samples based on reconstruction error. The \gls{auc} of $0.5036$ indicates that the model does not effectively distinguish between the two classes, as it is close to random guessing. The per-feature AUCs also suggest that some features provide a strong discrimination. It is easy to see that stable features such as air density and temperature have higher AUCs. These features are easier to reconstruct, thus, they are also more sensitive to anomalies.
 However, they also did not provide enough information to achieve a meaningful separation overall.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.85\textwidth]{vanilla-norm-abn-over-epoch.pdf}
-    \caption{Reconstruction error (MSE) for normal and abnormal validation samples over training epochs.}
+    \caption{Reconstruction error for normal and abnormal validation samples over training epochs.}
     \label{fig:vanilla_epoch_err}
 \end{figure}
 
 Given this poor separation, I further examined how reconstruction errors for normal and abnormal samples evolved throughout training (Figure~\ref{fig:vanilla_epoch_err}). Interestingly, the gap between the two classes is largest at around the 20th epoch, suggesting that the model initially learns to capture patterns specific to normal operating conditions while struggling to reconstruct abnormal signals. However, as training progresses, the reconstruction error for abnormal samples decreases to match that of normal samples. 
 This convergence implies that the model gradually learns to represent both normal and abnormal patterns equally well, effectively "overfitting" to the anomalies present in the training set - the data that is nearly an abnormality. 
-Consequently, the discriminative signal in reconstruction error is lost, explaining the near-random AUC observed in Table~\ref{tab:vanilla_feat_auc}.
+Consequently, the discriminative signal in reconstruction error is lost, explaining the near-random \gls{auc} observed in Table~\ref{tab:vanilla_feat_auc}.
 
-For the vanilla AE, one of the most important design choices is the size of the latent space. 
+For the vanilla \gls{ae}, one of the most important design choices is the size of the latent space. 
 A large latent dimension allows the network to retain more information about the input, but risks allowing abnormal patterns pass through. 
 Conversely, an overly small latent dimension forces excessive compression, potentially discarding information essential for reconstructing normal behaviour. 
 Both extremes can lead to poor separation between normal and abnormal samples.
@@ -117,23 +117,23 @@ Performance is poor at both very small and very large latent sizes.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.85\textwidth]{search-compression-vanilla_model.pdf}
-    \caption{AUC vs latent size for vanilla AE.}
+    \caption{\gls{auc} vs latent size for vanilla \gls{ae}.}
     \label{fig:vanilla-latent-search}
 \end{figure}
 
-This result suggests that either the difference in reconstruction error is highly non-linear and not captured by a simple threshold, or that the vanilla AE lacks the representational capacity for effective Normal Behavior Modeling in this dataset.
+This result suggests that either the difference in reconstruction error is highly non-linear and not captured by a simple threshold, or that the vanilla \gls{ae} lacks the representational capacity for effective Normal Behavior Modeling in this dataset.
 
 
 \subsection{Classification Net from Reconstruction Errors}
-While tuning the latent size yields a modest improvement, the best AUC remains insufficient for reliable detection. 
+While tuning the latent size yields a modest improvement, the best \gls{auc} remains insufficient for reliable detection. 
 To address this limitation, I next investigate whether a separate classifier trained on the reconstruction error vectors can better exploit potential non-linear separability between normal and abnormal samples.
 
-For this experiment, the reconstruction errors of each sample in the training set are used as inputs to a Multi-Layer Perceptron (MLP) classifier.  
-The MLP consists of a single hidden layer with 64 units and a ReLU activation, followed by a single output neuron representing the probability of normal vs. abnormal operation. The model is trained using cross-entropy loss on the labeled data.
+For this experiment, the reconstruction errors of each sample in the training set are used as inputs to a \gls{mlp} classifier.  
+The \gls{mlp} consists of a single hidden layer with 64 units and a ReLU activation, followed by a single output neuron representing the probability of normal vs. abnormal operation. The model is trained using cross-entropy loss on the labeled data.
 %% TODO: move to methodology
 
-The resulting AUC of $0.7920$ represents a significant improvement over the vanilla AE's AUC of $0.5036$.  
-This indicates that the MLP successfully learns a more complex decision boundary that better separates the two classes.  
+The resulting \gls{auc} of $0.7920$ represents a significant improvement over the vanilla \gls{ae}'s \gls{auc} of $0.5036$.  
+This indicates that the \gls{mlp} successfully learns a more complex decision boundary that better separates the two classes.  
 Other metrics, including F1-score, precision, and recall, also show notable improvements, as summarized in Table~\ref{tab:vanilla-mlp-metrics}.  
 
 %juan I know the fact that tab:vanilla-mlp-metrics is too narrow kind of looks that there is a lot of unused blank space, but forcing the table environment to fit this way looks really weird. I suggest to transpose the table, so it becomes page-width (same with tab:anomaly-reinforced-ae-metrics)
@@ -143,7 +143,7 @@ Other metrics, including F1-score, precision, and recall, also show notable impr
     \begin{minipage}{0.3\textwidth} % Table
         \begin{table}[H]
             \centering
-            \caption{Classification metrics for MLP trained on vanilla AE reconstruction errors.}
+            \caption{Classification metrics for \gls{mlp} trained on vanilla \gls{ae} reconstruction errors.}
             \label{tab:vanilla-mlp-metrics}
             \begin{tabular}{lc}
                 \toprule
@@ -163,22 +163,22 @@ Other metrics, including F1-score, precision, and recall, also show notable impr
         \begin{figure}[H]
             \centering
             \includegraphics[width=\linewidth]{vanilla-mlp-cm.pdf}
-            \caption{Confusion matrix for MLP classifier trained on vanilla AE reconstruction errors.}
+            \caption{Confusion matrix for \gls{mlp} classifier trained on vanilla \gls{ae} reconstruction errors.}
             \label{fig:vanilla-mlp-cm}
         \end{figure}
     \end{minipage}
 \end{figure}
 
-The corresponding confusion matrix shown in Figure~\ref{fig:vanilla-mlp-cm} reveals that the vanilla AE reconstruction errors allow relatively good confirmation of normal status. However, its ability to identify abnormal samples is still near random, with almost half of the abnormal samples being misclassified as normal.
+The corresponding confusion matrix shown in Figure~\ref{fig:vanilla-mlp-cm} reveals that the vanilla \gls{ae} reconstruction errors allow relatively good confirmation of normal status. However, its ability to identify abnormal samples is still near random, with almost half of the abnormal samples being misclassified as normal.
 
 
-These results confirm that while the vanilla AE alone struggles to discriminate between normal and abnormal samples, the reconstruction error space still contains useful information that can be exploited by a non-linear classifier.  
-However, the final result indicates vanilla AE is not sufficient for effective anomaly detection, motivating the exploration of architectures that can both reconstruct and discriminate anomalies more effectively within a single framework.
+These results confirm that while the vanilla \gls{ae} alone struggles to discriminate between normal and abnormal samples, the reconstruction error space still contains useful information that can be exploited by a non-linear classifier.  
+However, the final result indicates vanilla \gls{ae} is not sufficient for effective anomaly detection, motivating the exploration of architectures that can both reconstruct and discriminate anomalies more effectively within a single framework.
 
 
 \section{Multi-Head Autoencoder}
 \label{sec:multi-head-results}
-The multi-head autoencoder extends the vanilla AE by adding a classification head to the latent space, presented in Table~\ref{tab:model-variants}. 
+The multi-head autoencoder extends the vanilla \gls{ae} by adding a classification head to the latent space, presented in Table~\ref{tab:model-variants}. 
 The hypothesis is that the supervised head will encourage the latent space to separate normal and abnormal samples, which can improve anomaly detection both directly (through the classification head) and indirectly (via reconstruction-based methods).
 
 \begin{figure}[h!]
@@ -191,7 +191,7 @@ The hypothesis is that the supervised head will encourage the latent space to se
 Figure~\ref{fig:multi-head-norm-abn-over-epoch} shows the tendency to separate normal and abnormal samples throughout training process.
 The gap between the two classes kept increasing until the end of training, indicating that the model is learning to distinguish between normal and abnormal samples effectively.
 
-Unlike the vanilla AE, this model has an extra classification head that has potential to act as the anomaly detector.
+Unlike the vanilla \gls{ae}, this model has an extra classification head that has potential to act as the anomaly detector.
 This leads to a small decrease in reconstruction quality from $0.0306$ to $0.0806$, as the model is now optimizing for both reconstruction and classification objectives.
 This small decrease is acceptable, as the model is still able to reconstruct normal samples with high fidelity.
 Next subsection evaluates the classification performance of the multi-head autoencoder.
@@ -200,25 +200,25 @@ Next subsection evaluates the classification performance of the multi-head autoe
 \subsection{Latent Space Size Analysis}
 %juan ON this regard, can you explain why in the previous section you didn't perform the 30 runs for the vanilla AE, as you did for the multi-head AE? The answer is that no pattern was noticed and Vanilla kept the same performance across runs, but it is not clear in the text that for that many runs would not make any difference.
 %juan Also, in the previous comparison you displayed directly the number of channels and here you display the compression rate. Is it complicated for you to regenerate the figures with a consistent x-axis? I'd prefer both displaying compression rate.
-Similar to the vanilla AE, we perform a sweep over latent space sizes to investigate their impact on anomaly detection performance for the multi-head AE. 
+Similar to the vanilla \gls{ae}, I perform a sweep over latent space sizes to investigate their impact on anomaly detection performance for the multi-head \gls{ae}. 
 At each latent size, 30 models are trained, and its reconstruction error is evaluated on the validation set.
-The AUC is computed for each latent size, and the box plot results are shown in Figure~\ref{fig:multi-head-latent-search}.
+The \gls{auc} is computed for each latent size, and the box plot results are shown in Figure~\ref{fig:multi-head-latent-search}.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1.2\textwidth]{search-compression-classify_model.pdf}
     %juan Can you please add in the description of the figure what do the triangles and the colored horizontal line inside the box mean?
-    \caption{AUC vs latent size for multi-head AE.}
+    \caption{\gls{auc} vs latent size for multi-head \gls{ae}.}
     \label{fig:multi-head-latent-search}
 \end{figure}
 
 The results show that when having a large the compression (low number of latent channels), the linear separation between normal and abnormal samples is not feasible.
-The best performance is achieved with compression rate around 1.22. However, a lot of outliers are present, indicating that the raw reconstruction error is reliable enough for anomaly detection.
+The best performance is achieved with compression rate around 1.22. However, a lot of outliers are present, indicating that the raw \gls{rerr} is reliable enough for anomaly detection.
 
 \subsection{Classification Performance}
 The classification capabilities of the multi-head autoencoder lies in 2 parts: the classification head and the reconstruction error space.
-While the classification head benefits from direct supervision, it is not explicitly optimized to maximize reconstruction error separation.  
-Therefore, we additionally train an MLP classifier on the reconstruction error vectors to evaluate whether the supervised latent space also improves discrimination in the reconstruction domain.
+While the classification head benefits from direct supervision, it is not explicitly optimized to maximize \gls{rerr} separation.  
+Therefore, I additionally train an \gls{mlp} classifier on the reconstruction error vectors to evaluate whether the supervised latent space also improves discrimination in the reconstruction domain.
 
 
 \begin{table}[h!]
@@ -267,31 +267,31 @@ Therefore, we additionally train an MLP classifier on the reconstruction error v
 
 
 
-Table~\ref{tab:auc-vanilla-m_head} shows that the multi-head AE substantially improves performance across all applicable scoring strategies.  
+Table~\ref{tab:auc-vanilla-m_head} shows that the multi-head \gls{ae} substantially improves performance across all applicable scoring strategies.  
 The reconstruction-error-based score improves from near-random performance ($0.5036$) to $0.6893$, indicating that the latent space shaping indirectly enhances reconstruction separability.  
-The largest gain is observed when training an MLP on reconstruction errors, reaching $0.9758$ AUC.  
-The classification head itself achieves $0.9288$ AUC without relying on reconstruction errors, demonstrating that supervised guidance in the latent space yields a highly discriminative representation for anomaly detection.
-On the other hand, the MLP classifier reaches a non-ignorable higher AUC than the classification head, indicating that the reconstruction error space contains more useful information that can be exploited by a non-linear classifier.
+The largest gain is observed when training an \gls{mlp} on reconstruction errors, reaching $0.9758$ \gls{auc}.  
+The classification head itself achieves $0.9288$ \gls{auc} without relying on reconstruction errors, demonstrating that supervised guidance in the latent space yields a highly discriminative representation for anomaly detection.
+On the other hand, the \gls{mlp} classifier reaches a non-ignorable higher \gls{auc} than the classification head, indicating that the reconstruction error space contains more useful information that can be exploited by a non-linear classifier.
 
-Figure~\ref{fig:m_head-cms} shows the confusion matrices for both the classification head and the MLP classifier trained on reconstruction errors. 
+Figure~\ref{fig:m_head-cms} shows the confusion matrices for both the classification head and the \gls{mlp} classifier trained on reconstruction errors. 
 Both methods share a similar distribution of true positives, false positives, and false negatives, 
-with the MLP classifier achieving slightly better classification, particularly in reducing false negatives.
+with the \gls{mlp} classifier achieving slightly better classification, particularly in reducing false negatives.
 
 
 \section{Non Autoencoder Models}
 \label{sec:not-ae-models}
-To better understand the limitations and justify the design of the multi-head autoencoder and vanilla AE models, I examine three alternative architectures: a classifier-only model without a decoder, and two bottleneck variants (with and without the autoencoder capabilities) as shown in Table~\ref{tab:model-variants}.
+To better understand the limitations and justify the design of the multi-head autoencoder and vanilla \gls{ae} models, I examine three alternative architectures: a classifier-only model without a decoder, and two bottleneck variants (with and without the autoencoder capabilities) as shown in Table~\ref{tab:model-variants}.
 These models serve to highlight the importance of the competing objectives between classification and reconstruction heads, and the role of the autoencoder in capturing meaningful representations for anomaly detection.
 
 
 \subsection{Classifier-Only Model}
-This model derives its architecture from the multi-head AE but has its decoder removed entirely making it a normal classifier that operates directly on the input data.
-As discussed in Section~\ref{sec:multi-head-results}, the multi-head AE balances multiple objectives—reconstruction and classification—which this model does not.  
+This model derives its architecture from the multi-head \gls{ae} but has its decoder removed entirely making it a normal classifier that operates directly on the input data.
+As discussed in Section~\ref{sec:multi-head-results}, the multi-head \gls{ae} balances multiple objectives—reconstruction and classification—which this model does not.  
 This subsection aims to evaluate the performance of a model that only focuses on classification without the reconstruction objective.
 
 \begin{table}[h!]
 \centering
-\caption{Classification metrics for the classifier-only model vs. classifier head of multi-head AE.}
+\caption{Classification metrics for the classifier-only model vs. classifier head of multi-head \gls{ae}.}
 \label{tab:classifier-only-metrics}
 \begin{tabular}{lcc}
     \toprule
@@ -306,14 +306,14 @@ This subsection aims to evaluate the performance of a model that only focuses on
 \end{tabular}
 \end{table}
 
-Interestingly, the result presented in Table~\ref{tab:classifier-only-metrics} shows that the classifier-only model exhibits degraded anomaly detection performance compared to the multi-head AE, confirming that:
+Interestingly, the result presented in Table~\ref{tab:classifier-only-metrics} shows that the classifier-only model exhibits degraded anomaly detection performance compared to the multi-head \gls{ae}, confirming that:
 (1) The absence of a reconstruction objective reduces the quality of the learned representation leading to degraded classification performance;
 (2) The relationship from the reconstruction head is supportive to the classification head, acting as a regularizer that encourages meaningful latent features that support classification.
 
 
 
 \subsection{Bottleneck Autoencoder}
-One limitation of both the vanilla AE and multi-head AE models, as demonstrated in Sections~\ref{sec:vanilla-ae-results} and \ref{sec:multi-head-results}, is that the reconstruction error alone does not provide a linearly separable feature space for anomaly detection.  
+One limitation of both the vanilla \gls{ae} and multi-head \gls{ae} models, as demonstrated in Sections~\ref{sec:vanilla-ae-results} and \ref{sec:multi-head-results}, is that the reconstruction error alone does not provide a linearly separable feature space for anomaly detection.  
 Both models rely on a separate classifier trained on frozen reconstruction errors to achieve stable and improved performance.
 
 To address this, two variants of the bottleneck architecture are investigated: 
@@ -325,7 +325,7 @@ To address this, two variants of the bottleneck architecture are investigated:
 
 \begin{table}[h!]
 \centering
-\caption{Comparison of classification metrics for bottleneck AE.}
+\caption{Comparison of classification metrics for bottleneck \gls{ae}.}
 \label{tab:bottleneck-comparison}
 \begin{tabular}{lccc}
     \toprule
@@ -340,26 +340,26 @@ To address this, two variants of the bottleneck architecture are investigated:
 \end{tabular}
 \end{table}
 
-The results in Table~\ref{tab:bottleneck-comparison} clearly show that both bottleneck variants outperform the multi-head AE by a substantial margin across all metrics.  
-The \textit{Bottleneck AE} achieves the highest performance, with an almost perfect AUC of $0.9983$ and corresponding precision, recall, and F1-scores above $0.99$.  
+The results in Table~\ref{tab:bottleneck-comparison} clearly show that both bottleneck variants outperform the multi-head \gls{ae} by a substantial margin across all metrics.  
+The \textit{Bottleneck \gls{ae}} achieves the highest performance, with an almost perfect \gls{auc} of $0.9983$ and corresponding precision, recall, and F1-scores above $0.99$.  
 This indicates that jointly optimizing reconstruction and classification in a strongly compressed latent space yields highly discriminative representations for anomaly detection.
 
-The \textit{Bottleneck No AE} variant also performs very well, but its results are consistently lower than the full bottleneck AE, with drops of approximately $1.6\%$ in accuracy and $0.22\%$ in AUC.  
+The \textit{Bottleneck No \gls{ae}} variant also performs very well, but its results are consistently lower than the full bottleneck \gls{ae}, with drops of approximately $1.6\%$ in accuracy and $0.22\%$ in \gls{auc}.  
 This performance gap may indicate that the reconstruction objective contributes meaningful regularization, guiding the latent space toward features that are both representative of normal data and sensitive to anomalies.  
 However, this statement needs further investigation, as the small difference may also be due to the inherent variability in model training and evaluation.
-In brief, the reconstruction objective in both multi-head AE and bottleneck AE models provides no negative impact on classification performance, and in fact, it may help to improve the quality of the learned representations.
+In brief, the reconstruction objective in both multi-head \gls{ae} and bottleneck \gls{ae} models provides no negative impact on classification performance, and in fact, it may help to improve the quality of the learned representations.
 
-The \textit{Multi-Head AE}, while competitive in earlier comparisons, lags behind both bottleneck variants here.  
+The \textit{Multi-Head \gls{ae}}, while competitive in earlier comparisons, lags behind both bottleneck variants here.  
 This suggests that the reconstruction error space contains more useful and easier-to-extract information compared to the sample data alone.
 
 
 \section{Anomaly Reinforced Autoencoder}
-Supervised approaches—whether directly supervised, as in the bottleneck variants, or indirectly supervised, as in reconstruction-error-based classifiers—achieve high AUC scores on the validation set.  
+Supervised approaches—whether directly supervised, as in the bottleneck variants, or indirectly supervised, as in reconstruction-error-based classifiers—achieve high \gls{auc} scores on the validation set.  
 However, these methods share a key limitation: they are trained to distinguish between normal data and a fixed set of known abnormal conditions. 
 In real-world deployments, many anomalies will not appear in the training data, and models tuned to specific, known abnormal patterns may fail to generalize to unseen faults.
 
-To address this, I propose the \textit{Anomaly Reinforced Autoencoder (ARAE)}.
-The model shares the same structure as the Vanilla AE with the difference lying in the training process.
+To address this, I propose the \textit{\gls{arae}}.
+The model shares the same structure as the Vanilla \gls{ae} with the difference lying in the training process.
 The core idea is to explicitly shape the reconstruction objective so that the model maximizes the reconstruction error for abnormal samples, while simultaneously minimizing it for normal samples.  
 In this formulation, anomalies do not simply appear as poorly reconstructed by chance; instead, the model is actively guided to produce reconstructions that accentuate deviations for abnormal inputs, as presented by Equation~\ref{eq:reinforced-loss} in Subsection~\ref{subsec:training-strategies}
 This reinforcement mechanism aims to improve robustness and detection performance, even for anomaly types not encountered during training.
@@ -396,14 +396,14 @@ This reinforcement mechanism aims to improve robustness and detection performanc
 \end{figure}
 
 
-As expected, the results in Table~\ref{tab:anomaly-reinforced-ae-metrics} show that the anomaly reinforced autoencoder achieves a lower capability compared to the bottleneck AE and multi-head AE models but higher than the vanilla AE even with the support of the MLP classifier.
+As expected, the results in Table~\ref{tab:anomaly-reinforced-ae-metrics} show that the anomaly reinforced autoencoder achieves a lower capability compared to the bottleneck \gls{ae} and multi-head \gls{ae} models but higher than the vanilla \gls{ae} even with the support of the \gls{mlp} classifier.
 
 The confusion matrix in Figure~\ref{fig:anomaly-reinforced-ae-cm} shows that the model is able to identify most of the normal patterns, but it also misclassifies a significant number of abnormal samples as normal.
 This enforces the idea that the dataset contains similarities between normal and abnormal samples, which is difficult to capture linearly from the reconstruction error alone.
 
-While the AUC results of the ARAE do not surpass the best bottleneck AE configurations,  
+While the \gls{auc} results of the \gls{arae} do not surpass the best bottleneck \gls{ae} configurations,  
 Table~\ref{tab:anomaly-reinforced-ae-abnorm-ratios} reveals an important practical advantage:  
-the ARAE maintains relatively stable recall even when the proportion of abnormal samples in the training set is reduced.  
+the \gls{arae} maintains relatively stable recall even when the proportion of abnormal samples in the training set is reduced.  
 For example, at an abnormal-to-normal ratio of $1:4$, the recall remains at $0.8547$, only a small drop from the $0.8703$ observed at the $1:2$ ratio.  
 This suggests that the reinforcement mechanism enables the model to learn to suppress accurate reconstruction of abnormal samples from a limited set of examples, rather than requiring a large abnormal dataset to counter class imbalance.
 
@@ -439,13 +439,13 @@ This suggests that the reinforcement mechanism enables the model to learn to sup
 \end{tabular}
 \end{table}
 
-By contrast, the bottleneck AE (Table~\ref{tab:bottleneck-ae-abnorm-abnorm-ratios}) shows more pronounced degradation in certain metrics under the same conditions.  
+By contrast, the bottleneck \gls{ae} (Table~\ref{tab:bottleneck-ae-abnorm-abnorm-ratios}) shows more pronounced degradation in certain metrics under the same conditions.  
 While its recall at $1:4$ is extremely high ($0.9890$), this comes at the cost of precision dropping to $0.6718$,  
 indicating a larger number of false positives.  
-The ARAE, in comparison, achieves a more balanced trade-off between recall and precision in lower abnormal-data scenarios,  
+The \gls{arae}, in comparison, achieves a more balanced trade-off between recall and precision in lower abnormal-data scenarios,  
 which is valuable in real-world deployments where anomalies are rare and collecting large abnormal datasets is impractical.
 
-Overall, these results suggest that while the ARAE may not match the peak performance of the bottleneck AE when abundant abnormal data is available,  
+Overall, these results suggest that while the \gls{arae} may not match the peak performance of the bottleneck \gls{ae} when abundant abnormal data is available,  
 its ability to operate effectively with fewer abnormal samples makes it a promising candidate for low-data anomaly detection settings.
 
 
@@ -456,8 +456,8 @@ In this section, I aim to explore the potential of a more complex architecture t
 (2) bottleneck with autoencoder - which achieves the best performance in this study; 
 (3) anomaly reinforced autoencoder - the approach that is more favorable for detecting unseen anomalies.
 
-The adaptations are presented in Subsections~\ref{subsec:encoder},~\ref{subsec:latent}, and~\ref{subsec:decoder}, including MAMA adaptations to the encoder, latent space, and decoder, respectively.
-The comparison of the baseline models and their MAMA-adapted variants is presented in Table~\ref{tab:mama-adapted-results}.
+The adaptations are presented in Subsections~\ref{subsec:encoder},~\ref{subsec:latent}, and~\ref{subsec:decoder}, including \gls{mama} adaptations to the encoder, latent space, and decoder, respectively.
+The comparison of the baseline models and their \gls{mama}-adapted variants is presented in Table~\ref{tab:mama-adapted-results}.
 
 %juan Cand you add inside parenthesis for all the values (except for the ones corresponding to None), the percentage of change (either rise or drop) w.r.t. the baseline model? This will help the reader to quickly see how much the performance is affected by the adaptations, and help you to make your point afterwards.
 \begin{table}[h!]
@@ -472,39 +472,39 @@ The comparison of the baseline models and their MAMA-adapted variants is present
     
     \textbf{Bottleneck AE} \\
     \quad None    & 0.9913 & 0.9936 & 0.9929 & 0.9932 \\
-    \quad Enc–Dec & 0.9133  & 0.9439  & 0.9231  & 0.9334  \\
+    \quad Enc-Dec & 0.9133  & 0.9439  & 0.9231  & 0.9334  \\
     \quad All     & 0.7112  & 0.9549  & 0.7030  & 0.8098  \\
     \hline\hline
     
     \textbf{Multi-Head AE} \\
     \quad None    & 0.8610 & 0.9117 & 0.8772 & 0.8942 \\
-    \quad Enc–Dec & 0.8523 & 0.9156 & 0.8633 & 0.8887 \\
+    \quad Enc-Dec & 0.8523 & 0.9156 & 0.8633 & 0.8887 \\
     \quad All     & 0.8320 & 0.8943 & 0.8521 & 0.8727 \\
     \hline\hline
     
     \textbf{ARAE (1:2)} \\
     \quad None    & 0.7376 & 0.8703 & 0.7963 & 0.8703 \\
-    \quad Enc–Dec & 0.6261 & 0.6785 & 0.7777 & 0.7247 \\
+    \quad Enc-Dec & 0.6261 & 0.6785 & 0.7777 & 0.7247 \\
     \quad All     & 0.5340 & 0.5990 & 0.7127 & 0.6509 \\
     \hline\hline
 
     \textbf{ARAE (1:4)} \\
     \quad None    & 0.6605 & 0.8547 & 0.7523 & 0.8002 \\
-    \quad Enc–Dec & 0.5473 & 0.6121 & 0.7215 & 0.6623 \\
+    \quad Enc-Dec & 0.5473 & 0.6121 & 0.7215 & 0.6623 \\
     \quad All     & 0.5278 & 0.5967 & 0.7066 & 0.6470 \\
 
     \bottomrule
 \end{tabular}
 \end{table}
 
-For the Bottleneck AE, the baseline already achieves near-perfect performance (Accuracy $\approx 0.99$, F1-score $\approx 0.99$), leaving little headroom for improvement. 
-Introducing the mama-adapted encoder–decoder alone causes a moderate performance drop, and adding the full adaptation (encoder, decoder, and latent space) degrades the results substantially. 
+For the Bottleneck \gls{ae}, the baseline already achieves near-perfect performance (Accuracy $\approx 0.99$, F1-score $\approx 0.99$), leaving little headroom for improvement. 
+Introducing the mama-adapted encoder-decoder alone causes a moderate performance drop, and adding the full adaptation (encoder, decoder, and latent space) degrades the results substantially. 
 This suggests that for a well-suited bottleneck model, the proposed architectural changes may disrupt the latent space.
 Especially, with more adaptations, the worse the performance becomes.
 
-The Multi-Head AE shows only minor performance variation under adaptation. Both the encoder–decoder adaptation and the full adaptation lead to a small but consistent decline across all metrics. Given that the multi-head setup already benefits from a reconstruction-driven regularization effect, the added complexity of the proposed components may not translate into better feature representations for this architecture.
+The Multi-Head \gls{ae} shows only minor performance variation under adaptation. Both the encoder-decoder adaptation and the full adaptation lead to a small but consistent decline across all metrics. Given that the multi-head setup already benefits from a reconstruction-driven regularization effect, the added complexity of the proposed components may not translate into better feature representations for this architecture.
 
-In the case of the ARAE, which is trained with the anomaly-reinforcement objective, the effect of the adaptations is more pronounced—and negative. For both the 1:2 and 1:4 abnormal-to-normal ratios, the adapted encoder–decoder reduces performance, while the full adaptation yields a larger decline in every metric. The degradation is particularly severe for recall in the low-abnormality (1:4) case, where the ARAE relies heavily on stable reconstruction dynamics that appear sensitive to architectural alterations.
+In the case of the \gls{arae}, which is trained with the anomaly-reinforcement objective, the effect of the adaptations is more pronounced—and negative. For both the 1:2 and 1:4 abnormal-to-normal ratios, the adapted encoder-decoder reduces performance, while the full adaptation yields a larger decline in every metric. The degradation is particularly severe for recall in the low-abnormality (1:4) case, where the \gls{arae} relies heavily on stable reconstruction dynamics that appear sensitive to architectural alterations.
 
 %juan Also the fact that the paper originally was used for 2d CNNs may affect? I don't remember well. Was this applied to SCADA signals?
 Overall, the results indicate that the mama-adapted components are not universally beneficial when directly swapped into existing high-performing designs. Their integration seems to require re-tuning or model-specific adaptation, especially when the baseline is already near-optimal. 
@@ -514,21 +514,21 @@ Overall, the results indicate that the mama-adapted components are not universal
 \section{Impact of Loss Functions}
 \label{sec:loss-functions}
 The choice of loss functions significantly influences the quality of latent representations in autoencoder-based anomaly detection.
-Other models rely heavily on classifier MLP to detect anomalies making the reconstruction error less important.
-In contrast, the ARAE framework focuses on reconstruction error as the primary anomaly signal, necessitating careful consideration of the loss function used to train the model.
+Other models rely heavily on classifier \gls{mlp} to detect anomalies making the reconstruction error less important.
+In contrast, the \gls{arae} framework focuses on reconstruction error as the primary anomaly signal, necessitating careful consideration of the loss function used to train the model.
 
-In this section, we investigate the impact of several auxiliary loss terms—Maximum Mean Discrepancy (MMD), Wasserstein distance, Fourier-based, and Mahalanobis distance losses—each combined with the standard MSE reconstruction loss.
-The weight of each auxiliary loss is tuned to balance its contribution against the MSE loss, as shown in Equation~\ref{eq:auto-weight-loss}.
+In this section, I investigate the impact of several auxiliary loss terms — \gls{mmd}, Wasserstein distance, Fourier-based, and Mahalanobis distance losses — each combined with the standard \gls{mse} reconstruction loss.
+The weight of each auxiliary loss is tuned to balance its contribution against the \gls{mse} loss, as shown in Equation~\ref{eq:auto-weight-loss}.
 Table~\ref{tab:arae-loss-aug-results} reports the evaluation metrics obtained using a 1:2 abnormal-to-normal training ratio, illustrating how these loss augmentations affect detection accuracy.
 
 %juan Now I'm really curious: you DID use the Wasserstein distance as loss! How did you find a differentiable implementation of it? Or was it an approximation?
 \begin{table}[h!]
 \centering
-\caption{Impact of additional loss terms alongside MSE loss.}
+\caption{Impact of additional loss terms alongside \gls{mse} loss.}
 \label{tab:arae-loss-aug-results}
 \begin{tabular}{lccccc}
     \toprule
-    \textbf{Extra Loss} & \textbf{Accuracy} & \textbf{Recall} & \textbf{Precision} & \textbf{F1-score} & \textbf{Weight (to MSE)} \\
+    \textbf{Extra Loss} & \textbf{Accuracy} & \textbf{Recall} & \textbf{Precision} & \textbf{F1-score} & \textbf{Weight (to \gls{mse})} \\
     
     \midrule
 
@@ -573,16 +573,16 @@ Table~\ref{tab:arae-loss-aug-results} reports the evaluation metrics obtained us
 \end{table}
 
 
-Both MMD and Wasserstein augmentations improve overall performance over MSE alone, with notable gains in recall and consistent increases in other metrics.
+Both \gls{mmd} and Wasserstein augmentations improve overall performance over \gls{mse} alone, with notable gains in recall and consistent increases in other metrics.
 Wasserstein achieves the highest balanced F1-score, suggesting that its optimal transport formulation encourages a more discriminative latent space without excessively distorting reconstruction quality.
-MMD delivers the strongest recall, reaching nearly 98\%, which may be beneficial in scenarios where missing anomalies is more costly than triggering false alarms.
-Both MMD and Wasserstein losses' weights are relatively high, indicating that they are effective in modeling the normal patterns.
-In both cases, the weight of MSE also increases (compare to starting weight of 1), suggesting a complementary relationship where the additional loss terms enhance the model's ability to capture normal data distributions while still relying on MSE for reconstruction fidelity.
+\gls{mmd} delivers the strongest recall, reaching nearly 98\%, which may be beneficial in scenarios where missing anomalies is more costly than triggering false alarms.
+Both \gls{mmd} and Wasserstein losses' weights are relatively high, indicating that they are effective in modeling the normal patterns.
+In both cases, the weight of \gls{mse} also increases (compare to starting weight of 1), suggesting a complementary relationship where the additional loss terms enhance the model's ability to capture normal data distributions while still relying on \gls{mse} for reconstruction fidelity.
 
 %juan Also, the effectiveness of Fourier analysis is deeply related to the fact whether the time series are stationary or not. Please, give a read about the suitability of Fourier for both stationary and non stationary and check which signals are stationary and which are not. If you find that the SCADA signals are not stationary (the most likely), then you may want to comment on this.
-In contrast, the Fourier loss shows moderate recall and slightly improved precision over MSE, but its overall F1-score lags behind the distribution-matching approaches, indicating limited synergy with the ARAE reconstruction objective.
+In contrast, the Fourier loss shows moderate recall and slightly improved precision over \gls{mse}, but its overall F1-score lags behind the distribution-matching approaches, indicating limited synergy with the \gls{arae} reconstruction objective.
 This can be attributed to the Fourier loss's focus on frequency domain alignment, which may not align well with the training data of just 128 time steps.
-In addition, the weight of MSE is reduced (1.00 to 0.98), suggesting a contrasting effect on the reconstruction objective.
+In addition, the weight of \gls{mse} is reduced (1.00 to 0.98), suggesting a contrasting effect on the reconstruction objective.
 Thus, the Fourier loss may not be a suitable choice in shaping the latent space for anomaly detection in this context.
 
 The Mahalanobis loss performs worst across all metrics, with both accuracy and F1-score dropping sharply.
@@ -590,8 +590,8 @@ The extremely high relative weight assigned to this loss suggests that it domina
 Inspecting the weight (0.04) also shows that the Mahalanobis loss is not compatible with the dataset and the model struggles to learn meaningful representations using this guidance.
 
 %juan Isn't MSE a distance-based penalty like Mahalanobis? Actually, I think that, if you assume a normal distribution, Mahalanobis becomes MSE, but somehow weighted. I really need to know the details on the implementations you used for the losses, so I can help you with this analysis.
-Overall, these findings suggest that distribution-alignment losses (MMD, Wasserstein) are the most compatible with MSE in the ARAE framework.
-More complex losses that incorporate both of them with MSE might lead to better performance.
+Overall, these findings suggest that distribution-alignment losses (\gls{mmd}, Wasserstein) are the most compatible with \gls{mse} in the \gls{arae} framework.
+More complex losses that incorporate both of them with \gls{mse} might lead to better performance.
 Conversely, distance-based penalties such as Mahalanobis require careful tuning to avoid overwhelming the reconstruction objective.
 
 

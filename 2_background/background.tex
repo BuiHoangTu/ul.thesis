@@ -3,6 +3,7 @@
 
 %: ----------------------- introduction file header -----------------------
 \chapter{Background}
+\label{ch:background}
 
 % the code below specifies where the figures are stored
 \ifpdf
@@ -10,3 +11,92 @@
 \else
     \graphicspath{{2_background/figures/EPS/}{2_background/figures/}}
 \fi
+
+
+\section{Wind Turbine Condition Monitoring}
+\label{sec:wt-condition-monitoring}
+
+\gls{wtcm} is the systematic process of continuously or periodically assessing the operational health of wind turbine components, such as gearboxes, bearings, blades, and generators, through the measurement and analysis of operational parameters including vibration, temperature, acoustic emissions, and power output~\citep{li_comprehensive_2023,charabi_wind_2020,henrique_global_nodate}.
+The principal objective of \gls{wtcm} is the early detection of anomalies or degradation, thereby enabling timely maintenance interventions that mitigate the risk of catastrophic failure, minimize unplanned downtime, and sustain optimal energy production throughout the turbine's service life.
+
+Modern \gls{wtcm} typically integrates dedicated \gls{cms} with \gls{scada} platforms.
+\gls{cms} record high-frequency sensor data related to mechanical and structural health, whereas \gls{scada} provides low-frequency operational and environmental data, along with historical event logs including failures, repairs, and downtimes~\citep{dao_wind_2019}.
+The combined datasets underpin reliability analyses, facilitate the optimization of operational strategies, and form the foundation for data-driven maintenance planning.
+
+Maintenance activities within the wind energy sector are generally classified into three principal categories~\citep{yang_operations_2021,henrique_global_nodate}:
+
+Reactive (Corrective) Maintenance: Interventions performed only after a failure has occurred or performance has dropped below acceptable thresholds.
+While such actions restore operational capability, they are typically associated with elevated costs due to unplanned downtime, emergency repairs, and potential collateral damage to adjacent components.
+
+\gls{cbm}: A proactive strategy in which maintenance is triggered when monitored parameters, such as vibration or temperature, deviate from predefined operational thresholds.
+\gls{cbm} enables faults to be addressed in their early stages, reducing the likelihood of unplanned outages and extending component lifespan.
+
+\gls{pdm}: An advanced form of proactive maintenance that leverages statistical modeling, historical trends, and increasingly, machine learning algorithms to forecast the remaining useful life of components.
+Maintenance is scheduled in advance of predicted failures, often incorporating \gls{cbm} data but focusing on forecasting rather than detection.
+
+The fundamental distinction between these strategies lies in their temporal relationship to component degradation: \gls{cbm} is driven by current health indicators, \gls{pdm} anticipates future failure events, and reactive maintenance responds after failures have occurred.
+In practice, hybrid maintenance policies are often adopted, combining elements of each strategy to optimize cost, reliability, and risk.
+Such hybrid approaches are particularly relevant in offshore wind energy applications, where logistical constraints, weather-related access limitations, and high operational costs necessitate highly efficient maintenance planning~\citep{yang_operations_2021}.
+
+
+\section{Normal Behaviour Monitoring}
+\label{sec:normal-behaviour-monitoring}
+\gls{nbm} refers to the modeling of a system's nominal operational patterns in order to detect deviations that may indicate emerging faults or performance degradation.
+In the context of wind turbine condition monitoring, \gls{nbm} leverages historical and real-time operational data to establish a representation of “healthy” turbine behaviour.
+Any statistically significant difference from this model is treated as a potential anomaly warranting further investigation or maintenance intervention.
+
+\gls{nbm} is particularly relevant for wind turbines due to their complex, non-linear dynamics and the wide variability of environmental conditions under which they operate.
+Unlike threshold-based monitoring — where fixed limits on operational parameters trigger alerts — \gls{nbm} captures multivariate and temporal correlations between signals, providing a more nuanced picture of system health.
+However, the accuracy of \gls{nbm} depends on the availability of sufficient high-quality “normal” data and the ability of the modeling technique to cope with non-stationary operating patterns (e.g., seasonal wind patterns, load variations).
+
+Modern \gls{scada} systems now generate high-frequency time-series telemetry data from various turbine components, enabling what is commonly referred to as \gls{nbm} — the task of modeling normal operational patterns to detect abnormal deviations.
+
+The methods employed in \gls{nbm} broadly fall into three categories: statistical approaches, traditional (shallow) machine learning, and deep learning-based methods.
+
+Statistical methods, such as Ordinary Least Squares, ARIMA, and \gls{pca}, are still used in certain settings~\citep{chesterman_overview_2023}.
+These models are computationally efficient, interpretable, and data-efficient, making them suitable for constrained environments or first-pass screening.
+However, their simplicity limits their ability to model complex, non-linear system behaviour.
+
+Traditional machine learning models, including Random Forests, Gradient Boosting Machines, and Support Vector Machines, have grown more popular due to their improved performance on non-linear tasks and moderate data requirements.
+These methods still require feature engineering and are sensitive to class imbalance, but they offer a strong middle ground in the performance-complexity trade-off~\citep{ben_ali_online_2018, bilendo_normal_2022, liu_wind_2022}.
+
+Deep learning methods—especially neural network-based architectures—have rapidly become the dominant approach in recent research.
+These models offer superior capability to capture non-linear dependencies in high-dimensional data but come at the cost of increased computational demand and reduced interpretability.
+Within this category, \glspl{ae} have emerged as a popular choice for anomaly detection, particularly in unsupervised or semi-supervised settings.
+Like \gls{pca}, Autoencoders learn latent representations of normal behaviour via dimensionality reduction, but with significantly greater expressive power due to their ability to model non-linearities.
+
+Accordingly, a growing body of research has focused on applying \gls{ml} and deep learning techniques to enable condition monitoring and early fault detection in wind turbines.
+Among these, Autoencoders have become one of the most widely adopted architectures for unsupervised and semi-supervised anomaly detection~\citep{chesterman_overview_2023}.
+
+Recurrent architectures such as \gls{lstm}s have been widely applied to time-series modeling in \gls{scada}-based \gls{nbm} due to their ability to capture sequential dependencies. 
+However, \gls{cnn}s have also shown strong performance, as they can efficiently capture local spatio-temporal patterns in high-dimensional data. 
+\cite{bai_empirical_2018} pointed out that convolutional networks achieve superior performance than \gls{lstm} in modeling time series.
+
+Recent trends point towards deep reconstructive normal behaviour models—architectures that not only learn a latent representation of healthy behaviour but also attempt to reconstruct the original signal.
+By analyzing reconstruction errors, these models can highlight subtle deviations that may be indicative of incipient faults.
+Section~\ref{sec:deep-reconstructive} explores these models in detail, including their theoretical underpinnings, design considerations, and application to wind turbine condition monitoring.
+
+
+
+\section{Deep Reconstructive Normal Behaviour Models}
+\label{sec:deep-reconstructive}
+Deep reconstructive normal behaviour models are a subset of deep learning architectures designed to learn compact latent representations of healthy system behaviour and reconstruct the original input from these representations. 
+The underlying principle is that, when trained exclusively on normal operational data, such models will reproduce in-distribution samples with high fidelity but will fail to accurately reconstruct out-of-distribution or anomalous inputs. 
+The reconstruction error — typically measured as a distance between the input and its reconstruction — can then be used as an anomaly score.
+
+In the context of wind turbine condition monitoring, this approach is well-suited to the operational reality that many types of faults are rare or previously unseen. 
+By modelling only the normal state, reconstructive models can detect novel anomalies without requiring extensive fault-labelled datasets. 
+Furthermore, the high dimensionality and temporal correlations present in \gls{scada} sensor streams make deep architectures particularly advantageous, as they can model non-linear dependencies that simpler statistical methods cannot capture.
+
+The most widely used reconstructive models for \gls{nbm} are \glspl{ae} and their variants. 
+A standard \gls{ae} consists of an encoder, which maps the input data into a lower-dimensional latent space, and a decoder, which reconstructs the data from this latent representation. 
+Variants such as Denoise Autoencoders, Variational Autoencoders (VAEs), and Convolutional Autoencoders introduce modifications to improve robustness, regularise the latent space, or exploit spatial structure in the input.
+
+Training strategies vary from purely unsupervised — using only normal operational data — to semi-supervised or supervised approaches that incorporate labelled anomalies. 
+Loss functions also differ: while \gls{mse} is the most common choice, alternative or complementary terms such as maximum mean discrepancy, adversarial losses, or frequency-domain metrics can enhance sensitivity to particular fault types.
+
+Despite their promise, deep reconstructive models face challenges.
+These include overfitting to noise in the training set, inadvertently learning to reconstruct certain anomalies if present during training, and a general lack of interpretability. 
+Addressing these limitations requires careful model selection, training data curation, and evaluation under realistic operating conditions.
+
+This study focuses on evaluating \gls{cnn}-based Autoencoder approaches under varying architectural configurations and training strategies, as further detailed in Chapters~\ref{ch:related-works} and \ref{ch:methodology}.
