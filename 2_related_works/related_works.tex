@@ -125,7 +125,9 @@ The limitations of handcrafted features, residual thresholding, and linear dista
 \glspl{ae} offer the ability to learn compact, nonlinear representations of multivariate time series directly from raw data, without requiring manual feature design. 
 In their simplest form, these models are trained to reproduce normal operating data, and anomalies are flagged when reconstruction errors exceed a threshold.
 
-Early studies demonstrated the feasibility of this paradigm. \cite{fan_analytical_2018}, working on building energy data, compared vanilla, denoising, and variational autoencoders. They showed that reconstruction-based \glspl{ae} could capture normal consumption patterns and detect deviations, but performance degraded when anomalies resembled normal behaviour.
+Early studies demonstrated the feasibility of this paradigm.
+\cite{fan_analytical_2018}, working on building energy data, compared vanilla, denoising, and variational autoencoders.
+They showed that reconstruction-based \glspl{ae} could capture normal consumption patterns and detect deviations, but performance degraded when anomalies resembled normal behaviour.
 Similar conclusions were reached by~\cite{ahmad_autoencoder-based_2020}, who applied vanilla \glspl{ae} to rotating machinery.
 While the models reconstructed healthy signals accurately, they struggled with subtle or noise-like degradations, leading to false alarms and poor separability between normal and faulty states.
 
