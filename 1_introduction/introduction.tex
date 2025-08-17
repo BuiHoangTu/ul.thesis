@@ -13,33 +13,32 @@
 \fi
 
 
-Following global commitments to Net Zero\webfootnote{https://netzeroclimate.org/what-is-net-zero-2/}{August 13, 2025}, renewable energy sources are playing an increasingly vital role in the modern energy mix.
+Following global commitments to Net Zero, renewable energy sources are playing an increasingly vital role in the modern energy mix.
 Among these, wind energy stands out as a key contributor due to its scalability, cost-effectiveness, and minimal carbon footprint.
 According to the Wind Report 2025~\citep{henrique_global_nodate}, global wind power capacity saw the addition of 117 GW in 2024, bringing the total to 1,136 GW—a year-over-year increase of 11\%.
 The report further projects an average annual growth rate of 8.8\% through 2030.
 
-Primary wind power expenditures lie in installation and ongoing maintenance~\citep{charabi_wind_2020}. 
+While wind power itself is essentially free, the primary expenditures lie in installation and ongoing maintenance~\citep{charabi_wind_2020}.
 Thanks to technological advancements, installation costs are steadily declining; however, maintenance costs remain a growing concern.
-Extensive research such as the one by~\cite{yang_operations_2021} has focused on optimizing maintenance scheduling to mitigate these costs.
+More and more research such as the one by~\cite{yang_operations_2021} has focused on optimizing maintenance scheduling to mitigate these costs.
 According to~\citep{dao_wind_2019}, maintenance can account for approximately 20\% to 30\% of the total cost of wind energy production.
 
 Wind turbines are increasingly being installed in remote and offshore locations, where accessibility is limited and environmental conditions are more extreme~\citep{henrique_global_nodate}.
 While such placements reduce installation costs per kWh due to higher wind and turbine placement availability, they simultaneously make maintenance operations significantly more expensive and logistically challenging.
 
 This context has accelerated the shift toward condition-based maintenance strategies supported by telemetry and remote monitoring. 
-Modern \gls{scada} systems now generate high-frequency time-series data from various turbine components, enabling what is commonly referred to as \gls{nbm} — the task of modeling normal operational patterns to detect abnormal events.
+Modern \gls{scada} systems now generate high-frequency time-series data from various turbine components, enabling the modeling of normal operational behaviour to detect signs of faults. 
 A variety of approaches exist for this task, ranging from statistical models to advanced deep learning architectures.
 The technical foundations of these methods, along with their advantages and limitations, are reviewed in \textbf{Chapter~\ref{ch:background}}.
 
 
 \section{Motivation}
 \label{sec:motivation}
-In this work, we adopt an \gls{ae}-based methodology due to their ability to learn compact representations of high-dimensional input data without requiring labeled anomalies.
+\glspl{ae}, in particular, are favored due to their ability to learn compact representations of high-dimensional input data without requiring labeled anomalies.
 Typically, an \gls{ae} is trained solely on data collected during normal turbine operation, under the assumption that it will struggle to accurately reconstruct anomalous inputs.
 This allows the model to detect novel anomalies, which is the common case in wind turbine condition monitoring.
 However, authors usually assume a small portion of the data is anomalous (e.g., 5--10\%)~\citep{fan_analytical_2018}, which makes it difficult to compare different methods in a standardized and reproducible manner.
 
-%juan Mention the fact that current research often relies on toy datasets or very controlled setups
 In recent years, labeled data has become more available, enabling the use of supervised training signals to improve anomaly detection performance.
 The approach ranges from traditional supervised learning methods like SVM or decision trees to more advanced techniques like transfer learning and semi-supervised learning.
 That said, \glspl{ae} remain a popular choice due to their ability to detect novel anomalies.
@@ -51,7 +50,6 @@ By systematically comparing Autoencoder architectures under realistic industrial
 \label{sec:problem-statement}
 Despite the increasing use of machine learning techniques for wind turbine condition monitoring, there remains a critical gap in how anomaly detection models—particularly \glspl{ae}—are evaluated and benchmarked.
 Existing studies often rely on strong assumptions about the anomaly rate in training data (e.g., 5-10\%) or lab experiments where the systems operated until failure.
-%juan This claim can be dangerous, as it may create the expectation to the reader that you will perform cross-studies comparisons with other works, which is not the case rephrase this in terms of "ablation studies" which study the impact of each part of the model on eprformance, which is what you did
 These conditions can vary significantly in real-world deployments and make cross-study comparisons unreliable.
 
 Moreover, while various \gls{ae} architectures and training strategies (e.g., unsupervised, semi-supervised) have been proposed, there has been no systematic investigation into how these differences affect anomaly detection performance in the wind energy domain.
