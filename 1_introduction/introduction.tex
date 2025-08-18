@@ -29,7 +29,7 @@ While such placements reduce installation costs per kWh due to higher wind and t
 This context has accelerated the shift toward condition-based maintenance strategies supported by telemetry and remote monitoring. 
 Modern \gls{scada} systems now generate high-frequency time-series data from various turbine components, enabling what is commonly referred to as \gls{nbm} — the task of modeling normal operational patterns to detect abnormal events.
 A variety of approaches exist for this task, ranging from statistical models to advanced deep learning architectures.
-The technical foundations of these methods, along with their advantages and limitations, are reviewed in \textbf{Chapter~\ref{ch:background}}.
+The technical foundations of these methods, along with their advantages and limitations, are reviewed in Chapter~\ref{ch:background}.
 
 
 \section{Motivation}
@@ -63,7 +63,7 @@ Therefore, this study aims to fill this gap by providing a comprehensive evaluat
 \section{Aims and Contributions}
 \label{sec:aims}
 This dissertation revisits \gls{ae}-based anomaly detection within the context of wind turbine condition monitoring, leveraging a proprietary, labeled dataset provided by an industry partner.
-This unique access enables a more realistic and systematic evaluation of \gls{ae} behavior, addressing key limitations found in prior research that relied heavily on synthetic assumptions or unlabeled datasets.
+This unique access enables a more realistic and systematic evaluation of \gls{ae} behaviour, addressing key limitations found in prior research that relied heavily on synthetic assumptions or unlabeled datasets.
 By doing so, this work aims to bridge the gap between academic research and industrial deployment.
 
 Firstly, the study investigates how Autoencoders reconstruct both normal and abnormal samples, providing insights into the reliability of reconstruction error as an anomaly detection signal in realistic industrial settings.
@@ -83,3 +83,17 @@ This includes a detailed analysis of how different \gls{ae} components influence
 \section{Thesis Structure}
 \label{sec:thesis-structure}
 %% TODO: add a figure with the structure of the thesis and the chapters
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{nbm-path-diagram.pdf}
+    \caption{Structure of the thesis.}
+    \label{fig:thesis-structure}
+\end{figure}
+
+The thesis's structure is shown in Figure~\ref{fig:thesis-structure}.
+The remainder is organized as follows. 
+Chapter~\ref{ch:background} introduces the background of wind turbine condition monitoring, normal behaviour monitoring, and deep reconstructive models, establishing the theoretical basis for this work. 
+Chapter~\ref{ch:related-works} reviews related studies, ranging from traditional statistical approaches to machine learning and deep reconstruction-based techniques, highlighting their respective strengths and limitations. 
+Chapter~\ref{ch:methodology} describes the methodology, including the dataset, preprocessing pipeline, model architectures, training strategies, and evaluation procedures while Chapter~\ref{ch:results} presents and discusses the results, comparing the performance of different model variants and analysing the impact of architectural choices and loss functions. 
+Finally, Chapter~\ref{ch:conclusion} concludes the thesis by summarizing the key findings and contributions, and by outlining potential directions for future research.
