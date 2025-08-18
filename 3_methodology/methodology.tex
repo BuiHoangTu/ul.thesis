@@ -360,6 +360,7 @@ For classification, I use the standard binary cross-entropy loss, which measures
 This encourages the model to assign high confidence to normal samples and low confidence to abnormal ones.
 
 %juan Here you call MMD and Wasserstein distance-based losses but later in the text you call them distribution-alignment ones. All of them are distances but MSE is point-to-point, Mahalanobis is point-to-distribution, and MMD and Wasserstein are distribution-to-distribution. Fourier loss is also point-to-point, right? As it is simply the MSE of the Fourier (please, correct me if I'm wrong).
+%tu yes, you are right, I will change the text to be more consistent
 For reconstruction, the primary objective is to accurately reproduce the input time series.
 Thus, \gls{mse} is used as the base reconstruction loss, computed as the average squared difference between the input and its reconstruction.
 Additional distance-based losses such as \gls{mmd}, Wasserstein distance, and spectral-domain differences (e.g., Fourier loss) are also considered as auxiliary components to guide reconstruction quality.
