@@ -48,6 +48,17 @@
 \usepackage{graphics} % for improved inclusion of graphics
 %\usepackage{wrapfig} % to include figure with text wrapping around it
 \usepackage[margin=10pt,font=small,labelfont=bf]{caption} % for improved layout of figure captions with extra margin, smaller font than text
+
+%%%%%%%%%%%%%%%%%%%%%%%%% layout as required %%%%%%%%%%%%%%%%%%%%%%%%%
+% \usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry} % 2.5cm margins
+% % \usepackage{mathptmx} % Times New Roman font
+% % \usepackage[11pt]{setspace} % 11pt font size (change to 12pt if needed)
+% \renewcommand{\baselinestretch}{1.5} % 1.5 line spacing
+
+% % \renewcommand{\sfdefault}{phv} % Optional: Helvetica for sans-serif
+% % \renewcommand{\ttdefault}{cmtt} % Optional: Courier for monospace
+
+
 \usepackage{fancyhdr} % for better header layout
 \usepackage{eucal}
 % \usepackage .{syntax} 
@@ -282,14 +293,14 @@
 %	{{\@cityofbirth} \par}    
 {\small
 	\vspace*{1ex}
-    {{\@researchcentre} \par} 
-	\vspace*{1ex}
+  %   {{\@researchcentre} \par} 
+	% \vspace*{1ex}
     {{\@faculty} \par}
 	\vspace*{1ex}
     {{\@department} \par}
 	\vspace*{1ex}
     {{\@university} \par}
-	\vspace*{25mm}
+	\vspace*{20mm}
     {{\submittedtext} \par}
 	\vspace*{1ex}
     {\it {\@degree} \par}
