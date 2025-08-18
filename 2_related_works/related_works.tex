@@ -13,53 +13,35 @@
 \fi
 
 
-\section{Wind Turbine Condition Monitoring}
-\label{sec:wind-turbine-condition-monitoring}
-\gls{wtcm} plays a central role in reducing operational costs and improving the reliability of both onshore and offshore wind farms.
-As Dao et al.
-(2019) note, operational and maintenance costs account for approximately 20-30\% of the Levelised Cost of Energy, making early fault detection a key strategy for cost control.
-Condition monitoring enables operators to identify incipient failures, minimize unplanned downtime, and optimize energy production through targeted maintenance.
-\cite{yang_operations_2021} similarly emphasize that proactive monitoring improves asset longevity and reduces corrective maintenance needs, with particular benefits for offshore installations where accessibility is constrained.
-
-Effective \gls{wtcm} integrates multiple data sources, including \gls{scada} systems, \gls{cms}, and historical failure logs.
-\gls{scada} data—capturing variables such as power output, rotor speed, vibration, and temperature—facilitates real-time anomaly detection, while \gls{cms} focuses on mechanical components such as gearboxes, bearings, and drive shafts.
-The combination of these sources supports not only short-term operational decisions but also long-term reliability modelling.
-
-
-\subsection{Traditional Statistical Approaches}
-\label{subsec:traditional-statistical-approaches}
-Early approaches to \gls{wtcm} relied heavily on statistical models for anomaly detection and degradation trend analysis.
+\section{Traditional Statistical Approaches}
+\label{sec:traditional-statistical-approaches}
+Early approaches to \gls{nbm} relied heavily on statistical models for anomaly detection and degradation trend analysis.
 ARIMA models were applied to capture temporal dependencies in \gls{scada} data, particularly for forecasting power output or component temperatures under normal operating conditions~\cite{chesterman_overview_2023}.
 \gls{pca} was used to reduce the dimensionality of multivariate datasets and to extract latent features associated with turbine health status.
 In parallel, threshold-based monitoring systems compared sensor readings against predefined limits, triggering alarms when deviations exceeded acceptable ranges.
 
-While these statistical methods provided valuable insights in the early stages of \gls{wtcm}, they suffer from notable limitations.
+While these statistical methods provided valuable insights in the early stages of \gls{nbm}, they suffer from notable limitations.
 Many approaches assume linear relationships between variables, which rarely hold in the complex, nonlinear dynamics of turbine operation.
 Moreover, their scalability to modern high-frequency, high-dimensional \gls{scada} datasets is limited—particularly as offshore wind farms generate terabytes of heterogeneous sensor data.
 Threshold-based approaches, in particular, are prone to false alarms when environmental variability (e.g., wind speed fluctuations) is not adequately modelled.
 
 
-
-\subsection{Transition to Machine Learning Techniques}
-\label{subsec:transition-to-machine-learning-techniques}
-The statistical foundations of \gls{wtcm} have directly informed the transition to \gls{ml}-based approaches.
-
+The statistical foundations of \gls{nbm} have directly informed the transition to \gls{ml}-based approaches.
 For example, \gls{pca}'s dimensionality reduction principles underpin the structure of autoencoders used for unsupervised anomaly detection.
 Similarly, ARIMA's time series modelling concepts inspire \glspl{rnn} and temporal convolutional networks that capture complex, nonlinear dependencies.
 Threshold-based methods have evolved into supervised learning classifiers that learn optimal decision boundaries from historical fault data, rather than relying on fixed limits.
 As turbine datasets have grown in size and complexity, these \gls{ml} approaches have demonstrated improved fault detection accuracy, adaptability to nonstationary conditions, and robustness to noisy inputs — making them a natural evolution of earlier statistical techniques.
 
 
-\subsection{Conclusion}
-Statistical methods laid the foundation for modern \gls{wtcm} by providing initial frameworks for anomaly detection and fault diagnosis.
-However, their inherent limitations in handling non-linearity and high-dimensional data have necessitated the shift toward \textbf{data-driven machine learning approaches}.
+Statistical methods laid the foundation for modern \gls{nbm} by providing initial frameworks for anomaly detection and fault diagnosis.
+However, their inherent limitations in handling non-linearity and high-dimensional data have necessitated the shift toward data-driven machine learning approaches.
 The integration of \gls{ml} techniques, such as autoencoders and \glspl{lstm}, has significantly enhanced the accuracy and scalability of wind turbine monitoring, enabling more reliable and cost-effective maintenance strategies.
 Future research should focus on hybrid models that combine statistical robustness with \gls{ml} adaptability to further optimize wind turbine performance and reduce maintenance costs.
 
 
-\section{Machine Learning in Normal Behavior Models}
-\label{sec:machine-learning-in-normal-behavior-models}
-More sophisticated machine learning techniques have been developed to model normal behavior in wind turbine systems. 
+\section{Machine Learning in Normal Behaviour Monitoring}
+\label{sec:machine-learning-in-normal-behaviour-monitoring}
+More sophisticated machine learning techniques have been developed to model normal behaviour in wind turbine systems. 
 These approaches leverage large volumes of operational data to learn intricate patterns and relationships, enabling more accurate predictions of expected performance under varying conditions.
 In addition, they are less reliant on manually defined thresholds and technical knowledge, allowing for more flexible and adaptive monitoring systems.
 
@@ -136,7 +118,7 @@ To address these weaknesses, subsequent work has introduced architectural and lo
 Their results highlight the importance of combining reconstruction with discriminative signals, a finding that underpins the hybrid \gls{ae}-classifier models developed in this thesis.
 In addition, they also demonstrated transfer learning from  labeled \gls{scada} data to the target label-less one.
 This help saves manual labeling large amounts of data.
-However, this early work used a relatively simple architecture, \gls{mlp}-like, which dissolved the temporal context of time series data.
+However, this early work used a relatively simple architecture, \gls{mlp}-like, which nullified the temporal context of time series data.
 
 Similarly, \cite{chen_mama_2021} explored sparsity in \glspl{ae} by introducing memory mechanism.
 It stores hashed representations of normal inputs.
@@ -144,8 +126,8 @@ During reconstruction, the model retrieves the closest memory entry to guide the
 This, in theory, makes a stricter constrain compared to sparse regularization, as the model must reconstruct from a limited set of stored patterns.
 It also allows both sparsity and temporal context, unlike other works on sparse \glspl{ae} that typically use \gls{mlp} architectures.
 In addition, the study also introduced a multi-scale attention mechanism to focus on different temporal resolutions.
-These innovations collectively enhance the model's ability to differentiate between normal and anomalous patterns. 
-However, they also increase the model's complexity and computational requirements. 
+These innovations collectively enhance the model's ability to differentiate between normal and anomalous patterns with the cost of increased model complexity and computational requirements.
+The study demonstrated an impressive result in image anomaly detection tasks.
 
 \cite{yao_svd-ae_2024} incorporated Fourier-domain loss with \gls{mse} to push the attention to the frequency domain.
 The authors also used an auto-weighting mechanism to balance the contributions of different frequency bands as shown in Equation~\ref{eq:auto-weight-loss}.
@@ -154,7 +136,8 @@ The authors also used an auto-weighting mechanism to balance the contributions o
 \label{eq:auto-weight-loss}
 \mathcal{L}_{\text{total}} = \sum_{i} \frac{1}{2\sigma_i^2} \mathcal{L}_i + \log \sigma_i^2
 \end{equation}
-where $\mathcal{L}_i$ is the $i$-th loss term, and $\sigma_i^2$ is a learnable parameter that dynamically adjusts the contribution of each component during training. 
+where $\mathcal{L}_i$ is the $i$-th loss term, and $\sigma_i^2$ is a learnable parameter that dynamically adjusts the contribution of each component during training.
+The authors also proposed using the \gls{auc} as a unified metric to compare the performance of different \gls{ae} architectures.
 
 Taken together, these studies illustrate both the promise and the persistent limitations of reconstruction-based AEs.
 They provide compact, unsupervised models of normal behaviour, but reconstruction error alone is often insufficient for robust anomaly detection, particularly when anomalies mimic normal fluctuations or when operating regimes vary.
