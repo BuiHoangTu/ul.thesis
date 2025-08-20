@@ -40,7 +40,11 @@ This allows the model to detect novel anomalies, which is the common case in win
 However, authors usually assume a small portion of the data is anomalous (e.g., 5--10\%)~\citep{fan_analytical_2018}, which makes it difficult to compare different methods in a standardized and reproducible manner.
 
 %juan Mention the fact that current research often relies on toy datasets or very controlled setups
+%tu changed 1
 In recent years, labeled data has become more available, enabling the use of supervised training signals to improve anomaly detection performance.
+Despite this progress, much of the existing research still relies on highly controlled experimental setups, such as Case Western Reserve University's vibration benchmarks~\citep{wen_new_2019} or small-scale lab tests.
+While these environments enable clearer evaluation, they often fail to reflect the noise, heterogeneity, and imbalance encountered in real-world \gls{scada} data from operational wind turbines.
+
 The approach ranges from traditional supervised learning methods like SVM or decision trees to more advanced techniques like transfer learning and semi-supervised learning.
 That said, \glspl{ae} remain a popular choice due to their ability to detect novel anomalies.
 However, there still lacks a systematic exploration of how different \gls{ae} architectures and training strategies affect anomaly detection performance, especially in the context of wind turbine condition monitoring.
@@ -52,7 +56,8 @@ By systematically comparing Autoencoder architectures under realistic industrial
 Despite the increasing use of machine learning techniques for wind turbine condition monitoring, there remains a critical gap in how anomaly detection models—particularly \glspl{ae}—are evaluated and benchmarked.
 Existing studies often rely on strong assumptions about the anomaly rate in training data (e.g., 5-10\%) or lab experiments where the systems operated until failure.
 %juan This claim can be dangerous, as it may create the expectation to the reader that you will perform cross-studies comparisons with other works, which is not the case rephrase this in terms of "ablation studies" which study the impact of each part of the model on eprformance, which is what you did
-These conditions can vary significantly in real-world deployments and make cross-study comparisons unreliable.
+%tu changed 1
+Nevertheless, such assumptions rarely hold in industrial environments, where data distributions, failure modes, and operational conditions vary significantly.
 
 Moreover, while various \gls{ae} architectures and training strategies (e.g., unsupervised, semi-supervised) have been proposed, there has been no systematic investigation into how these differences affect anomaly detection performance in the wind energy domain.
 This lack of rigorous comparative analysis impedes the development of robust, generalizable models and slows down the deployment of \gls{ml}-based predictive maintenance systems in industry.
@@ -82,7 +87,6 @@ This includes a detailed analysis of how different \gls{ae} components influence
 
 \section{Thesis Structure}
 \label{sec:thesis-structure}
-%% TODO: add a figure with the structure of the thesis and the chapters
 
 \begin{figure}[h!]
     \centering
