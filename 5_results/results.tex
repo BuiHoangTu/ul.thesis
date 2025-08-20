@@ -134,7 +134,7 @@ Performance is poor at both very small and very large latent sizes.
 \end{figure}
 
 This result suggests that either the difference in reconstruction error is highly non-linear and not captured by a simple threshold, or that the vanilla \gls{ae} lacks the representational capacity for effective Normal Behaviour Modeling in this dataset.
-
+Since no pattern emerged, I did not perform further experiments with the compression rate for vanilla \gls{ae}.
 
 \subsection{Classification Net from Reconstruction Errors}
 While tuning the latent size yields a modest improvement, the best \gls{auc} remains insufficient for reliable detection. 
@@ -145,37 +145,41 @@ This indicates that the \gls{mlp} successfully learns a more complex decision bo
 Other metrics, including F1-score, precision, and recall, also show notable improvements, as summarized in Table~\ref{tab:vanilla-mlp-metrics}.
 
 
-%juan I know the fact that tab:vanilla-mlp-metrics is too narrow kind of looks that there is a lot of unused blank space, but forcing the table environment to fit this way looks really weird. I suggest to transpose the table, so it becomes page-width (same with tab:anomaly-reinforced-ae-metrics)
+%juan-done I know the fact that tab:vanilla-mlp-metrics is too narrow kind of looks that there is a lot of unused blank space, but forcing the table environment to fit this way looks really weird. I suggest to transpose the table, so it becomes page-width (same with tab:anomaly-reinforced-ae-metrics)
 % juan Also, I noticed the confusion metrics figures are not very space-efficient, as they are too wide for the font size. And for example, in fig:m_head-cm-classify-head and fig:m_head-cm-RErr, you cannot even see the numbers. For this there are two solutions i) Regenerate the images with matplotlib using a smaller total figure size, and this will automatically make the font larger, or ii) Redo them in Latex, as a Table environment, it's not so complicated and you can keep the colors, the only problem is the heatmap scale but, honestly, it is not really necessary, as you are only seeing four cells, but if you really want to keep the color bar, then you may use tikz (third option? But I think it's too much for so little).
-\begin{figure}[!ht]
+%tu, Thanks for your suggestions regarding the table. About the CM, I think it looks reasonable now. How about you?
+\begin{table}[h]
     \centering
-    \begin{minipage}{0.3\textwidth} % Table
-        \begin{table}[H]
-            \centering
-            \caption{Classification metrics for \gls{mlp} trained on vanilla \gls{ae} reconstruction errors.}
-            \label{tab:vanilla-mlp-metrics}
-            \begin{tabular}{lc}
-                \toprule
-                \textbf{Metric} & \textbf{Value} \\
-                \midrule
-                Accuracy & 0.7515 \\
-                Recall & 0.8582 \\
-                Precision & 0.7785 \\
-                F1-score & 0.8164 \\
-                AUC & 0.7920 \\
-                \bottomrule
-            \end{tabular}
-        \end{table}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.68\textwidth} % Confusion Matrix
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\linewidth]{vanilla-mlp-cm.pdf}
-            \caption{Confusion matrix for \gls{mlp} classifier trained on vanilla \gls{ae} reconstruction errors.}
-            \label{fig:vanilla-mlp-cm}
-        \end{figure}
-    \end{minipage}
+    \caption{Classification metrics for \gls{mlp} trained on vanilla \gls{ae} reconstruction errors.}
+    \label{tab:vanilla-mlp-metrics}
+    \begin{tabular}{lccccc}
+        \toprule
+        
+        \textbf{Metric} & 
+        Accuracy & 
+        Recall & 
+        Precision & 
+        F1-score &
+        AUC \\
+        
+        \midrule
+
+        \textbf{Value} & 
+        0.7515 & 
+        0.8582 & 
+        0.7785 & 
+        0.8164 & 
+        0.7920 \\
+        
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{vanilla-mlp-cm.pdf}
+    \caption{Confusion matrix for \gls{mlp} classifier trained on vanilla \gls{ae} reconstruction errors.}
+    \label{fig:vanilla-mlp-cm}
 \end{figure}
 
 The corresponding confusion matrix shown in Figure~\ref{fig:vanilla-mlp-cm} reveals that the vanilla \gls{ae} reconstruction errors allow relatively good confirmation of normal status.
@@ -208,17 +212,24 @@ Next subsection evaluates the classification performance of the multi-head autoe
 
 
 \subsection{Latent Space Size Analysis}
-%juan ON this regard, can you explain why in the previous section you didn't perform the 30 runs for the vanilla AE, as you did for the multi-head AE? The answer is that no pattern was noticed and Vanilla kept the same performance across runs, but it is not clear in the text that for that many runs would not make any difference.
+%juan-done ON this regard, can you explain why in the previous section you didn't perform the 30 runs for the vanilla AE, as you did for the multi-head AE? The answer is that no pattern was noticed and Vanilla kept the same performance across runs, but it is not clear in the text that for that many runs would not make any difference.
+%tu I mentioned that the vanilla graph shows no non-linear patterns. But you are right, it is not very clear that "no pattern".
 %juan Also, in the previous comparison you displayed directly the number of channels and here you display the compression rate. Is it complicated for you to regenerate the figures with a consistent x-axis? I'd prefer both displaying compression rate.
 Similar to the vanilla \gls{ae}, I perform a sweep over latent space sizes to investigate their impact on anomaly detection performance for the multi-head \gls{ae}. 
 At each latent size, 30 models are trained, and its reconstruction error is evaluated on the validation set.
 The \gls{auc} is computed for each latent size, and the box plot results are shown in Figure~\ref{fig:multi-head-latent-search}.
+The box plot for each compression rate summarizes the distribution of \gls{auc} scores: the central box spans the \gls{iqr}, from the first quartile (Q1, 25th percentile) to the third quartile (Q3, 75th percentile). 
+The horizontal line inside the box represents the median (50th percentile) value. 
+The whiskers extend from the box to the smallest and largest values within $1.5 \times \text{IQR}$ from the lower and upper quartiles, respectively. 
+Data points beyond the whiskers are considered potential outliers and are plotted as individual points. 
+The green triangles ($\blacktriangle$) represent the mean value for each distribution. 
 
-\begin{figure}[h!]
+\begin{figure}[h]
     \centering
     \includegraphics[width=1.2\textwidth]{search-compression-classify_model.pdf}
-    %juan Can you please add in the description of the figure what do the triangles and the colored horizontal line inside the box mean?
-    \caption{\gls{auc} vs latent size for multi-head \gls{ae}.}
+    %juan-done Can you please add in the description of the figure what do the triangles and the colored horizontal line inside the box mean?
+    %tu I added the description of the figure in a text the ref the figure, please check if it is ok now.
+    \caption{AUC vs latent size for multi-head AE.}
     \label{fig:multi-head-latent-search}
 \end{figure}
 
@@ -375,35 +386,37 @@ The core idea is to explicitly shape the reconstruction objective so that the mo
 In this formulation, anomalies do not simply appear as poorly reconstructed by chance; instead, the model is actively guided to produce reconstructions that accentuate deviations for abnormal inputs, as presented by Equation~\ref{eq:reinforced-loss} in Subsection~\ref{subsec:training-strategies}
 This reinforcement mechanism aims to improve robustness and detection performance, even for anomaly types not encountered during training.
 
-\begin{figure}[!ht]
+\begin{table}[h]
+\centering
+\caption{Classification metrics for Anomaly Reinforced Autoencoder.}
+\label{tab:anomaly-reinforced-ae-metrics}
+\begin{tabular}{lccccc}
+    \toprule
+    
+    \textbf{Metric} &
+    Accuracy &
+    Recall &
+    Precision &
+    F1-score &
+    AUC \\
+    
+    \midrule
+
+    \textbf{Value} &
+    0.8776 &
+    0.9651 &
+    0.8782 &
+    0.9196 &
+    0.8607 \\
+    \bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
     \centering
-    \begin{minipage}{0.3\textwidth} % Table
-        \begin{table}[H]
-            \centering
-            \caption{Classification metrics for Anomaly Reinforced Autoencoder.}
-            \label{tab:anomaly-reinforced-ae-metrics}
-            \begin{tabular}{lc}
-                \toprule
-                \textbf{Metric} & \textbf{Value} \\
-                \midrule
-                Accuracy & 0.8776 \\
-                Recall & 0.9651 \\
-                Precision & 0.8782 \\
-                F1-score & 0.9196 \\
-                AUC & 0.8607 \\
-                \bottomrule
-            \end{tabular}
-        \end{table}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.68\textwidth} % Confusion Matrix
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\linewidth]{abnorm-reinforce-cm.pdf}
-            \caption{Confusion matrix for Anomaly Reinforced Autoencoder.}
-            \label{fig:anomaly-reinforced-ae-cm}
-        \end{figure}
-    \end{minipage}
+    \includegraphics[width=\linewidth]{abnorm-reinforce-cm.pdf}
+    \caption{Confusion matrix for Anomaly Reinforced Autoencoder.}
+    \label{fig:anomaly-reinforced-ae-cm}
 \end{figure}
 
 
