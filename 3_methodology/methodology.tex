@@ -596,6 +596,14 @@ The core metrics are derived from the counts of \gls{tp}, \gls{tn}, \gls{fp}, an
         \end{equation}
 \end{itemize}
 
+However, the performance of a model is not defined by a single operating point (i.e., one threshold $\tau$). 
+Thus, the \textbf{\gls{auc}} metric is employed in order to evaluate the model's quality across all possible decision thresholds. 
+The \gls{auc} is calculated as the area under the Receiver Operating Characteristic curve, which plots the True Positive Rate (Recall) against the False Positive Rate (FPR = $FP / (FP + TN)$) at various threshold settings. 
+An \gls{auc} of 1.0 represents perfect separability, while 0.5 represents a classifier with no discriminative power, equivalent to random guessing. 
+The \gls{auc} provides a robust, threshold-independent measure of the model's inherent ability to rank anomalies higher than normal instances.
+
+These metrics provide complementary views: Precision, Recall, and F1 evaluate performance at a chosen operational threshold, while \gls{auc} evaluates the overall ranking quality of the anomaly scores. This multi-faceted analysis, discussed in depth in Chapter~\ref{ch:results}, allows for a comprehensive comparison across models with different output modalities and operating characteristics.
+
 
 % % === Reproducibility ===
 \section{Experimental Environment}
