@@ -140,11 +140,6 @@ This result suggests that either the difference in reconstruction error is highl
 While tuning the latent size yields a modest improvement, the best \gls{auc} remains insufficient for reliable detection. 
 To address this limitation, I next investigate whether a separate classifier trained on the reconstruction error vectors can better exploit potential non-linear separability between normal and abnormal samples.
 
-For this experiment, the reconstruction errors of each sample in the training set are used as inputs to a \gls{mlp} classifier.
-The \gls{mlp} consists of a single hidden layer with 64 units and a ReLU activation, followed by a single output neuron representing the probability of normal vs. abnormal operation.
-The model is trained using cross-entropy loss on the labeled data.
-%% TODO: move to methodology
-
 The resulting \gls{auc} of $0.7920$ represents a significant improvement over the vanilla \gls{ae}'s \gls{auc} of $0.5036$.
 This indicates that the \gls{mlp} successfully learns a more complex decision boundary that better separates the two classes.
 Other metrics, including F1-score, precision, and recall, also show notable improvements, as summarized in Table~\ref{tab:vanilla-mlp-metrics}.

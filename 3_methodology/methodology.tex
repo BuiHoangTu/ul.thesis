@@ -163,8 +163,8 @@ All models share common components but differ in their combinations and training
 \end{figure}
 
 As illustrated in Figure~\ref{fig:model-components}, the general architecture is composed of three primary components: an encoder, a decoder, and a classification head. 
-In addition, a reconstruction error is computed between the original input and its reconstruction, which can also be used for downstream classification or as a secondary objective.
-The calculation and usage of the reconstruction error varies across model variants and is discussed in Sections~\ref{sec:training} and \ref{sec:eval}.
+In addition, a \gls{rerr} is computed between the original input and its reconstruction, which can also be used for downstream classification or as a secondary objective.
+The calculation and usage of the \gls{rerr} varies across model variants and is discussed in Sections~\ref{sec:training} and \ref{sec:eval}.
 
 
 \subsection{Encoder}
@@ -309,7 +309,7 @@ The modeling process began with the implementation of a \emph{Vanilla Autoencode
 This architecture comprises an encoder-decoder pair trained to reconstruct its input time series data.
 The underlying assumption is that a model trained solely on normal operational data will generalize poorly to anomalous inputs, resulting in elevated reconstruction errors for such cases.
 
-In this setting, reconstruction error served as the sole indicator of abnormality, with the model trained to minimize the reconstruction error between the original and reconstructed sequences, under the expectation that the autoencoder would internalize the structure of normal behaviour and fail to reconstruct deviations from that norm.
+In this setting, reconstruction error served as the sole indicator of abnormality, with the model trained to minimize the \gls{rerr} between the original and reconstructed sequences, under the expectation that the autoencoder would internalize the structure of normal behaviour and fail to reconstruct deviations from that norm.
 
 However, in practice, this assumption did not hold.
 Experimental results showed that reconstruction errors were nearly indistinguishable between normal and abnormal samples. 
@@ -416,6 +416,7 @@ The considered auxiliary losses include:
         \label{eq:wasserstein}
     \end{equation}
     where \(\Pi(P, Q)\) is the set of all joint distributions with marginals \(P\) and \(Q\).
+    In this study, an approximation presented by~\cite{arjovsky_wasserstein_2017} is employed, which is the difference of means between the two distributions.
 
     \item \textbf{Fourier Loss}: Operates in the frequency domain, comparing Fourier transforms of input and reconstruction to ensure spectral consistency.
     \begin{equation}
@@ -551,14 +552,49 @@ In loss-based scoring, this threshold is selected via validation to maximize the
 \item \textbf{Classifier-on-loss scoring:}  
 A shallow \gls{mlp} is trained on top of features such as reconstruction error patterns, while the main model is frozen.
 The \gls{mlp} outputs a class probability \( p(y=1|x) \), serving as the anomaly score.
+The reconstruction errors of each sample in the training set are used as inputs to a \gls{mlp} classifier.
+The \gls{mlp} consists of a single hidden layer with 64 units and a ReLU activation, followed by a single output neuron representing the probability of normal vs. abnormal operation.
+The model is trained using cross-entropy loss on the labeled data.
 This supervised post-processing enables more adaptive behaviour, including dynamic thresholding.
 
 \end{enumerate}
 
-Once a threshold is established, standard classification metrics — accuracy, precision, recall, F1-score, and \gls{auc} — are computed to assess model performance.
+Once a decision threshold $\tau$ is established, the task is framed as a binary classification problem, where samples with \gls{rerr} $> \tau$ are predicted as anomalous.
+A standard suite of classification metrics — accuracy, precision, recall, F1-score, and \gls{auc} — are computed to assess model performance.
 These metrics allow comparison across models with different output modalities and are further analyzed in Section~\ref{ch:results}.
 
-%% TODO: add metrics Definitions, Justification
+The core metrics are derived from the counts of \gls{tp}, \gls{tn}, \gls{fp}, and \gls{fn}, which form the confusion matrix.
+
+\begin{itemize}
+    \item \textbf{Accuracy} measures the proportion of all correct predictions. 
+    While intuitively simple, it can be a highly misleading metric for imbalanced problems. 
+    For instance, a naive model that always predicts the majority class (normal) would achieve high accuracy on a dataset with 99\% normal data, yet it would be entirely useless for anomaly detection. 
+    Its value is therefore reported with caution and interpreted in conjunction with the other metrics.
+        \begin{equation}
+            \text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}
+        \end{equation}
+    
+    \item \textbf{Precision} (Positive Predictive Value) measures how true positive predictions are. 
+    A high precision indicates that when the model flags an instance as positive, it is highly likely to be correct. 
+    This is crucial for minimizing false alarms, which can be costly or lead to alert fatigue in operational settings.
+        \begin{equation}
+            \text{Precision} = \frac{TP}{TP + FP}
+        \end{equation}
+
+    \item \textbf{Recall} (Sensitivity or True Positive Rate) measures the model's ability to find all the anomalous samples in the dataset. 
+    A high recall indicates that the model misses very few true anomalies. 
+    In safety-critical applications (e.g., fraud detection, industrial fault detection), maximizing recall is often the primary objective.
+        \begin{equation}
+            \text{Recall} = \frac{TP}{TP + FN}
+        \end{equation}
+
+    \item \textbf{F1-Score} is the harmonic mean of precision and recall. 
+    It provides a single score that balances the trade-off between these two competing metrics. 
+    The F1-score is particularly informative when seeking a model that performs well on both fronts and when the class distribution is uneven.
+        \begin{equation}
+            \text{F1-Score} = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}
+        \end{equation}
+\end{itemize}
 
 
 % % === Reproducibility ===
