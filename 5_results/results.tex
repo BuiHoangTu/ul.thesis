@@ -44,7 +44,7 @@ Wasserstein distance & 0.0076 \\
 \end{table}
 
 %juan-done Did you explain above the interpretation of PSNR, in particula why it is expressed in decibels? I understand that its description is not in Sec 4.5.2, as it is not a loss function, but you included the Wasserstein distance, which is also not a loss function, so you may consider adding a brief explanation of PSNR there and renaming the section as "Loss functions and performance metrics".As it is now, it is difficult for the reader to follow you train of thoughts in this paragraph.
-%tu thanks for pointing out, I included them in evaluation->reconstruction.
+%tu thanks for pointing out, I added them in evaluation->reconstruction. I think they need a subsec to explain their relevance in term of metrics rather than loss functions
 Overall, the reconstruction errors on normal validation data are low across all evaluated metrics, indicating that the vanilla \gls{ae} learns to replicate healthy input signals with high fidelity.
 The \gls{mae} of $0.0306$ corresponds to a small deviation relative to the signal range, while the \gls{psnr} of $24.72$\,dB suggests a strong similarity between reconstructed and original signals.
 The maximum observed reconstruction error ($0.1066$) remains an order of magnitude smaller than typical anomaly-induced deviations, and the minimum error ($0.0070$) confirms that some time windows are reconstructed almost perfectly.
