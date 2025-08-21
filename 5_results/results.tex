@@ -474,14 +474,16 @@ its ability to operate effectively with fewer abnormal samples makes it a promis
 
 
 \section{Multi-scale Attention Memory}
-%juan At this point the reader may have forgotten how the adaptations are defined, so you are totally right in referencing the corresponding sections. However, you could be more generous to the reader by doing a quick explicit recap, and by changing the names of the configurations to be more explicit. I suggest something in the lines of: None -> Original, Enc-Dec -> Architecture enhancement, All -> Architecture enchancement + hashed binary sequence. (maybe something shorter to fit the tables?)
+%juan-done At this point the reader may have forgotten how the adaptations are defined, so you are totally right in referencing the corresponding sections. However, you could be more generous to the reader by doing a quick explicit recap, and by changing the names of the configurations to be more explicit. I suggest something in the lines of: None -> Original, Enc-Dec -> Architecture enhancement, All -> Architecture enchancement + hashed binary sequence. (maybe something shorter to fit the tables?)
+%tu, I changed the text below to explain meaning of "Original, enc-dec, all". Do you think it's clear enough? I tried adding more expressive names but they are either too long or not expressive enough.
 In this section, I aim to explore the potential of a more complex architecture that combines the strengths of both autoencoders and attention mechanisms across three models: 
 (1) multi-head autoencoder - which gives quite good results with a relative large space to improve; 
 (2) bottleneck with autoencoder - which achieves the best performance in this study; 
 (3) anomaly reinforced autoencoder - the approach that is more favorable for detecting unseen anomalies.
 
 The adaptations are presented in Subsections~\ref{subsec:encoder},~\ref{subsec:latent}, and~\ref{subsec:decoder}, including \gls{mama} adaptations to the encoder, latent space, and decoder, respectively.
-The comparison of the baseline models and their \gls{mama}-adapted variants is presented in Table~\ref{tab:mama-adapted-results}.
+Table~\ref{tab:mama-adapted-results} presents a comparison between the baseline models and their \gls{mama}-adapted variants. The table includes three configurations: Original, representing the unmodified model; Enc-Dec, incorporating adaptations to the encoder and decoder; and All, where all available adaptations are applied (encoder, decoder and hash module).
+
 
 %juan Cand you add inside parenthesis for all the values (except for the ones corresponding to None), the percentage of change (either rise or drop) w.r.t. the baseline model? This will help the reader to quickly see how much the performance is affected by the adaptations, and help you to make your point afterwards.
 \begin{table}[h!]
@@ -495,25 +497,25 @@ The comparison of the baseline models and their \gls{mama}-adapted variants is p
     \midrule
     
     \textbf{Bottleneck AE} \\
-    \quad None    & 0.9913 & 0.9936 & 0.9929 & 0.9932 \\
+    \quad Original    & 0.9913 & 0.9936 & 0.9929 & 0.9932 \\
     \quad Enc-Dec & 0.9133  & 0.9439  & 0.9231  & 0.9334  \\
     \quad All     & 0.7112  & 0.9549  & 0.7030  & 0.8098  \\
     \hline\hline
     
     \textbf{Multi-Head AE} \\
-    \quad None    & 0.8610 & 0.9117 & 0.8772 & 0.8942 \\
+    \quad Original    & 0.8610 & 0.9117 & 0.8772 & 0.8942 \\
     \quad Enc-Dec & 0.8523 & 0.9156 & 0.8633 & 0.8887 \\
     \quad All     & 0.8320 & 0.8943 & 0.8521 & 0.8727 \\
     \hline\hline
     
     \textbf{ARAE (1:2)} \\
-    \quad None    & 0.7376 & 0.8703 & 0.7963 & 0.8703 \\
+    \quad Original    & 0.7376 & 0.8703 & 0.7963 & 0.8703 \\
     \quad Enc-Dec & 0.6261 & 0.6785 & 0.7777 & 0.7247 \\
     \quad All     & 0.5340 & 0.5990 & 0.7127 & 0.6509 \\
     \hline\hline
 
     \textbf{ARAE (1:4)} \\
-    \quad None    & 0.6605 & 0.8547 & 0.7523 & 0.8002 \\
+    \quad Original    & 0.6605 & 0.8547 & 0.7523 & 0.8002 \\
     \quad Enc-Dec & 0.5473 & 0.6121 & 0.7215 & 0.6623 \\
     \quad All     & 0.5278 & 0.5967 & 0.7066 & 0.6470 \\
 
