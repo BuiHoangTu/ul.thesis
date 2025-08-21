@@ -1,2 +1,15 @@
 \begin{abstracts}  
+
+
+    The increasing deployment of wind turbines necessitates robust condition monitoring systems to ensure operational reliability and reduce maintenance costs. This thesis presents a comprehensive investigation into the capacity of Deep Reconstructive Normal Behaviour Models for anomaly detection in wind turbine SCADA data. Moving beyond controlled lab settings, this research leverages a proprietary, realistically labeled industrial dataset to evaluate model performance under conditions that mirror real-world challenges, including class imbalance and previously unseen fault types.
+
+    A systematic comparison of autoencoder (AE) architectures—including Vanilla, Multi-Head, Classification-Only, and a novel Bottleneck AE—was conducted under unsupervised, semi-supervised, and fully supervised training paradigms. Furthermore, an Anomaly Reinforced Autoencoder (ARAE) was proposed to enhance robustness in data-scarce scenarios. The impact of auxiliary loss functions (MMD, Wasserstein, Fourier, Mahalanobis) and advanced architectural components (Multi-Scale Attention Memory) was also rigorously evaluated.
+
+    Key experimental results demonstrate that purely unsupervised Vanilla AEs fail to achieve linear separability (AUC $\approx$ 0.5), challenging a common assumption in the literature. Performance significantly improved with the introduction of supervisory signals; the Multi-Head AE achieved an AUC of 0.9288 via its classification head and 0.9758 using a classifier on its reconstruction errors. The Bottleneck AE, which jointly optimizes reconstruction and classification, achieved near-perfect performance (AUC: 0.9983, F1-score $>$ 99\%). For scenarios with limited abnormal data, the proposed ARAE maintained stable recall (0.8547) even at a 1:4 abnormal-to-normal ratio, outperforming other models under severe class imbalance. The study also found that distribution-alignment losses (Wasserstein, MMD) effectively complemented MSE, while complex architectural additions often degraded the performance of well-tuned baselines.
+
+    The findings underscore that the success of deep reconstructive models is heavily dependent on architectural choices, the availability of labels, and training strategies. This work provides a foundational comparison and a set of validated design patterns, concluding that the Bottleneck AE is optimal when labeled data is abundant, while the ARAE offers a robust and practical path forward for the more common industrial scenario of limited fault examples.
+
+
+
+
 \end{abstracts}
