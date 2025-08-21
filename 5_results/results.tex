@@ -490,7 +490,8 @@ Table~\ref{tab:mama-adapted-results} presents a comparison between the baseline 
 \begin{table}[h!]
 \centering
 \caption{Performance comparison of baseline and mama-adapted variants across models. 
-"Enc-Dec" = mama-adapted encoder and decoder; "All" = mama-adapted encoder, decoder, and latent space.}
+% "Enc-Dec" = mama-adapted encoder and decoder; "All" = mama-adapted encoder, decoder, and latent space.
+}
 \label{tab:mama-adapted-results}
 \begin{tabular}{lcccc}
     \toprule
@@ -588,7 +589,7 @@ Table~\ref{tab:mama-adapted-results} presents a comparison between the baseline 
 \end{table}
 
 For the Bottleneck \gls{ae}, the baseline already achieves near-perfect performance (Accuracy $\approx 0.99$, F1-score $\approx 0.99$), leaving little headroom for improvement. 
-Introducing the mama-adapted encoder-decoder alone causes a moderate performance drop, and adding the full adaptation (encoder, decoder, and latent space) degrades the results substantially. 
+Introducing the \gls{mama}-adapted encoder-decoder alone causes a moderate performance drop, and adding the full adaptation (encoder, decoder, and latent space) degrades the results substantially. 
 This suggests that for a well-suited bottleneck model, the proposed architectural changes may disrupt the latent space.
 Especially, with more adaptations, the worse the performance becomes.
 
@@ -601,8 +602,8 @@ For both the 1:2 and 1:4 abnormal-to-normal ratios, the adapted encoder-decoder 
 The degradation is particularly severe for recall in the low-abnormality (1:4) case, where the \gls{arae} relies heavily on stable reconstruction dynamics that appear sensitive to architectural alterations.
 
 %juan Also the fact that the paper originally was used for 2d CNNs may affect? I don't remember well. Was this applied to SCADA signals?
-% tu yes, the original paper was applied to 2D CNNs, I adapted it to 1D CNNs for SCADA signals.
-Overall, the results indicate that the mama-adapted components are not universally beneficial when directly swapped into existing high-performing designs.
+%tu yes, the original paper was applied to 2D CNNs, I adapted it to 1D CNNs for SCADA signals.
+Overall, the results indicate that the \gls{mama}-adapted components are not universally beneficial when directly swapped into existing high-performing designs.
 Their integration seems to require re-tuning or model-specific adaptation, especially when the baseline is already near-optimal. 
 
 
