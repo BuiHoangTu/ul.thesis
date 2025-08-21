@@ -485,7 +485,8 @@ The adaptations are presented in Subsections~\ref{subsec:encoder},~\ref{subsec:l
 Table~\ref{tab:mama-adapted-results} presents a comparison between the baseline models and their \gls{mama}-adapted variants. The table includes three configurations: Original, representing the unmodified model; Enc-Dec, incorporating adaptations to the encoder and decoder; and All, where all available adaptations are applied (encoder, decoder and hash module).
 
 
-%juan Cand you add inside parenthesis for all the values (except for the ones corresponding to None), the percentage of change (either rise or drop) w.r.t. the baseline model? This will help the reader to quickly see how much the performance is affected by the adaptations, and help you to make your point afterwards.
+%juan-done Cand you add inside parenthesis for all the values (except for the ones corresponding to None), the percentage of change (either rise or drop) w.r.t. the baseline model? This will help the reader to quickly see how much the performance is affected by the adaptations, and help you to make your point afterwards.
+%tu can you check the table again, it looks a bit clustered
 \begin{table}[h!]
 \centering
 \caption{Performance comparison of baseline and mama-adapted variants across models. 
@@ -508,80 +509,79 @@ Table~\ref{tab:mama-adapted-results} presents a comparison between the baseline 
     0.9932 \\
     
     \quad Enc-Dec & 
-    0.9133  & 
-    0.9439  & 
-    0.9231  & 
-    0.9334  \\
+    0.9133 (-7.9\%) & 
+    0.9439 (-5.0\%) & 
+    0.9231 (-7.0\%) & 
+    0.9334 (-6.0\%) \\
     
     \quad All & 
-    0.7112 & 
-    0.9549 & 
-    0.7030  & 
-    0.8098  \\
+    0.7112 (-28.3\%) & 
+    0.9549 (-3.9\%) & 
+    0.7030 (-29.2\%) & 
+    0.8098 (-18.5\%) \\
 
     \hline\hline
 
-
     \textbf{Multi-Head AE} \\
-    \quad Original    & 
+    \quad Original & 
     0.8610 & 
     0.9117 & 
     0.8772 & 
     0.8942 \\
 
     \quad Enc-Dec & 
-    0.8523 & 
-    0.9156 & 
-    0.8633 & 
-    0.8887 \\
+    0.8523 (-1.0\%) & 
+    0.9156 (+0.4\%) & 
+    0.8633 (-1.6\%) & 
+    0.8887 (-0.6\%) \\
     
-    \quad All     & 
-    0.8320 & 
-    0.8943 & 
-    0.8521 & 
-    0.8727 \\
-    
+    \quad All & 
+    0.8320 (-3.4\%) & 
+    0.8943 (-1.9\%) & 
+    0.8521 (-2.9\%) & 
+    0.8727 (-2.4\%) \\
+
     \hline\hline
     
     \textbf{ARAE (1:2)} \\
-    \quad Original    & 
+    \quad Original & 
     0.7376 & 
     0.8703 & 
     0.7963 & 
     0.8703 \\
     
     \quad Enc-Dec & 
-    0.6261 & 
-    0.6785 & 
-    0.7777 & 
-    0.7247 \\
+    0.6261 (-15.1\%) & 
+    0.6785 (-22.0\%) & 
+    0.7777 (-2.3\%) & 
+    0.7247 (-16.7\%) \\
     
-    \quad All     & 
-    0.5340 & 
-    0.5990 & 
-    0.7127 & 
-    0.6509 \\
-    
+    \quad All & 
+    0.5340 (-27.6\%) & 
+    0.5990 (-31.2\%) & 
+    0.7127 (-10.5\%) & 
+    0.6509 (-25.2\%) \\
+
     \hline\hline
 
     \textbf{ARAE (1:4)} \\
-    \quad Original    & 
+    \quad Original & 
     0.6605 & 
     0.8547 & 
     0.7523 & 
     0.8002 \\
     
     \quad Enc-Dec & 
-    0.5473 & 
-    0.6121 & 
-    0.7215 & 
-    0.6623 \\
+    0.5473 (-17.1\%) & 
+    0.6121 (-28.4\%) & 
+    0.7215 (-4.1\%) & 
+    0.6623 (-17.2\%) \\
     
-    \quad All     & 
-    0.5278 & 
-    0.5967 & 
-    0.7066 & 
-    0.6470 \\
+    \quad All & 
+    0.5278 (-20.1\%) & 
+    0.5967 (-30.2\%) & 
+    0.7066 (-6.1\%) & 
+    0.6470 (-19.1\%) \\
 
     \bottomrule
 \end{tabular}
