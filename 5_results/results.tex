@@ -601,10 +601,12 @@ In the case of the \gls{arae}, which is trained with the anomaly-reinforcement o
 For both the 1:2 and 1:4 abnormal-to-normal ratios, the adapted encoder-decoder reduces performance, while the full adaptation yields a larger decline in every metric.
 The degradation is particularly severe for recall in the low-abnormality (1:4) case, where the \gls{arae} relies heavily on stable reconstruction dynamics that appear sensitive to architectural alterations.
 
-%juan Also the fact that the paper originally was used for 2d CNNs may affect? I don't remember well. Was this applied to SCADA signals?
-%tu yes, the original paper was applied to 2D CNNs, I adapted it to 1D CNNs for SCADA signals.
-Overall, the results indicate that the \gls{mama}-adapted components are not universally beneficial when directly swapped into existing high-performing designs.
-Their integration seems to require re-tuning or model-specific adaptation, especially when the baseline is already near-optimal. 
+%juan-done Also the fact that the paper originally was used for 2d CNNs may affect? I don't remember well. Was this applied to SCADA signals?
+%tu yes, the original paper was applied to 2D CNNs, I adapted it to 1D CNNs for SCADA signals. I added explaination below
+Overall, the findings suggest that the \gls{mama}-adapted components do not consistently yield performance improvements when directly integrated into existing high-performing architectures. 
+This limitation may stem from the fact that the \gls{mama} framework was originally developed for two-dimensional convolutional neural networks (2D CNNs), making its components potentially less compatible with the one-dimensional convolutional neural networks (1D CNNs) employed in this study. 
+Furthermore, the original \gls{mama} design was optimized for processing MRI images, where structural patterns tend to be relatively consistent across individuals. 
+In contrast, \gls{scada} signals exhibit greater variability, which may reduce the effectiveness of directly transferring these components.
 
 
 
