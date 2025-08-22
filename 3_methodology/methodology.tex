@@ -39,7 +39,6 @@ The dataset initially comprised 33 variables collected from operational wind tur
 These features were recorded at a nominal resolution of 10-minute intervals, though irregularities and missing timestamps were occasionally present.
 These features included both time-varying telemetry data, such as rotational speed and power output, as well as categorical and static attributes, including turbine site, model, and geographic coordinates.
 
-%juan-done Bring table 4.1 here and cite it in this paragraph insead of introducing in the text. You can add an aditional column so you have feature, code name, and operational range, and, if you find it useful, add also whether the feature is operational or environmental (this may hep to explain why some features were better reconstructed than others)
 To focus the modeling efforts on the most informative signals, a feature selection process was carried out in consultation with a domain expert.
 Based on the input, and further guided by theoretical and empirical considerations, six features were selected for inclusion in the final model: average power output (\texttt{avgpower}), average rotor speed (\texttt{avgrotorspeed}), average wind speed (\texttt{avgwindspeed}), air density (\texttt{density}), ambient temperature (\texttt{ambienttemperature}), and average wind direction (\texttt{avgwinddirection}).
 
@@ -96,7 +95,6 @@ This theoretical linkage reinforces their relevance for modeling turbine behavio
 The remaining 27 features were excluded from further analysis for several reasons.
 They consist of metadata—such as site identifier, manufacturer, model, latitude, and phase configuration—which do not change over time and are therefore uninformative for condition monitoring.
 
-%juan-done Avoid talking about interpretability here, as your model is an NN, so it's hardly interpretable
 Focusing on a smaller, well-justified subset of features not only reduces the dimensionality of the input space but also mitigates the risk of overfitting and reduces the training time of the models.
 This selection forms the basis for all subsequent preprocessing and modeling steps in this study.
 
@@ -117,7 +115,6 @@ The preprocessing steps are summarized in Figure~\ref{fig:preprocessing-pipeline
     \label{fig:preprocessing-pipeline}
 \end{figure}
 
-%juan-done Mention here that there is a limit of gap size to be interpolated so, if the gap is larger than that, the data is not interpolated, due to the high risk of noise
 The raw data consisted of timestamped multivariate measurements recorded at 10-minute intervals.
 However, due to occasional missing entries and timing irregularities, a time-based interpolation strategy was applied to recover a consistent temporal structure.
 Specifically, missing values were filled using time-aware linear interpolation, which estimates values at missing timestamps by weighting neighboring values according to their temporal distance.
@@ -384,8 +381,6 @@ This encourages the model to assign high confidence to normal samples and low co
 
 For reconstruction, the primary objective is to accurately reproduce the input time series.
 Thus, \gls{mse} is used as the base reconstruction loss, computed as the average squared difference between the input and its reconstruction.
-%juan-done Here you call MMD and Wasserstein distance-based losses but later in the text you call them distribution-alignment ones. All of them are distances but MSE is point-to-point, Mahalanobis is point-to-distribution, and MMD and Wasserstein are distribution-to-distribution. Fourier loss is also point-to-point, right? As it is simply the MSE of the Fourier (please, correct me if I'm wrong).
-%tu yes, you are right, I will change the text to be more consistent
 To guide and enhance the reconstruction quality beyond point-wise accuracy, auxiliary losses that operate on the distribution of data are also incorporated.
 These distribution-alignment losses, such as the \gls{mmd} and Wasserstein distance, aim to minimize the discrepancy between the distribution of the original data and the distribution of the reconstructions, ensuring that the generated sequences are statistically similar to the real ones.
 Additionally, a spectral-domain loss (Fourier loss) is also considered. 
@@ -610,7 +605,6 @@ These metrics provide complementary views: Precision, Recall, and F1 evaluate pe
 \label{sec:exp-env}
 
 %juan Include training times for each model and memory consumption, if possible. 
-%juan-done Also include details on the implementations used for the metrics, e.g., PSNR and Wasserstein Distance (did you use scikit learn, scipy, torch, etc.?)
 All models were implemented using \texttt{PyTorch} (v\texttt{2.5.1}) and trained on a machine equipped with an \texttt{NVIDIA Quadro T2000} GPU and an \texttt{Intel i9-9880H} CPU.
 Training and evaluation were conducted under \texttt{Python} (v\texttt{3.12}) on a \texttt{Linux} system.
 Core dependencies included \texttt{NumPy} (v\texttt{2.2.4}) and \texttt{scikit-learn} (v\texttt{1.10.1}).
