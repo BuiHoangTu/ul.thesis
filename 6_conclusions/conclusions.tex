@@ -16,24 +16,6 @@
 \fi
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%% NOT READY %%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
 This dissertation has presented a systematic exploration of Deep Reconstructive Normal Behaviour Models for anomaly detection in wind turbine condition monitoring.
 Leveraging a proprietary, realistically labeled industrial SCADA dataset, this work moves beyond the controlled assumptions of prior research to evaluate model performance under conditions that reflect the challenges of real-world deployment.
 The investigation spanned a family of autoencoder-based architectures, training strategies, and loss functions, yielding several key findings and contributions.
@@ -52,19 +34,19 @@ This architecture achieved an AUC of 0.9288 through its classification head and 
 This confirms that guiding the latent space with label information encourages the learning of discriminative features that benefit both direct classification and reconstruction-based anomaly scoring.
 
 Thirdly, the Bottleneck Autoencoder, which jointly optimizes for reconstruction and classification within a highly compressed latent space, achieved near-perfect performance (AUC: 0.9983).
-This result significantly outperformed the Multi-Head AE and the classifier-only model, demonstrating that the reconstruction objective acts as a powerful regularizer that enriches the latent representations for classification, rather than acting as a competing objective.
+This result significantly outperformed the Multi-Head \gls{ae} and the classifier-only model, demonstrating that the reconstruction objective acts as a powerful regularizer that enriches the latent representations for classification, rather than acting as a competing objective.
 
-Next, the Anomaly Reinforced Autoencoder (ARAE) offers a practical compromise for data-scarce scenarios: While the supervised models excelled, they require abundant labeled abnormal data—a rarity in practice.
-The ARAE, which actively maximizes reconstruction error for anomalies, proved more robust to class imbalance.
-It maintained stable recall (0.8547) even when the ratio of abnormal to normal training samples was reduced to 1:4, a scenario where the performance of the Bottleneck AE degraded in precision.
-This makes the ARAE a highly promising approach for real-world settings where fault examples are scarce.
+Next, the \gls{arae} offers a practical compromise for data-scarce scenarios: While the supervised models excelled, they require abundant labeled abnormal data—a rarity in practice.
+The \gls{arae}, which actively maximizes reconstruction error for anomalies, proved more robust to class imbalance.
+It maintained stable recall (0.8547) even when the ratio of abnormal to normal training samples was reduced to 1:4, a scenario where the performance of the Bottleneck \gls{ae} degraded in precision.
+This makes the \gls{arae} a highly promising approach for real-world settings where fault examples are scarce.
 
 In addition, the study explored the impact of component structure.
-The integration of advanced components from the Multi-Scale Attention Memory (MAMA) network consistently degraded the performance of high-performing baseline models (Bottleneck AE, Multi-Head AE, ARAE).
+The integration of advanced components from the Multi-Scale Attention Memory (MAMA) network consistently degraded the performance of high-performing baseline models (Bottleneck \gls{ae}, Multi-Head \gls{ae}, \gls{arae}).
 This indicates that these components may disrupt well-learned latent representations and that their benefits are not transferable without significant model-specific redesign and tuning.
 Simpler, well-optimized architectures often outperform complex, untuned ones.
 
-For models like the ARAE that rely on reconstruction error, the choice of loss function is paramount.
+For models like the \gls{arae} that rely on reconstruction error, the choice of loss function is paramount.
 Distribution-alignment losses, specifically Wasserstein distance and MMD, were most effective when combined with MSE, leading to a more balanced and discriminative performance.
 In contrast, the Mahalanobis distance loss dominated the optimization and severely degraded results, while a Fourier-domain loss showed limited benefit, likely due to the short sequence length of the data.
 
@@ -78,16 +60,29 @@ In this, several \glspl{ae} are systematically compared, highlighting the transi
 Among these models, the Vanilla \gls{ae} stills possesses valuable characteristics, particularly in its ability to distinguish normal from abnormal samples without relying on the quality nor quantity of labeled data.
 This makes it a suitable choice for common scenarios where labeled data is scarce or expensive to obtain.
 Thus, the study also explores enhancing the Vanilla \gls{ae} with abnormal data augmentation techniques to improve its robustness and generalization capabilities.
-The Anomaly Reinforced Autoencoder (ARAE) is introduced as a promising approach to address the challenges of data scarcity and class imbalance in anomaly detection tasks.
-However, its effectiveness has yet to be fully realized and requires further investigation.
+The \gls{arae} is introduced as a promising approach to address the challenges of data scarcity and class imbalance in anomaly detection tasks.
+However, its effectiveness has yet to be fully confirmed and requires further investigation.
 
 
 \section{Future Work}
-The findings of this thesis open up several promising avenues for future research to build upon and extend this work.
-A primary direction involves the development of more sophisticated, hybrid thresholding strategies that can dynamically adapt to evolving operational conditions and data distributions, moving beyond static thresholds to enhance the practicality and resilience of unsupervised models in real-world settings.
-Furthermore, to increase the operational value of these detection systems, integrating explainable AI (XAI) techniques is a crucial next step; this would empower the models not only to flag anomalies but also to pinpoint the contributing sensor variables and suggest potential root causes, thereby reducing the diagnostic burden on human experts.
-Another significant challenge to address is the scalability of these solutions across entire wind farms, which necessitates research into transfer and continual learning frameworks that enable a model trained on one turbine to adapt effectively to another with minimal data, and to learn continuously from new operational data without suffering from catastrophic forgetting.
-Finally, exploring hybrid modeling approaches that fuse the data-driven power of deep learning with the foundational principles of physics-based models could unlock a new generation of digital twins that are both highly accurate and inherently interpretable, leading to more robust and generalizable condition monitoring systems for the complex dynamics of wind turbines.
+The findings of this thesis provide a solid foundation for advancing anomaly detection techniques in wind turbine condition monitoring. However, several important research directions remain open and merit further investigation.
+
+One significant limitation identified in this study is the reliance on static thresholds for anomaly detection, which may fail to generalize under evolving operational conditions and non-stationary data distributions.
+A clever way of making an adaptive threshold using \gls{mlp} was employed but the mechanism behind it is not fully understood.
+Additionally, the sensitivity of it to abnormal unknown data remains a concern for practical deployment.
+Future research should explore adaptive thresholding mechanisms capable of adjusting decision boundaries to balance sensitivity and specificity in the face of evolving operational conditions.
+
+While this work demonstrates strong detection performance, the models generally operate as black boxes. 
+Integrating explainable AI (XAI) techniques would enhance transparency by identifying the most influential sensor signals and potential root causes of anomalies. 
+This capability would improve trust in automated monitoring systems and assist domain experts during diagnostics and maintenance planning.
+
+Furthermore, deploying anomaly detection systems at scale requires generalization across turbines and sites, each with distinct operational profiles. 
+Future studies should investigate transfer learning frameworks to efficiently adapt models trained on one turbine to others with minimal labeled data. 
+Furthermore, integrating continual learning could enable models to incrementally learn from new operational data without suffering from catastrophic forgetting, improving long-term adaptability.
+
+Finally, combining deep learning approaches with physics-informed models offers a promising pathway for enhancing interpretability and reliability. 
+Embedding domain knowledge of turbine dynamics into neural architectures could lead to hybrid models that better generalize to unseen conditions while maintaining physical consistency. 
+Such models could form the basis of more robust digital twins for predictive maintenance and operational optimization.
 
 In conclusion, this thesis demonstrates that while deep reconstructive models hold great promise for wind turbine condition monitoring, their success is heavily dependent on architectural choices, the availability of labels, and training strategies.
 The Bottleneck AE stands out for maximum performance when data is plentiful, while the ARAE offers a robust and practical path forward for the more common industrial scenario of limited fault examples.
