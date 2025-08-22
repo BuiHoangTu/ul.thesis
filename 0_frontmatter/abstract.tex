@@ -5,8 +5,8 @@
     This thesis presents a comprehensive investigation into the capacity of Deep Reconstructive Normal Behaviour Models for anomaly detection in wind turbine SCADA data.
     Moving beyond controlled lab settings, this research leverages a proprietary, realistically labeled industrial dataset to evaluate model performance under conditions that mirror real-world challenges, including class imbalance and previously unseen fault types.
 
-    A systematic comparison of autoencoder (AE) architectures—including Vanilla, Multi-Head, Classification-Only, and a novel Bottleneck AE—was conducted under unsupervised, semi-supervised, and fully supervised training paradigms.
-    Furthermore, an Anomaly Reinforced Autoencoder (ARAE) was proposed to enhance robustness in data-scarce scenarios.
+    A systematic comparison of \gls{ae} architectures—including Vanilla, Multi-Head, Classification-Only, and a novel Bottleneck AE — was conducted under unsupervised, semi-supervised, and fully supervised training paradigms.
+    Furthermore, an \gls{arae} was proposed to enhance robustness in data-scarce scenarios.
     The impact of auxiliary loss functions (MMD, Wasserstein, Fourier, Mahalanobis) and advanced architectural components (Multi-Scale Attention Memory) was also rigorously evaluated.
 
     Key experimental results demonstrate that purely unsupervised Vanilla AEs fail to achieve linear separability (AUC $\approx$ 0.5), challenging a common assumption in the literature.
@@ -17,8 +17,5 @@
 
     The findings underscore that the success of deep reconstructive models is heavily dependent on architectural choices, the availability of labels, and training strategies.
     This work provides a foundational comparison and a set of validated design patterns, concluding that the Bottleneck AE is optimal when labeled data is abundant, while the ARAE offers a robust and practical path forward for the more common industrial scenario of limited fault examples.
-
-
-
 
 \end{abstracts}
