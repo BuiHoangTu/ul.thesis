@@ -620,8 +620,8 @@ In this section, I investigate the impact of several auxiliary loss terms — \g
 The weight of each auxiliary loss is tuned to balance its contribution against the \gls{mse} loss, as shown in Equation~\ref{eq:auto-weight-loss}.
 Table~\ref{tab:arae-loss-aug-results} reports the evaluation metrics obtained using a 1:2 abnormal-to-normal training ratio, illustrating how these loss augmentations affect detection accuracy.
 
-%juan Now I'm really curious: you DID use the Wasserstein distance as loss! How did you find a differentiable implementation of it? Or was it an approximation?
-%tu yes, I used the mean for approximation of the Wasserstein distance, used in WGAN
+%juan-done Now I'm really curious: you DID use the Wasserstein distance as loss! How did you find a differentiable implementation of it? Or was it an approximation?
+%tu yes, I used the mean for approximation of the Wasserstein distance, used in WGAN; does that affect anything
 \begin{table}[h!]
 \centering
 \caption{Impact of additional loss terms alongside \gls{mse} loss.}
