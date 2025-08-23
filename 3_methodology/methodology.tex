@@ -37,6 +37,7 @@ The proprietary dataset used in this research was provided by EnergyPro\webfootn
 
 The dataset initially comprised 33 variables collected from operational wind turbines, encompassing a mix of physical sensor readings, control parameters, and static metadata.
 These features were recorded at a nominal resolution of 10-minute intervals, though irregularities and missing timestamps were occasionally present.
+The data is collected from 01/01/2019 to 31/08/2024, totaling 2,903,497 data points.
 These features included both time-varying telemetry data, such as rotational speed and power output, as well as categorical and static attributes, including turbine site, model, and geographic coordinates.
 
 To focus the modeling efforts on the most informative signals, a feature selection process was carried out in consultation with a domain expert.
@@ -97,8 +98,6 @@ They consist of metadata—such as site identifier, manufacturer, model, latitud
 
 Focusing on a smaller, well-justified subset of features not only reduces the dimensionality of the input space but also mitigates the risk of overfitting and reduces the training time of the models.
 This selection forms the basis for all subsequent preprocessing and modeling steps in this study.
-
-%% TODO: add some data statistics, e.g., number of samples, time range, distribution graphs.
 
 \section{Preprocessing}
 \label{sec:preprocessing}
