@@ -214,7 +214,7 @@ Next subsection evaluates the classification performance of the multi-head autoe
 \subsection{Latent Space Size Analysis}
 %juan-done ON this regard, can you explain why in the previous section you didn't perform the 30 runs for the vanilla AE, as you did for the multi-head AE? The answer is that no pattern was noticed and Vanilla kept the same performance across runs, but it is not clear in the text that for that many runs would not make any difference.
 %tu I mentioned that the vanilla graph shows no non-linear patterns. But you are right, it is not very clear that "no pattern".
-%juan Also, in the previous comparison you displayed directly the number of channels and here you display the compression rate. Is it complicated for you to regenerate the figures with a consistent x-axis? I'd prefer both displaying compression rate.
+%juan-done Also, in the previous comparison you displayed directly the number of channels and here you display the compression rate. Is it complicated for you to regenerate the figures with a consistent x-axis? I'd prefer both displaying compression rate.
 Similar to the vanilla \gls{ae}, I perform a sweep over latent space sizes to investigate their impact on anomaly detection performance for the multi-head \gls{ae}. 
 At each latent size, 30 models are trained, and its reconstruction error is evaluated on the validation set.
 The \gls{auc} is computed for each latent size, and the box plot results are shown in Figure~\ref{fig:multi-head-latent-search}.
