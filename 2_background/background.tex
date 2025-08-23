@@ -49,8 +49,9 @@ Any statistically significant difference from this model is treated as a potenti
 Unlike threshold-based monitoring — where fixed limits on operational parameters trigger alerts — \gls{nbm} captures multivariate and temporal correlations between signals, providing a more nuanced picture of system health.
 However, the accuracy of \gls{nbm} depends on the availability of sufficient high-quality “normal” data and the ability of the modeling technique to cope with non-stationary operating patterns (e.g., seasonal wind patterns, load variations).
 
-%juan This paragraph looks weird, as you seem to introduce NBM, when you have been already talking about it. 
-Modern \gls{scada} systems now generate high-frequency time-series telemetry data from various turbine components, enabling what is commonly referred to as \gls{nbm} — the task of modeling normal operational patterns to detect abnormal deviations.
+%juan-done This paragraph looks weird, as you seem to introduce NBM, when you have been already talking about it. 
+%tu You re right, simply removing it make the flow better.
+% Modern \gls{scada} systems now generate high-frequency time-series telemetry data from various turbine components, enabling what is commonly referred to as \gls{nbm} — the task of modeling normal operational patterns to detect abnormal deviations.
 
 The methods employed in \gls{nbm} broadly fall into three categories: statistical approaches, traditional (shallow) machine learning, and deep learning-based methods.
 
@@ -64,12 +65,13 @@ These methods still require feature engineering and are sensitive to class imbal
 Deep learning methods—especially neural network-based architectures—have rapidly become the dominant approach in recent research.
 These models offer superior capability to capture non-linear dependencies in high-dimensional data but come at the cost of increased computational demand and reduced interpretability.
 Within this category, \glspl{ae} have emerged as a popular choice for anomaly detection, particularly in unsupervised or semi-supervised settings.
-%juan Add a citation to the original AE paper to support the claim below
-Like \gls{pca}, Autoencoders learn latent representations of normal behaviour via dimensionality reduction, but with significantly greater expressive power due to their ability to model non-linearities.
+%juan-done Add a citation to the original AE paper to support the claim below
+Like \gls{pca}, Autoencoders learn latent representations of normal behaviour via dimensionality reduction, but with significantly greater expressive power due to their ability to model non-linearities~\cite{chesterman_overview_2023,ahmad_autoencoder-based_2020}.
 
-%juan This paragraph is a bit redundant with the last part of the previous one, consider merging them 
-Accordingly, a growing body of research has focused on applying \gls{ml} and deep learning techniques to enable condition monitoring and early fault detection in wind turbines.
-Among these, Autoencoders have become one of the most widely adopted architectures for unsupervised and semi-supervised anomaly detection~\citep{chesterman_overview_2023}.
+%juan-done This paragraph is a bit redundant with the last part of the previous one, consider merging them
+%tu I think the context was repeated, simply removing it make the flow better.
+% Accordingly, a growing body of research has focused on applying \gls{ml} and deep learning techniques to enable condition monitoring and early fault detection in wind turbines.
+% Among these, Autoencoders have become one of the most widely adopted architectures for unsupervised and semi-supervised anomaly detection~\citep{chesterman_overview_2023}.
 
 Recurrent architectures such as \gls{lstm}s have been widely applied to time-series modeling in \gls{scada}-based \gls{nbm} due to their ability to capture sequential dependencies. 
 However, \gls{cnn}s have also shown strong performance, as they can efficiently capture local spatio-temporal patterns in high-dimensional data. 
