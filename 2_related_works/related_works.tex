@@ -17,7 +17,7 @@
 \section{Traditional Statistical Approaches}
 \label{sec:traditional-statistical-approaches}
 Early approaches to \gls{nbm} relied heavily on statistical models for anomaly detection and degradation trend analysis.
-ARIMA models were applied to capture temporal dependencies in \gls{scada} data, particularly for forecasting power output or component temperatures under normal operating conditions~\cite{chesterman_overview_2023}.
+ARIMA models were applied to capture temporal dependencies in \gls{scada} data, particularly for forecasting power output or component temperatures under normal operating conditions~\citep{chesterman_overview_2023}.
 \gls{pca} was used to reduce the dimensionality of multivariate datasets and to extract latent features associated with turbine health status.
 In parallel, threshold-based monitoring systems compared sensor readings against predefined limits, triggering alarms when deviations exceeded acceptable ranges.
 
@@ -42,8 +42,8 @@ Future research should focus on hybrid models that combine statistical robustnes
 
 \section{Machine Learning in Normal Behaviour Monitoring}
 \label{sec:machine-learning-in-normal-behaviour-monitoring}
-More sophisticated machine learning techniques have been developed to model normal behaviour in wind turbine systems. 
-These approaches leverage large volumes of operational data to learn intricate patterns and relationships, enabling more accurate predictions of expected performance under varying conditions.
+More sophisticated machine learning techniques have been developed to model normal behaviour in wind turbines. 
+These approaches leverage large volumes of signal data to learn intricate patterns and relationships, enabling more accurate predictions of expected performance under varying conditions.
 In addition, they are less reliant on manually defined thresholds and technical knowledge, allowing for more flexible and adaptive monitoring systems.
 
 \subsection{Traditional Machine Learning Approaches}
@@ -82,7 +82,7 @@ However, its dependence on manually engineered input variables and aggregated ti
 Moreover, residual thresholding introduces sensitivity to environmental noise and seasonal effects, which may increase false alarm rates.
 
 During the same period, \cite{liu_wind_2022} framed \gls{nbm} as a residual-monitoring problem on multivariate \gls{scada}, pairing simple predictive models with a \gls{md} novelty score and validating against the turbine alarm log.
-They computed \gls{md} between predicted and measured signals, and then averaged \gls{md} twice per day to smooth noise.
+They computed \gls{md} between predicted and measured signals, and then averaged \gls{md} twice per day to reduce noise.
 A “healthy” threshold was set from \gls{md} statistics estimated on normal data, and exceedances were back-mapped to calendar dates to check for coincidence with \gls{scada} alarms.
 
 Methodologically, the paper is closest to classical Normal Behaviour Models.
@@ -91,7 +91,7 @@ The distinctive choice is the \gls{md} on residual vectors (covariance-aware) ra
 Across models and machines, they report $\approx 97\%$ correspondence between \gls{md}-flagged intervals and relevant alarms.
 This indicates that the \gls{md} is capable of capturing some distinct anomalies.
 
-However, there are several important caveats for to address, the two-per-day averaging reduces sensitivity to short transients and blunts lead-time; the "average \gls{md}" threshold can be brittle under seasonal and operating-regime shifts; a single covariance estimate implicitly assumes stationarity around one operating manifold; neural predictors are static, point-wise regressors (no temporal context), so residuals may still carry operating-state confounds; and validation equates \gls{scada} alarms with ground truth, which misses silent degradations and can inflate apparent accuracy.
+However, there are several important caveats to address: the two-per-day averaging reduces sensitivity to short transients and blunts lead-time; the "average \gls{md}" threshold can be brittle under seasonal and operating-regime shifts; a single covariance estimate implicitly assumes stationarity around one operating manifold; neural predictors are static, point-wise regressors (no temporal context), so residuals may still carry operating-state confounds; and validation equates \gls{scada} alarms with ground truth, which misses silent degradations and can inflate apparent accuracy.
 
 
 The latest work with traditional machine learning approaches in \gls{nbm} has encroporated the shift of value during operation.
@@ -143,3 +143,5 @@ The authors also proposed using the \gls{auc} as a unified metric to compare the
 Taken together, these studies illustrate both the promise and the persistent limitations of reconstruction-based AEs.
 They provide compact, unsupervised models of normal behaviour, but reconstruction error alone is often insufficient for robust anomaly detection, particularly when anomalies mimic normal fluctuations or when operating regimes vary.
 This motivates the methodological direction of the present thesis: hybrid autoencoder designs that combine reconstruction with supervised classification heads and advanced latent-space losses (e.g., Wasserstein distance, \gls{mmd}, Mahalanobis distance) to improve anomaly separability in wind turbine \gls{scada} monitoring.
+
+%juan Add a Summary section in which you wrap up everything and quickly adress the next questions: i) what is the proportion of works that use solely SCADA, ii) what is the proportion of works requiring supervisory labels? iii) Which works address large-scale real-world problems, and which ones address controlled scenarios, or simulations? iv) Which works were applied in a different domain than SCAD (i.e., images) and why are they important, and (most important) v) different from those approaches, what is the key difference form the work you propose?

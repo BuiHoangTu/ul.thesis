@@ -13,6 +13,9 @@
 *.pdf
 *.synctex.gz
 *.toc
+*.acn
+*.glo
+*.ist
 
 # include the pdf figures
 !**/figures/*.pdf
