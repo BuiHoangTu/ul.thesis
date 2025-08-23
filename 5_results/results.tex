@@ -226,7 +226,7 @@ The green triangles ($\blacktriangle$) represent the mean value for each distrib
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.2\textwidth]{search-compression-classify_model.pdf}
+    \includegraphics[width=\textwidth]{search-compression-classify_model.pdf}
     %juan-done Can you please add in the description of the figure what do the triangles and the colored horizontal line inside the box mean?
     %tu I added the description of the figure in a text the ref the figure, please check if it is ok now.
     \caption{AUC vs latent size for multi-head AE.}
@@ -493,6 +493,7 @@ Table~\ref{tab:mama-adapted-results} presents a comparison between the baseline 
 % "Enc-Dec" = mama-adapted encoder and decoder; "All" = mama-adapted encoder, decoder, and latent space.
 }
 \label{tab:mama-adapted-results}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lcccc}
     \toprule
     \textbf{Model + Adaptations} & 
@@ -585,7 +586,7 @@ Table~\ref{tab:mama-adapted-results} presents a comparison between the baseline 
     0.6470 (-19.1\%) \\
 
     \bottomrule
-\end{tabular}
+\end{tabular}}
 \end{table}
 
 For the Bottleneck \gls{ae}, the baseline already achieves near-perfect performance (Accuracy $\approx 0.99$, F1-score $\approx 0.99$), leaving little headroom for improvement. 
@@ -622,10 +623,12 @@ Table~\ref{tab:arae-loss-aug-results} reports the evaluation metrics obtained us
 
 %juan-done Now I'm really curious: you DID use the Wasserstein distance as loss! How did you find a differentiable implementation of it? Or was it an approximation?
 %tu yes, I used the mean for approximation of the Wasserstein distance, used in WGAN; does that affect anything
+%juan Let's solve this trhough email
 \begin{table}[h!]
 \centering
 \caption{Impact of additional loss terms alongside \gls{mse} loss.}
 \label{tab:arae-loss-aug-results}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{lccccc}
     \toprule
     \textbf{Extra Loss} & \textbf{Accuracy} & \textbf{Recall} & \textbf{Precision} & \textbf{F1-score} & \textbf{Weight (to \gls{mse})} \\
@@ -669,7 +672,7 @@ Table~\ref{tab:arae-loss-aug-results} reports the evaluation metrics obtained us
 
     \bottomrule
     
-\end{tabular}
+\end{tabular}}
 \end{table}
 
 
