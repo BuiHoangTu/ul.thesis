@@ -144,4 +144,44 @@ Taken together, these studies illustrate both the promise and the persistent lim
 They provide compact, unsupervised models of normal behaviour, but reconstruction error alone is often insufficient for robust anomaly detection, particularly when anomalies mimic normal fluctuations or when operating regimes vary.
 This motivates the methodological direction of the present thesis: hybrid autoencoder designs that combine reconstruction with supervised classification heads and advanced latent-space losses (e.g., Wasserstein distance, \gls{mmd}, Mahalanobis distance) to improve anomaly separability in wind turbine \gls{scada} monitoring.
 
-%juan Add a Summary section in which you wrap up everything and quickly adress the next questions: i) what is the proportion of works that use solely SCADA, ii) what is the proportion of works requiring supervisory labels? iii) Which works address large-scale real-world problems, and which ones address controlled scenarios, or simulations? iv) Which works were applied in a different domain than SCAD (i.e., images) and why are they important, and (most important) v) different from those approaches, what is the key difference form the work you propose?
+%juan-done Add a Summary section in which you wrap up everything and quickly adress the next questions: i) what is the proportion of works that use solely SCADA, ii) what is the proportion of works requiring supervisory labels? iii) Which works address large-scale real-world problems, and which ones address controlled scenarios, or simulations? iv) Which works were applied in a different domain than SCAD (i.e., images) and why are they important, and (most important) v) different from those approaches, what is the key difference form the work you propose?
+\section{Summary}
+\label{sec:related-works-summary}
+This survey of related work highlights recurring methodological choices, their practical trade-offs, and how the present thesis sits within that landscape.
+
+The dominant body of domain-specific literature operates directly on \gls{scada} or turbine telemetry as the primary (and often sole) data source. 
+Across the surveyed studies, roughly 60-75\% use \gls{scada} exclusively, reflecting \gls{scada}'s central role in industrial \gls{wtcm}.
+About half of the approaches are fully unsupervised or semi-supervised, relying solely on normal data without explicit fault labels. 
+The remaining 40-50\% incorporate supervised learning components, often through hybrid architectures that combine reconstruction with classification heads. 
+This mix reflects the practical reality that while labeled faults are scarce, they can provide valuable signals when available.
+
+Several important studies validate methods on operational \gls{scada} fleets or industry datasets and report comparisons against maintenance logs (\cite{bilendo_normal_2022}) or alarm books (\cite{liu_wind_2022}); these works demonstrate behaviour under real noise, heterogeneity and label sparsity and are critical for assessing deployability.
+However, they required extensive domain knowledge and careful experimental design to ensure reliable evaluations.
+
+While a large number of papers rely on controlled benchmarks, including run-to-failure vibration datasets (\cite{wen_new_2019}), lab rigs (\cite{ahmad_autoencoder-based_2020}) or synthetic anomalies (\cite{fan_analytical_2018,yao_svd-ae_2024}).
+These settings provide repeatability and clear fault signals but often fail to reproduce the nonstationarity, label noise and operational complexity of production \gls{scada} data.
+
+Outside of the \gls{scada} domain, image-based anomaly detection work and building-energy or rotating-machinery studies have contributed key architectures and ideas (memory/hash prototypes, multi-scale attention modules, frequency and distribution-alignment losses). 
+These cross-domain contributions are valuable because they introduce mechanisms and loss terms that can be adapted to time series; 
+however, several architectural transfers (e.g., direct MAMA-style 2D → 1D transplant) do not transfer cleanly without redesign for temporal signals. 
+Thus, cross-domain methods are an important source of ideas but require careful adaptation for \gls{scada} data.
+
+The main ways this thesis departs from, and extends, existing work are:
+(1) the employment of a real, industrial \gls{scada} dataset for evaluation,
+(2) a comprehensive comparison of multiple autoencoder architectures under varying supervision regimes,
+(3) the introduction of loss-combining functions and architectural components inspired by cross-domain research.
+
+
+The experiments use a proprietary dataset (EnergyPro) to assess models under the noise, imbalance and heterogeneity of operational turbines rather than relying only on lab benchmarks or synthetic data. 
+This grounds conclusions in deployment-relevant conditions.
+
+Rather than evaluating a single architecture, the study compares multiple autoencoder families under unsupervised, semi-supervised and fully supervised regimes to reveal how label availability interacts with architecture.
+
+Two practical contributions are proposed and evaluated: the Bottleneck Autoencoder, which jointly optimises reconstruction and classification to excel when labeled faults are available, and the \gls{arae}, which actively reinforces reconstruction error for anomalies to improve robustness when abnormal examples are scarce. 
+These address both label-rich and label-scarce industrial scenarios.
+
+The thesis also shows the interaction of secondary losses (Wasserstein, \gls{mmd}, \dots) with the primary loss \gls{mse}, while some complex architectural transfers (e.g., adapted \gls{mama} blocks) can degrade performance on 1D \gls{scada} without further engineering. 
+These practical lessons give actionable recommendations for practitioners.
+
+In short, the literature tilts heavily toward \gls{scada}-only inputs and mixes supervision strategies, but many high-performing techniques are developed in controlled or cross-domain settings. 
+This thesis's contribution is to bridge that gap: it evaluates and extends reconstruction-based models on realistic industrial \gls{scada} data, compares architectures across supervision regimes, and proposes methods (Bottleneck AE, ARAE) and loss/component recommendations that are directly applicable to real-world wind turbine monitoring.
