@@ -701,7 +701,6 @@ Under these conditions, even poor reconstructions can yield a deceptively low Ma
 
 
 Overall, these findings suggest that distribution-alignment losses (\gls{mmd}, Wasserstein) are the most compatible with \gls{mse} in the \gls{arae} framework.
-More complex losses that incorporate both of them with \gls{mse} might lead to better performance.
-Conversely, distance-based penalties such as Mahalanobis require careful tuning to avoid overwhelming the reconstruction objective.
-
-
+These approaches smoothen the search spaces and boost the optimization, complementing the point-wise reconstruction objective of \gls{mse}.
+More complex losses that incorporate both of them with \gls{mse} might lead to even better performance.
+Conversely, Mahalanobis distance-based penalties struggle to separate normal and abnormal samples effectively, likely due to the high entropy of the dataset.
