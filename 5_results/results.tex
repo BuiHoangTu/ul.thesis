@@ -686,7 +686,7 @@ In both cases, the weight of \gls{mse} also increases (compare to starting weigh
 %tu Do i need to add proof of non-stationarity?
 In contrast, the Fourier loss shows moderate recall and slightly improved precision over \gls{mse}, but its overall F1-score lags behind the distribution-matching approaches, indicating limited synergy with the \gls{arae} reconstruction objective.
 This can be attributed to the Fourier loss's focus on frequency domain alignment, which may not align well with the training data of just 128 time steps.
-Furthermore, the dataset is non-stationary, making Fourier analysis less effective in capturing the underlying patterns.
+Furthermore, in practice, operational signals are non-stationary because of the influence of external factors, making Fourier analysis less effective in capturing the underlying patterns.
 In addition, the weight of \gls{mse} is reduced (1.00 to 0.98), suggesting a contrasting effect on the reconstruction objective.
 Thus, the Fourier loss may not be a suitable choice in shaping the latent space for anomaly detection in this context.
 
