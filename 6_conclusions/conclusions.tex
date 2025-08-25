@@ -76,6 +76,11 @@ While this work demonstrates strong detection performance, the models generally 
 Integrating explainable AI (XAI) techniques would enhance transparency by identifying the most influential sensor signals and potential root causes of anomalies. 
 This capability would improve trust in automated monitoring systems and assist domain experts during diagnostics and maintenance planning.
 
+In addition, the study explored the potential of incorporating difference loss to enhance the model's sensitivity to anomalies. 
+However, only a handful of them are evaluated, and as a secondary loss to support the primary \gls{mse} loss. 
+Currently used Wasserstein loss and Fourier Transform loss are in a simplified form and not compatible with non-stationary data respectively.
+Future work could systematically investigate a broader range of loss functions with a more precise estimation and the interaction among all of them.
+
 Furthermore, deploying anomaly detection systems at scale requires generalization across turbines and sites, each with distinct operational profiles. 
 Future studies should investigate transfer learning frameworks to efficiently adapt models trained on one turbine to others with minimal labeled data. 
 Furthermore, integrating continual learning could enable models to incrementally learn from new operational data without suffering from catastrophic forgetting, improving long-term adaptability.
