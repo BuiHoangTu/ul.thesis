@@ -668,7 +668,7 @@ Table~\ref{tab:arae-loss-aug-results} reports the evaluation metrics obtained us
     0.6465 & 
     0.7424 & 
     0.6911 & 
-    0.04/21.01 \\
+    1.51/3.18 \\
 
     \bottomrule
     
@@ -691,8 +691,11 @@ In addition, the weight of \gls{mse} is reduced (1.00 to 0.98), suggesting a con
 Thus, the Fourier loss may not be a suitable choice in shaping the latent space for anomaly detection in this context.
 
 The Mahalanobis loss performs worst across all metrics, with both accuracy and F1-score dropping sharply.
-The extremely high relative weight assigned to this loss suggests that it dominated the optimization process, likely constraining the latent space too rigidly and hindering the network's ability to separate anomalies from normal samples effectively.
-Inspecting the weight (0.04) also shows that the Mahalanobis loss is not compatible with the dataset and the model struggles to learn meaningful representations using this guidance.
+Its comparatively low weight relative to the \gls{mse} loss (1.51 vs. 3.18) and other auxiliary losses indicates that it contributes little to the model's effectiveness.
+A likely explanation is the high entropy of the dataset, which results in broad covariance structures. 
+Under these conditions, even poor reconstructions can yield a deceptively low Mahalanobis distance, thereby trapping the model in suboptimal solutions.
+% The extremely high relative weight assigned to this loss suggests that it dominated the optimization process, likely constraining the latent space too rigidly and hindering the network's ability to separate anomalies from normal samples effectively.
+% Inspecting the weight also shows that the Mahalanobis loss is not compatible with the dataset and the model struggles to learn meaningful representations using this guidance.
 
 %juan Isn't MSE a distance-based penalty like Mahalanobis? Actually, I think that, if you assume a normal distribution, Mahalanobis becomes MSE, but somehow weighted. I really need to know the details on the implementations you used for the losses, so I can help you with this analysis.
 
