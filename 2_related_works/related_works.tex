@@ -147,9 +147,9 @@ This motivates the methodological direction of the present thesis: hybrid autoen
 %juan-done Add a Summary section in which you wrap up everything and quickly adress the next questions: i) what is the proportion of works that use solely SCADA, ii) what is the proportion of works requiring supervisory labels? iii) Which works address large-scale real-world problems, and which ones address controlled scenarios, or simulations? iv) Which works were applied in a different domain than SCAD (i.e., images) and why are they important, and (most important) v) different from those approaches, what is the key difference form the work you propose?
 \section{Summary}
 \label{sec:related-works-summary}
-This survey of related work highlights recurring methodological choices, their practical trade-offs, and how the present thesis sits within that landscape.
+This review of related work highlights recurring methodological choices, their practical trade-offs, and how the present thesis sits within that landscape.
 
-The dominant body of domain-specific literature operates directly on \gls{scada} or turbine telemetry as the primary (and often sole) data source. 
+The main body of domain-specific literature operates directly on \gls{scada} or turbine telemetry as the primary (and often sole) data source.
 Across the surveyed studies, roughly 60-75\% use \gls{scada} exclusively, reflecting \gls{scada}'s central role in industrial \gls{wtcm}.
 About half of the approaches are fully unsupervised or semi-supervised, relying solely on normal data without explicit fault labels. 
 The remaining 40-50\% incorporate supervised learning components, often through hybrid architectures that combine reconstruction with classification heads. 
@@ -180,7 +180,7 @@ Rather than evaluating a single architecture, the study compares multiple autoen
 Two practical contributions are proposed and evaluated: the Bottleneck Autoencoder, which jointly optimises reconstruction and classification to excel when labeled faults are available, and the \gls{arae}, which actively reinforces reconstruction error for anomalies to improve robustness when abnormal examples are scarce. 
 These address both label-rich and label-scarce industrial scenarios.
 
-The thesis also shows the interaction of secondary losses (Wasserstein, \gls{mmd}, \dots) with the primary loss \gls{mse}, while some complex architectural transfers (e.g., adapted \gls{mama} blocks) can degrade performance on 1D \gls{scada} without further engineering. 
+The thesis also shows the interaction of secondary losses (Wasserstein, \gls{mmd}, etc.) with the primary loss \gls{mse}, while some complex architectural transfers (e.g., adapted \gls{mama} blocks) can degrade performance on 1D \gls{scada} without further engineering.
 These practical lessons give actionable recommendations for practitioners.
 
 In short, the literature tilts heavily toward \gls{scada}-only inputs and mixes supervision strategies, but many high-performing techniques are developed in controlled or cross-domain settings. 

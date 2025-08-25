@@ -36,7 +36,7 @@ The technical foundations of these methods, along with their advantages and limi
 \label{sec:motivation}
 In this work, we adopt an \gls{ae}-based methodology due to their ability to learn compact representations of high-dimensional input data without requiring labeled anomalies.
 Typically, an \gls{ae} is trained solely on data collected during normal turbine operation, under the assumption that it will struggle to accurately reconstruct anomalous inputs.
-This allows the model to detect novel anomalies, which is the common case in wind turbine condition monitoring.
+This allows the model to detect novel anomalies, which is the common case in \gls{wtcm}.
 However, authors usually assume a small portion of the data is anomalous (e.g., 5--10\%)~\citep{fan_analytical_2018}, which makes it difficult to compare different methods in a standardized and reproducible manner.
 
 %juan-done Mention the fact that current research often relies on toy datasets or very controlled setups
@@ -46,13 +46,13 @@ While these environments enable clearer evaluation, they often fail to reflect t
 
 The approach ranges from traditional supervised learning methods like SVM or decision trees to more advanced techniques like transfer learning and semi-supervised learning.
 That said, \glspl{ae} remain a popular choice due to their ability to detect novel anomalies.
-However, there still lacks a systematic exploration of how different \gls{ae} architectures and training strategies affect anomaly detection performance, especially in the context of wind turbine condition monitoring.
+However, there still lacks a systematic exploration of how different \gls{ae} architectures and training strategies affect anomaly detection performance, especially in the context of \gls{wtcm}.
 
 By systematically comparing Autoencoder architectures under realistic industrial conditions, this work aims to identify strategies that can be directly implemented in operational wind farms to reduce unplanned maintenance costs.
 
 \section{Problem Statement}
 \label{sec:problem-statement}
-Despite the increasing use of machine learning techniques for wind turbine condition monitoring, there remains a critical gap in how anomaly detection models—particularly \glspl{ae}—are evaluated and benchmarked.
+Despite the increasing use of \gls{ml} techniques for \gls{wtcm}, there remains a critical gap in how anomaly detection models—particularly \glspl{ae}—are evaluated and benchmarked.
 Existing studies often rely on strong assumptions about the anomaly rate in training data (e.g., 5-10\%) or lab experiments where the systems operated until failure.
 %juan-done This claim can be dangerous, as it may create the expectation to the reader that you will perform cross-studies comparisons with other works, which is not the case rephrase this in terms of "ablation studies" which study the impact of each part of the model on eprformance, which is what you did
 Nevertheless, such assumptions rarely hold in industrial environments, where data distributions, failure modes, and operational conditions vary significantly.
@@ -65,7 +65,7 @@ Therefore, this study aims to fill this gap by providing a comprehensive evaluat
 
 \section{Aims and Contributions}
 \label{sec:aims}
-This dissertation revisits \gls{ae}-based anomaly detection within the context of wind turbine condition monitoring, leveraging a proprietary, labeled dataset provided by an industry partner.
+This dissertation revisits \gls{ae}-based anomaly detection within the context of \gls{wtcm}, leveraging a proprietary, labeled dataset provided by an industry partner.
 This unique access enables a more realistic and systematic evaluation of \gls{ae} behaviour, addressing key limitations found in prior research that relied heavily on synthetic assumptions or unlabeled datasets.
 By doing so, this work aims to bridge the gap between academic research and industrial deployment.
 
@@ -95,7 +95,7 @@ This includes a detailed analysis of how different \gls{ae} components influence
 
 The thesis's structure is shown in Figure~\ref{fig:thesis-structure}.
 The remainder is organized as follows. 
-Chapter~\ref{ch:background} introduces the background of wind turbine condition monitoring, normal behaviour monitoring, and deep reconstructive models, establishing the theoretical basis for this work. 
-Chapter~\ref{ch:related-works} reviews related studies, ranging from traditional statistical approaches to machine learning and deep reconstruction-based techniques, highlighting their respective strengths and limitations. 
-Chapter~\ref{ch:methodology} describes the methodology, including the dataset, preprocessing pipeline, model architectures, training strategies, and evaluation procedures while Chapter~\ref{ch:results} presents and discusses the results, comparing the performance of different model variants and analysing the impact of architectural choices and loss functions. 
+Chapter~\ref{ch:background} introduces the background of \gls{wtcm}, normal behaviour monitoring, and deep reconstructive models, establishing the theoretical basis for this work.
+Chapter~\ref{ch:related-works} reviews related studies, ranging from traditional statistical approaches to \gls{ml} and deep reconstruction-based techniques, highlighting their respective strengths and limitations.
+Chapter~\ref{ch:methodology} describes the methodology, including the dataset, preprocessing pipeline, model architectures, training strategies, and evaluation procedures while Chapter~\ref{ch:results} presents and discusses the results, comparing the performance of different model variants and analysing the impact of architectural choices and loss functions.
 Finally, Chapter~\ref{ch:conclusion} concludes the thesis by summarizing the key findings and contributions, and by outlining potential directions for future research.
