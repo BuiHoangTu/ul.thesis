@@ -410,10 +410,8 @@ The considered auxiliary losses include:
         \label{eq:wasserstein}
     \end{equation}
     where \(\Pi(P, Q)\) is the set of all joint distributions with marginals \(P\) and \(Q\).
-    In this study, an approximation
+    Due to its computational complexity, this study employs a simple, differentiable, and memory-efficient approximation of the distance, consisting on the difference between the means of the two distributions.
     % presented by~\cite{arjovsky_wasserstein_2017} 
-    is employed, which is the difference of means between the two distributions.
-    It is a simple, differentiable, and memory-efficient approximation of the distance.
 
     \item \textbf{Fourier Loss}: Operates in the frequency domain, comparing Fourier transforms of input and reconstruction to ensure spectral consistency.
     \begin{equation}

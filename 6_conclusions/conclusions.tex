@@ -76,7 +76,7 @@ While this work demonstrates strong detection performance, the models generally 
 Integrating explainable AI (XAI) techniques would enhance transparency by identifying the most influential sensor signals and potential root causes of anomalies. 
 This capability would improve trust in automated monitoring systems and assist domain experts during diagnostics and maintenance planning.
 
-In addition, the study explored the potential of incorporating difference loss to enhance the model's sensitivity to anomalies. 
+In addition, the study explored the potential of incorporating different loss terms to enhance the model's sensitivity to anomalies.
 However, only a handful of them are evaluated, and as a secondary loss to support the primary \gls{mse} loss. 
 Currently used Wasserstein loss and Fourier Transform loss are in a simplified form and not compatible with non-stationary data respectively.
 Future work could systematically explore a broader spectrum of loss functions, incorporating more precise and suitable estimators (e.g., Sinkhorn, Short-Time Fourier Transform, \dots), as well as examining the interactions among these objectives.
