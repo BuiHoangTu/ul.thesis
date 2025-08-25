@@ -289,7 +289,8 @@
     { \Large {\bfseries {\@title}} \par}
 {\large \vspace*{35mm} {{\@crest} \par} \vspace*{25mm}}
     {{\large \@author} \par}
-%	\vspace*{1ex}
+	\vspace*{1ex}
+    {{\@researchcentre} \par}
 %	{{\@cityofbirth} \par}    
 {\small
 	\vspace*{1ex}
