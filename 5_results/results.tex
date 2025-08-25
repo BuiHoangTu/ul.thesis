@@ -683,8 +683,10 @@ Both \gls{mmd} and Wasserstein losses' weights are relatively high, indicating t
 In both cases, the weight of \gls{mse} also increases (compare to starting weight of 1), suggesting a complementary relationship where the additional loss terms enhance the model's ability to capture normal data distributions while still relying on \gls{mse} for reconstruction fidelity.
 
 %juan Also, the effectiveness of Fourier analysis is deeply related to the fact whether the time series are stationary or not. Please, give a read about the suitability of Fourier for both stationary and non stationary and check which signals are stationary and which are not. If you find that the SCADA signals are not stationary (the most likely), then you may want to comment on this.
+%tu Do i need to add proof of non-stationarity?
 In contrast, the Fourier loss shows moderate recall and slightly improved precision over \gls{mse}, but its overall F1-score lags behind the distribution-matching approaches, indicating limited synergy with the \gls{arae} reconstruction objective.
 This can be attributed to the Fourier loss's focus on frequency domain alignment, which may not align well with the training data of just 128 time steps.
+Furthermore, the dataset is non-stationary, making Fourier analysis less effective in capturing the underlying patterns.
 In addition, the weight of \gls{mse} is reduced (1.00 to 0.98), suggesting a contrasting effect on the reconstruction objective.
 Thus, the Fourier loss may not be a suitable choice in shaping the latent space for anomaly detection in this context.
 
@@ -693,46 +695,7 @@ The extremely high relative weight assigned to this loss suggests that it domina
 Inspecting the weight (0.04) also shows that the Mahalanobis loss is not compatible with the dataset and the model struggles to learn meaningful representations using this guidance.
 
 %juan Isn't MSE a distance-based penalty like Mahalanobis? Actually, I think that, if you assume a normal distribution, Mahalanobis becomes MSE, but somehow weighted. I really need to know the details on the implementations you used for the losses, so I can help you with this analysis.
-%tu below is the list of loss functions and my implementation
-% 1. mmd: ignite.metrics.MaximumMeanDiscrepancy
-% 2. Mahalanobis: 
-    % def compute_dataset_cov(train_loader, device="cpu"):
-    %     all_data = []
-    %     for xb in train_loader:
-    %         xb = xb[:, 0:7, :]
-    %         xb = xb.to(device)
-    %         # Flatten and combine pred & target features
-    %         batch = xb.view(xb.size(0), -1)
 
-    %         all_data.append(batch.cpu())
-    %     all_data = torch.cat(all_data, dim=0)  # (N_total, features)
-    %     cov = torch.cov(all_data.T)  # (features, features)
-    %     return cov
-    % class MahalanobisLoss(nn.Module):
-    %     def __init__(self, feature_dim, init_cov=None, eps=1e-6):
-    %         super().__init__()
-    %         self.eps = eps
-    %         self.feature_dim = feature_dim
-
-    %         if init_cov is None:
-    %             cov_init = torch.eye(feature_dim)
-    %         else:
-    %             cov_init = init_cov.clone()
-
-    %         cov_reg = cov_init + eps * torch.eye(feature_dim, device=cov_init.device)
-    %         self.register_buffer("cov", cov_reg)
-    %         self.register_buffer("inv_cov", torch.inverse(cov_reg))
-
-    %     def forward(self, x, y):
-    %         B, C, L = x.size()
-    %         x_flat = x.view(B, -1)
-    %         y_flat = y.view(B, -1)
-    %         diff = x_flat - y_flat
-
-    %         left = diff @ self.inv_cov
-    %         mahal_dist = torch.sqrt(torch.sum(left * diff, dim=1))
-    %         return mahal_dist.view(B, 1, 1).expand(B, C, L)
-% 3. Wasserstein: mean(reconst) - mean(org)
 
 Overall, these findings suggest that distribution-alignment losses (\gls{mmd}, Wasserstein) are the most compatible with \gls{mse} in the \gls{arae} framework.
 More complex losses that incorporate both of them with \gls{mse} might lead to better performance.
